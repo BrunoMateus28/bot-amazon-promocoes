@@ -202,5 +202,15 @@
         "preco": 199.4
       }
     ]
+  },
+  "o_cavaleiro_dos_sete_reinos": {
+    "menor_preco_historico": 119.9,
+    "ultimo_preco_divulgado": 119.9,
+    "valores_30_dias": [
+      {
+        "data": "2026-07-05",
+        "preco": 119.9
+      }
+    ]
   }
 }

@@ -46,5 +46,11 @@
     "titulo": "Box Trilogia O Senhor dos Anéis",
     "preco_atual": 199.40,
     "url": "https://link.amazon/B0cOS4omj"
+  },
+  {
+    "id": "o_cavaleiro_dos_sete_reinos",
+    "titulo": "O cavaleiro dos Sete Reinos",
+    "preco_atual": 78.99,
+    "url": "https://link.amazon/B0e2PzSTe"
   }
 ]
