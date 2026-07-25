@@ -1,100 +1,51 @@
 {
   "box_ficcao_completa_edgar_allan_poe": {
-    "menor_preco_historico": 161.0,
-    "ultimo_preco_divulgado": 279.9,
+    "menor_preco_historico": 279.90,
+    "ultimo_preco_divulgado": 279.90,
     "valores_30_dias": [
-      {
-        "data": "2026-07-05",
-        "preco": 279.9
-      },
-      {
-        "data": "2026-07-25",
-        "preco": 161.0
-      }
+      { "data": "2026-07-05", "preco": 279.90 }
     ]
   },
   "o_sacrificio": {
-    "menor_preco_historico": 60.59,
-    "ultimo_preco_divulgado": 99.9,
+    "menor_preco_historico": 99.90,
+    "ultimo_preco_divulgado": 99.90,
     "valores_30_dias": [
-      {
-        "data": "2026-07-10",
-        "preco": 99.9
-      },
-      {
-        "data": "2026-07-25",
-        "preco": 60.59
-      }
+      { "data": "2026-07-10", "preco": 99.90 }
     ]
   },
   "a_cabeca_do_santo": {
-    "menor_preco_historico": 46.96,
-    "ultimo_preco_divulgado": 74.9,
+    "menor_preco_historico": 74.90,
+    "ultimo_preco_divulgado": 74.90,
     "valores_30_dias": [
-      {
-        "data": "2026-07-10",
-        "preco": 74.9
-      },
-      {
-        "data": "2026-07-25",
-        "preco": 46.96
-      }
+      { "data": "2026-07-10", "preco": 74.90 }
     ]
   },
   "a_biblioteca_da_meia_noite": {
-    "menor_preco_historico": 42.77,
-    "ultimo_preco_divulgado": 64.9,
+    "menor_preco_historico": 64.90,
+    "ultimo_preco_divulgado": 64.90,
     "valores_30_dias": [
-      {
-        "data": "2026-07-05",
-        "preco": 64.9
-      },
-      {
-        "data": "2026-07-25",
-        "preco": 42.77
-      }
+      { "data": "2026-07-05", "preco": 64.90 }
     ]
   },
   "o_hobbit_poster": {
-    "menor_preco_historico": 44.94,
-    "ultimo_preco_divulgado": 74.9,
+    "menor_preco_historico": 74.90,
+    "ultimo_preco_divulgado": 74.90,
     "valores_30_dias": [
-      {
-        "data": "2026-07-05",
-        "preco": 74.9
-      },
-      {
-        "data": "2026-07-25",
-        "preco": 44.94
-      }
+      { "data": "2026-07-05", "preco": 74.90 }
     ]
   },
   "a_ascensao_do_dragon": {
-    "menor_preco_historico": 132.9,
-    "ultimo_preco_divulgado": 199.9,
+    "menor_preco_historico": 199.90,
+    "ultimo_preco_divulgado": 199.90,
     "valores_30_dias": [
-      {
-        "data": "2026-07-05",
-        "preco": 199.9
-      },
-      {
-        "data": "2026-07-25",
-        "preco": 132.9
-      }
+      { "data": "2026-07-05", "preco": 199.90 }
     ]
   },
   "o_mundo_de_gelo_e_fogo": {
-    "menor_preco_historico": 128.77,
-    "ultimo_preco_divulgado": 189.9,
+    "menor_preco_historico": 189.90,
+    "ultimo_preco_divulgado": 189.90,
     "valores_30_dias": [
-      {
-        "data": "2026-07-05",
-        "preco": 189.9
-      },
-      {
-        "data": "2026-07-25",
-        "preco": 128.77
-      }
+      { "data": "2026-07-05", "preco": 189.90 }
     ]
   }
 }
