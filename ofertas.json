@@ -1,0 +1,44 @@
+[
+  {
+    "id": "box_ficcao_completa_edgar_allan_poe",
+    "titulo": "Box Ficção Completa de Edgar Allan Poe",
+    "preco_atual": 161.00,
+    "url": "https://link.amazon/B0bxqDHXJ"
+  },
+  {
+    "id": "o_sacrificio",
+    "titulo": "O sacrifício",
+    "preco_atual": 60.59,
+    "url": "https://link.amazon/B05C027gt"
+  },
+  {
+    "id": "a_cabeca_do_santo",
+    "titulo": "A cabeça do santo",
+    "preco_atual": 46.96,
+    "url": "https://link.amazon/B07BZ9Phr"
+  },
+  {
+    "id": "a_biblioteca_da_meia_noite",
+    "titulo": "A Biblioteca da Meia-Noite",
+    "preco_atual": 42.77,
+    "url": "https://link.amazon/B0ahQKnZG"
+  },
+  {
+    "id": "o_hobbit_poster",
+    "titulo": "O Hobbit + pôster",
+    "preco_atual": 44.94,
+    "url": "https://link.amazon/B05Sr7Nr7"
+  },
+  {
+    "id": "a_ascensao_do_dragon",
+    "titulo": "A Ascensão do Dragão",
+    "preco_atual": 132.90,
+    "url": "https://link.amazon/B04OFbHZF"
+  },
+  {
+    "id": "o_mundo_de_gelo_e_fogo",
+    "titulo": "O mundo de gelo e fogo",
+    "preco_atual": 128.77,
+    "url": "https://link.amazon/B0bOFsgQ9"
+  }
+]
