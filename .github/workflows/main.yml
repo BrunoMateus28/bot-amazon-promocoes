@@ -38,17 +38,17 @@ jobs:
           TWITTER_ACCESS_SECRET: ${{ secrets.TWITTER_ACCESS_SECRET }}
         run: python bot.py
 
-      # SALVA O HISTÓRICO DE VOLTA NO REPOSITÓRIO
-      - name: Commitar alteracoes de historico
+      # SALVA APENAS O HISTÓRICO DE PREÇOS NO REPOSITÓRIO
+      - name: Commitar historico
         run: |
           git config --global user.name "GitHub Actions Bot"
           git config --global user.email "actions@github.com"
           
-          # Verifica se o arquivo de histórico foi criado ou modificado
-          if git status --porcelain | grep -E "historico_precos.json"; then
-            git add historico_precos.json
-            git commit -m "🤖 Bot: Atualização automática do histórico de preços [skip ci]"
-            git push origin main
-          else
+          git add historico_precos.json
+          
+          if git diff --staged --quiet; then
             echo "Nenhuma alteração no histórico para commitar."
+          else
+            git commit -m "🤖 Bot: Atualização do histórico de preços [skip ci]"
+            git push origin main
           fi
