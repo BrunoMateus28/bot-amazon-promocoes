@@ -94,6 +94,7 @@ def buscar_ofertas_csv():
 # LÓGICA PRINCIPAL DO BOT
 # ==========================================================
 async def processar_ofertas():
+    postar = True  # Variável para controlar se deve postar no Twitter/Telegram
     ofertas = buscar_ofertas_csv()
     if not ofertas:
         print("Nenhuma oferta para processar.")
@@ -135,7 +136,7 @@ async def processar_ofertas():
             condicao_2 = (preco_atual < media_preco) and (preco_atual < ultimo_divulgado)
         condicao_forcada = ultimo_divulgado is None
 
-        if condicao_1 or condicao_2 or condicao_forcada:
+        if (condicao_1 or condicao_2 or condicao_forcada) and postar:
             print(f"🔥 Aprovado para postagem: {item['titulo']} (R$ {preco_atual:.2f})")
             
             if condicao_1:
@@ -161,7 +162,7 @@ async def processar_ofertas():
                 dados_item["ultimo_preco_divulgado"] = preco_atual
                 if preco_atual < menor_historico:
                     dados_item["menor_preco_historico"] = preco_atual
-                break # Evita múltiplas postagens para o mesmo item no mesmo ciclo
+                postar = False
             except Exception as e:
                 print(f"Erro ao enviar postagem: {e}")
         else:
