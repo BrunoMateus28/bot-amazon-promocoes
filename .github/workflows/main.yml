@@ -39,17 +39,17 @@ jobs:
           GOOGLE_SHEETS_CSV_URL: ${{ secrets.GOOGLE_SHEETS_CSV_URL }}
         run: python bot.py
 
-      # SALVA APENAS O HISTÓRICO DE PREÇOS NO REPOSITÓRIO
-      - name: Commitar historico
+      # SALVA O HISTÓRICO DE PREÇOS E O SITE ESTÁTICO DE OFERTAS
+      - name: Commitar historico e site
         run: |
           git config --global user.name "GitHub Actions Bot"
           git config --global user.email "actions@github.com"
           
-          git add historico_precos.json
+          git add historico_precos.json index.html
           
           if git diff --staged --quiet; then
-            echo "Nenhuma alteração no histórico para commitar."
+            echo "Nenhuma alteração detectada para commitar."
           else
-            git commit -m "🤖 Bot: Atualização do histórico de preços [skip ci]"
+            git commit -m "🤖 Bot: Atualização do histórico e portal de ofertas [skip ci]"
             git push origin main
           fi
