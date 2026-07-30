@@ -116,7 +116,6 @@ def gerar_site_estatico(ofertas, historico):
     """Gera o HTML com Meta Tags OG, Schema.org e FAQ para IA."""
     print("-> Gerando portal estático de alta performance para SEO...")
     
-    # 1. Preparar os dados para o JSON-LD (Rich Snippets)
     produtos_schema = []
     for item in ofertas:
         produtos_schema.append({
@@ -259,11 +258,14 @@ def gerar_site_estatico(ofertas, historico):
         elif preco_atual < media:
             status_badge = '<span class="px-2 py-1 text-xs font-bold text-green-100 bg-green-900/60 border border-green-700 rounded absolute -top-3 -right-3 shadow-sm">Abaixo da Média</span>'
 
+        # Correção do Bug de Truncamento do Título
+        titulo_exibido = f"{titulo[:47]}..." if len(titulo) > 50 else titulo
+
         card_html = f"""
             <article class="glass-card rounded-xl p-6 relative flex flex-col h-full group">
                 {status_badge}
                 <div class="flex-grow">
-                    <h3 class="text-lg font-bold text-gray-100 leading-snug mb-5 group-hover:text-bardo-gold transition-colors" title="{titulo}">{titulo[:50]}...</h3>
+                    <h3 class="text-lg font-bold text-gray-100 leading-snug mb-5 group-hover:text-bardo-gold transition-colors" title="{titulo}">{titulo_exibido}</h3>
                     <div class="space-y-3 mb-6">
                         <div class="flex justify-between items-end border-b border-gray-700/50 pb-3">
                             <span class="text-sm text-gray-400">Preço Agora</span>
@@ -326,7 +328,6 @@ def gerar_site_estatico(ofertas, historico):
 # LÓGICA PRINCIPAL DO BOT
 # ==========================================================
 async def processar_ofertas():
-    postar = True  
     ofertas = buscar_ofertas_csv()
     if not ofertas:
         print("Nenhuma oferta para processar.")
@@ -364,7 +365,8 @@ async def processar_ofertas():
             condicao_2 = (preco_atual < media_preco) and (preco_atual < ultimo_divulgado)
         condicao_forcada = ultimo_divulgado is None
 
-        if (condicao_1 or condicao_2 or condicao_forcada) and postar:
+        # Correção do Bug de Bloqueio de Lote: Removida a trava global 'postar'
+        if condicao_1 or condicao_2 or condicao_forcada:
             print(f"🔥 Aprovado para postagem: {item['titulo']} (R$ {preco_atual:.2f})")
             
             if condicao_1:
@@ -389,7 +391,6 @@ async def processar_ofertas():
                 datas_grafico = [v["data"] for v in valores_ordenados]
                 precos_grafico = [v["preco"] for v in valores_ordenados]
                 
-                # Monta a evolução das médias para desenhar no gráfico
                 medias_grafico = []
                 soma_acumulada = 0
                 for idx, val in enumerate(precos_grafico):
@@ -415,28 +416,24 @@ async def processar_ofertas():
             except Exception as ge:
                 print(f"Erro ao gerar gráfico para {item_id}: {ge}")
                 caminho_grafico = None
+                plt.close() # Correção de Vazamento de Memória RAM no runner
             
             try:
-                # Envia o gráfico gerado com a mensagem estruturada na legenda
                 await enviar_mensagem_telegram(mensagem, caminho_foto=caminho_grafico)
                 
-                # Limpa a imagem temporária para não poluir o repositório
                 if caminho_grafico and os.path.exists(caminho_grafico):
                     os.remove(caminho_grafico)
                     
                 dados_item["ultimo_preco_divulgado"] = preco_atual
-                if preco_atual < menor_historico:
-                    dados_item["menor_preco_historico"] = preco_atual
-                postar = False
             except Exception as e:
                 print(f"Erro ao enviar postagem: {e}")
         else:
             print(f"❌ Retido pelas regras de preço: {item['titulo']} (Atual: R$ {preco_atual:.2f} | Recorde: R$ {menor_historico:.2f})")
 
         if preco_atual < menor_historico:
-            dados_item["menor_preco_historico"] = preco_atual
+            historico[item_id]["menor_preco_historico"] = preco_atual
 
-    # Reconstrói e atualiza o portal de ofertas index.html
+    # Reconstrói e atualiza o portal de ofertas index.html e sitemap
     gerar_site_estatico(ofertas, historico)
 
     if houve_mudanca_no_historico:
