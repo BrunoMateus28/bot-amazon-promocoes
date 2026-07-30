@@ -91,74 +91,128 @@ def buscar_ofertas_csv():
         return []
 
 # ==========================================================
-# GERADOR DO PORTAL WEB ESTÁTICO
+# GERADOR DO PORTAL WEB ESTÁTICO E SITEMAP (SEO AVANÇADO)
 # ==========================================================
-def gerar_site_estatico(ofertas, historico):
-    """Gera um arquivo HTML moderno e responsivo com a listagem atual de promoções."""
-    print("-> Gerando portal estático index.html de alto padrão para SEO do Google...")
+def gerar_sitemap():
+    """Gera o sitemap.xml básico informando a atualização."""
+    url_base = "https://brunomateus28.github.io/bot-amazon-promocoes/"
+    data_hoje = datetime.now().strftime("%Y-%m-%d")
     
-    html_template = """<!DOCTYPE html>
+    xml_content = f"""<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+   <url>
+      <loc>{url_base}</loc>
+      <lastmod>{data_hoje}</lastmod>
+      <changefreq>daily</changefreq>
+      <priority>1.0</priority>
+   </url>
+</urlset>"""
+    
+    with open("sitemap.xml", "w", encoding="utf-8") as f:
+        f.write(xml_content)
+    print("✅ sitemap.xml atualizado.")
+
+def gerar_site_estatico(ofertas, historico):
+    """Gera o HTML com Meta Tags OG, Schema.org e FAQ para IA."""
+    print("-> Gerando portal estático de alta performance para SEO...")
+    
+    # 1. Preparar os dados para o JSON-LD (Rich Snippets)
+    produtos_schema = []
+    for item in ofertas:
+        produtos_schema.append({
+            "@type": "Product",
+            "name": item["titulo"],
+            "url": item["url"],
+            "offers": {
+                "@type": "Offer",
+                "priceCurrency": "BRL",
+                "price": item["preco_atual"],
+                "availability": "https://schema.org/InStock"
+            }
+        })
+    json_ld = json.dumps({
+        "@context": "https://schema.org",
+        "@type": "ItemList",
+        "name": "Promoções Ativas de Fantasia",
+        "itemListElement": [{"@type": "ListItem", "position": i+1, "item": p} for i, p in enumerate(produtos_schema)]
+    }, ensure_ascii=False)
+
+    html_template = f"""<!DOCTYPE html>
 <html lang="pt-BR" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bardo das Promoções | Curadoria de Livros de Fantasia</title>
-    <meta name="description" content="Rastreamento matemático de preços de livros de fantasia na Amazon. Fugimos da 'metade do dobro' usando dados reais e média de 30 dias.">
+    
+    <title>Bardo das Promoções | Curadoria de Livros de Fantasia Baratos</title>
+    <meta name="title" content="Bardo das Promoções | Curadoria de Livros de Fantasia">
+    <meta name="description" content="Rastreamento matemático de preços de livros de fantasia e sci-fi na Amazon. Descubra promoções reais cruzando com a média de 30 dias.">
+    <meta name="keywords" content="promoção de livros, livros de fantasia, box senhor dos aneis, livros sci-fi baratos, brandon sanderson promoção, george rr martin">
+    
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://brunomateus28.github.io/bot-amazon-promocoes/">
+    <meta property="og:title" content="Bardo das Promoções | Loot Rastreado">
+    <meta property="og:description" content="Sem 'metade do dobro'. Acompanhe quedas reais de preços em box de fantasia, sci-fi e quadrinhos.">
+    <meta property="og:image" content="https://brunomateus28.github.io/bot-amazon-promocoes/bau.png">
+    
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:title" content="Bardo das Promoções">
+    <meta property="twitter:description" content="Curadoria matemática de livros de fantasia em promoção.">
+    
+    <script type="application/ld+json">
+    {json_ld}
+    </script>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
-    
     <script src="https://cdn.tailwindcss.com"></script>
     
     <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
+        tailwind.config = {{
+            theme: {{
+                extend: {{
+                    fontFamily: {{
                         sans: ['Inter', 'sans-serif'],
                         serif: ['Playfair Display', 'serif'],
-                    },
-                    colors: {
-                        bardo: {
+                    }},
+                    colors: {{
+                        bardo: {{
                             dark: '#0f0f13',
                             card: '#1a1a20',
-                            accent: '#4A148C', // Roxo Baú
-                            gold: '#FFB300',   // Ouro Baú
+                            accent: '#4A148C',
+                            gold: '#FFB300',
                             light: '#e2e8f0',
                             success: '#10B981'
-                        }
-                    }
-                }
-            }
-        }
+                        }}
+                    }}
+                }}
+            }}
+        }}
     </script>
     
     <style>
-        /* Custom CSS para microinterações e Glassmorphism */
-        body { background-color: #0f0f13; }
-        .glass-card {
+        body {{ background-color: #0f0f13; }}
+        .glass-card {{
             background: rgba(26, 26, 32, 0.7);
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
             border: 1px solid rgba(74, 20, 140, 0.3);
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .glass-card:hover {
+        }}
+        .glass-card:hover {{
             transform: translateY(-8px);
             border-color: rgba(255, 179, 0, 0.6);
             box-shadow: 0 10px 30px -10px rgba(74, 20, 140, 0.5);
-        }
-        .text-gradient {
+        }}
+        .text-gradient {{
             background-clip: text;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-image: linear-gradient(90deg, #FFB300, #F59E0B);
-        }
+        }}
     </style>
 </head>
 <body class="text-bardo-light antialiased min-h-screen flex flex-col relative overflow-x-hidden">
-
     <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-3xl h-64 bg-bardo-accent opacity-20 blur-[100px] -z-10 rounded-full pointer-events-none"></div>
 
     <header class="container mx-auto px-6 pt-16 pb-12 text-center relative z-10">
@@ -183,7 +237,7 @@ def gerar_site_estatico(ofertas, historico):
                 <span class="w-2 h-6 bg-bardo-gold rounded-full"></span>
                 Loot Rastreado Atualmente
             </h2>
-            <span class="text-sm text-gray-500">Atualizado via GitHub Actions</span>
+            <span class="text-sm text-gray-500">Ao vivo</span>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">"""
@@ -199,19 +253,17 @@ def gerar_site_estatico(ofertas, historico):
         media = sum(precos_30) / len(precos_30) if precos_30 else preco_atual
         menor = dados_item.get("menor_preco_historico", preco_atual)
         
-        # Lógica visual para indicar se o desconto é bom
         status_badge = ""
         if preco_atual < menor:
             status_badge = '<span class="px-2 py-1 text-xs font-bold text-red-100 bg-red-900/60 border border-red-700 rounded absolute -top-3 -right-3 rotate-3 shadow-sm">Recorde!</span>'
         elif preco_atual < media:
-            status_badge = '<span class="px-2 py-1 text-xs font-bold text-green-100 bg-green-900/60 border border-green-700 rounded absolute -top-3 -right-3 shadow-sm">Queda de Preço</span>'
+            status_badge = '<span class="px-2 py-1 text-xs font-bold text-green-100 bg-green-900/60 border border-green-700 rounded absolute -top-3 -right-3 shadow-sm">Abaixo da Média</span>'
 
         card_html = f"""
             <article class="glass-card rounded-xl p-6 relative flex flex-col h-full group">
                 {status_badge}
                 <div class="flex-grow">
-                    <h3 class="text-lg font-bold text-gray-100 leading-snug mb-5 group-hover:text-bardo-gold transition-colors">{titulo}</h3>
-                    
+                    <h3 class="text-lg font-bold text-gray-100 leading-snug mb-5 group-hover:text-bardo-gold transition-colors" title="{titulo}">{titulo[:50]}...</h3>
                     <div class="space-y-3 mb-6">
                         <div class="flex justify-between items-end border-b border-gray-700/50 pb-3">
                             <span class="text-sm text-gray-400">Preço Agora</span>
@@ -227,8 +279,7 @@ def gerar_site_estatico(ofertas, historico):
                         </div>
                     </div>
                 </div>
-                
-                <a href="{url}" target="_blank" rel="noopener noreferrer" class="w-full block text-center py-3 px-4 bg-gray-800 hover:bg-bardo-accent text-white font-medium rounded-lg transition-colors border border-gray-700 hover:border-bardo-accent">
+                <a href="{url}" target="_blank" rel="nofollow noopener" class="w-full block text-center py-3 px-4 bg-gray-800 hover:bg-bardo-accent text-white font-medium rounded-lg transition-colors border border-gray-700 hover:border-bardo-accent">
                     Ver na Loja &rarr;
                 </a>
             </article>"""
@@ -237,14 +288,28 @@ def gerar_site_estatico(ofertas, historico):
     html_template += f"""
         </div>
     </main>
+    
+    <section class="container mx-auto px-6 py-16 z-10 border-t border-gray-800/60 mt-10">
+        <h2 class="text-3xl font-serif font-bold text-white mb-8">Como funciona a curadoria matemática?</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-gray-400">
+            <div>
+                <h3 class="text-xl font-semibold text-bardo-gold mb-3">Como calculamos a média de 30 dias?</h3>
+                <p>Nosso script em Python, hospedado na nuvem, raspa os preços dos maiores boxes e livros de fantasia diariamente. Nós armazenamos esses dados e criamos uma média móvel. Se o preço ofertado não estiver abaixo dessa linha, não consideramos promoção.</p>
+            </div>
+            <div>
+                <h3 class="text-xl font-semibold text-bardo-gold mb-3">O que significa "Menor Histórico"?</h3>
+                <p>Muitas lojas usam a tática da "metade do dobro" na Black Friday. Nosso robô memoriza o menor preço que aquele produto específico já atingiu em toda a história do nosso banco de dados. Quando a etiqueta vermelha "Recorde" aparece, a queda é real.</p>
+            </div>
+        </div>
+    </section>
 
-    <footer class="mt-20 border-t border-gray-800/60 bg-black/20 relative z-10">
+    <footer class="mt-10 border-t border-gray-800/60 bg-black/20 relative z-10">
         <div class="container mx-auto px-6 py-8 flex flex-col md:flex-row justify-between items-center gap-4">
             <div class="text-sm text-gray-500">
-                &copy; {datetime.now().year} Bardo das Promoções. Nenhum dado de usuário é coletado.
+                &copy; {datetime.now().year} Bardo das Promoções. 
             </div>
             <div class="text-xs text-gray-600 bg-gray-900/50 px-3 py-1.5 rounded-md border border-gray-800">
-                Última sincronização: {datetime.now().strftime('%d/%m/%Y %H:%M')} (BRT)
+                Última atualização do sistema: {datetime.now().strftime('%d/%m/%Y %H:%M')} (BRT)
             </div>
         </div>
     </footer>
@@ -253,8 +318,9 @@ def gerar_site_estatico(ofertas, historico):
     
     with open("index.html", "w", encoding="utf-8") as f:
         f.write(html_template)
-    print("✅ index.html (UI Alto Padrão) gerado com sucesso!")
-
+    print("✅ index.html de alta performance e SEO gerado.")
+    
+    gerar_sitemap()
 
 # ==========================================================
 # LÓGICA PRINCIPAL DO BOT

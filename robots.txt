@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://brunomateus28.github.io/bot-amazon-promocoes/sitemap.xml
