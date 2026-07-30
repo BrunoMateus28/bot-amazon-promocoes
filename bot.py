@@ -80,7 +80,7 @@ def buscar_ofertas_csv():
 
             id_item = linha_limpa.get("id", "")
             titulo = linha_limpa.get("titulo", "")
-            preco_raw = inline_clean := linha_limpa.get("preco_atual", "0")
+            preco_raw = linha_limpa.get("preco_atual", "0")
             preco_str = preco_raw.replace("R$", "").replace(" ", "").replace(",", ".").strip()
             url = linha_limpa.get("url", "")
             imagem_url = linha_limpa.get("imagem_url", "")
@@ -104,7 +104,6 @@ def buscar_ofertas_csv():
     except Exception as e:
         print(f"-> Erro ao sincronizar produtos do CSV: {e}")
         return []
-
 # ==========================================================
 # GERADOR DO PORTAL WEB ESTÁTICO E SITEMAP (SEO AVANÇADO)
 # ==========================================================
