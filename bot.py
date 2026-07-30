@@ -91,39 +91,102 @@ def buscar_ofertas_csv():
         return []
 
 # ==========================================================
-# GERADOR DO PORTAL WEB ESTÁTICO (SEO GOOGLE)
+# GERADOR DO PORTAL WEB ESTÁTICO
 # ==========================================================
 def gerar_site_estatico(ofertas, historico):
     """Gera um arquivo HTML moderno e responsivo com a listagem atual de promoções."""
-    print("-> Gerando portal estático index.html para SEO do Google...")
+    print("-> Gerando portal estático index.html de alto padrão para SEO do Google...")
     
     html_template = """<!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bardo das Promoções - Livros de Fantasia & Geek</title>
+    <title>Bardo das Promoções | Curadoria de Livros de Fantasia</title>
+    <meta name="description" content="Rastreamento matemático de preços de livros de fantasia na Amazon. Fugimos da 'metade do dobro' usando dados reais e média de 30 dias.">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                    },
+                    colors: {
+                        bardo: {
+                            dark: '#0f0f13',
+                            card: '#1a1a20',
+                            accent: '#4A148C', // Roxo Baú
+                            gold: '#FFB300',   // Ouro Baú
+                            light: '#e2e8f0',
+                            success: '#10B981'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
     <style>
-        body { background-color: #1d1d1d; color: #ffffff; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; }
-        h1 { color: #FFB300; text-shadow: 2px 2px #4A148C; margin-bottom: 5px; }
-        p.subtitle { color: #aaaaaa; margin-bottom: 30px; font-size: 1.1em; text-align: center; }
-        .container { width: 100%; max-width: 1000px; display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
-        .card { background-color: #2b2b2b; border: 1px solid #4A148C; border-radius: 8px; padding: 20px; display: flex; flex-direction: column; justify-content: space-between; transition: transform 0.2s; box-shadow: 0 4px 8px rgba(0,0,0,0.3); }
-        .card:hover { transform: translateY(-5px); border-color: #FFB300; }
-        .title { color: #FFB300; font-size: 1.15em; font-weight: bold; margin-bottom: 10px; min-height: 45px; }
-        .price-info { margin: 15px 0; font-size: 0.95em; color: #dddddd; line-height: 1.6; }
-        .current-price { font-size: 1.3em; color: #00FF41; font-weight: bold; }
-        .btn-buy { display: block; background-color: #4A148C; color: #ffffff; text-align: center; padding: 12px; text-decoration: none; border-radius: 5px; font-weight: bold; transition: background 0.2s; margin-top: 10px; }
-        .btn-buy:hover { background-color: #FFB300; color: #1d1d1d; }
-        footer { margin-top: 50px; color: #777777; font-size: 0.85em; text-align: center; border-top: 1px solid #333; padding-top: 20px; width: 100%; max-width: 1000px; }
-        a { color: #FFB300; text-decoration: none; }
-        a:hover { text-decoration: underline; }
+        /* Custom CSS para microinterações e Glassmorphism */
+        body { background-color: #0f0f13; }
+        .glass-card {
+            background: rgba(26, 26, 32, 0.7);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(74, 20, 140, 0.3);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .glass-card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(255, 179, 0, 0.6);
+            box-shadow: 0 10px 30px -10px rgba(74, 20, 140, 0.5);
+        }
+        .text-gradient {
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-image: linear-gradient(90deg, #FFB300, #F59E0B);
+        }
     </style>
 </head>
-<body>
-    <h1>🧙‍♂️ Bardo das Promoções</h1>
-    <p class="subtitle">Desmascarando a "metade do dobro". Rastreamento matemático de livros de fantasia.</p>
-    <div class="container">"""
+<body class="text-bardo-light antialiased min-h-screen flex flex-col relative overflow-x-hidden">
+
+    <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-3xl h-64 bg-bardo-accent opacity-20 blur-[100px] -z-10 rounded-full pointer-events-none"></div>
+
+    <header class="container mx-auto px-6 pt-16 pb-12 text-center relative z-10">
+        <div class="inline-block mb-4 px-4 py-1.5 rounded-full bg-bardo-accent/20 border border-bardo-accent/30 text-bardo-gold text-sm font-semibold tracking-wide uppercase">
+            Curadoria Automatizada 🤖
+        </div>
+        <h1 class="text-5xl md:text-6xl font-serif font-bold text-white mb-6 leading-tight">
+            Bardo das <span class="text-gradient">Promoções</span>
+        </h1>
+        <p class="max-w-2xl mx-auto text-lg md:text-xl text-gray-400 mb-10 leading-relaxed">
+            Nós mapeamos as masmorras da Amazon com precisão matemática. Fugimos da "metade do dobro" cruzando o preço atual com a <strong>média histórica de 30 dias</strong> de livros de Fantasia e Sci-Fi.
+        </p>
+        <a href="https://t.me/bardodaspromos" target="_blank" class="inline-flex items-center justify-center px-8 py-4 text-base font-bold text-bardo-dark bg-bardo-gold hover:bg-yellow-400 rounded-lg shadow-lg hover:shadow-yellow-500/30 transition-all duration-200 gap-3">
+            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69.01-.03.01-.14-.07-.19-.08-.05-.19-.02-.27 0-.11.03-1.83 1.16-5.17 3.42-.49.33-.93.49-1.32.48-.43-.01-1.26-.24-1.87-.44-.75-.24-1.34-.37-1.29-.79.03-.22.33-.44.92-.68 3.58-1.56 5.96-2.58 7.15-3.08 3.4-1.42 4.1-1.66 4.56-1.67.1 0 .32.02.43.14.09.1.11.23.11.33 0 .04-.01.12-.02.21z"/></svg>
+            Entrar no Canal do Telegram
+        </a>
+    </header>
+
+    <main class="container mx-auto px-6 py-8 flex-grow z-10">
+        <div class="flex items-center justify-between mb-8">
+            <h2 class="text-2xl font-bold text-white flex items-center gap-2">
+                <span class="w-2 h-6 bg-bardo-gold rounded-full"></span>
+                Loot Rastreado Atualmente
+            </h2>
+            <span class="text-sm text-gray-500">Atualizado via GitHub Actions</span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">"""
 
     for item in ofertas:
         item_id = item["id"]
@@ -136,32 +199,62 @@ def gerar_site_estatico(ofertas, historico):
         media = sum(precos_30) / len(precos_30) if precos_30 else preco_atual
         menor = dados_item.get("menor_preco_historico", preco_atual)
         
+        # Lógica visual para indicar se o desconto é bom
+        status_badge = ""
+        if preco_atual < menor:
+            status_badge = '<span class="px-2 py-1 text-xs font-bold text-red-100 bg-red-900/60 border border-red-700 rounded absolute -top-3 -right-3 rotate-3 shadow-sm">Recorde!</span>'
+        elif preco_atual < media:
+            status_badge = '<span class="px-2 py-1 text-xs font-bold text-green-100 bg-green-900/60 border border-green-700 rounded absolute -top-3 -right-3 shadow-sm">Queda de Preço</span>'
+
         card_html = f"""
-        <div class="card">
-            <div>
-                <div class="title">{titulo}</div>
-                <div class="price-info">
-                    Preço Atual: <span class="current-price">R$ {preco_atual:.2f}</span><br>
-                    Média de 30 dias: R$ {media:.2f}<br>
-                    Menor Histórico: R$ {menor:.2f}
+            <article class="glass-card rounded-xl p-6 relative flex flex-col h-full group">
+                {status_badge}
+                <div class="flex-grow">
+                    <h3 class="text-lg font-bold text-gray-100 leading-snug mb-5 group-hover:text-bardo-gold transition-colors">{titulo}</h3>
+                    
+                    <div class="space-y-3 mb-6">
+                        <div class="flex justify-between items-end border-b border-gray-700/50 pb-3">
+                            <span class="text-sm text-gray-400">Preço Agora</span>
+                            <span class="text-2xl font-bold text-bardo-success">R$ {preco_atual:.2f}</span>
+                        </div>
+                        <div class="flex justify-between items-center text-sm">
+                            <span class="text-gray-500">Média (30 dias)</span>
+                            <span class="font-medium text-gray-300">R$ {media:.2f}</span>
+                        </div>
+                        <div class="flex justify-between items-center text-sm">
+                            <span class="text-gray-500">Menor Histórico</span>
+                            <span class="font-medium text-gray-300">R$ {menor:.2f}</span>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <a href="{url}" target="_blank" class="btn-buy">🛒 Garantir Loot</a>
-        </div>"""
+                
+                <a href="{url}" target="_blank" rel="noopener noreferrer" class="w-full block text-center py-3 px-4 bg-gray-800 hover:bg-bardo-accent text-white font-medium rounded-lg transition-colors border border-gray-700 hover:border-bardo-accent">
+                    Ver na Loja &rarr;
+                </a>
+            </article>"""
         html_template += card_html
 
     html_template += f"""
-    </div>
-    <footer>
-        <p>Atualizado automaticamente via GitHub Actions em: {datetime.now().strftime('%d/%m/%Y %H:%M')} (Horário de Brasília)</p>
-        <p>Participe do nosso canal principal no Telegram: <a href="https://t.me/bardodaspromos" target="_blank">@bardodaspromos</a></p>
+        </div>
+    </main>
+
+    <footer class="mt-20 border-t border-gray-800/60 bg-black/20 relative z-10">
+        <div class="container mx-auto px-6 py-8 flex flex-col md:flex-row justify-between items-center gap-4">
+            <div class="text-sm text-gray-500">
+                &copy; {datetime.now().year} Bardo das Promoções. Nenhum dado de usuário é coletado.
+            </div>
+            <div class="text-xs text-gray-600 bg-gray-900/50 px-3 py-1.5 rounded-md border border-gray-800">
+                Última sincronização: {datetime.now().strftime('%d/%m/%Y %H:%M')} (BRT)
+            </div>
+        </div>
     </footer>
 </body>
 </html>"""
     
     with open("index.html", "w", encoding="utf-8") as f:
         f.write(html_template)
-    print("✅ index.html gerado com sucesso!")
+    print("✅ index.html (UI Alto Padrão) gerado com sucesso!")
+
 
 # ==========================================================
 # LÓGICA PRINCIPAL DO BOT
