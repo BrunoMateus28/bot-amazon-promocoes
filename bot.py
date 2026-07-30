@@ -33,6 +33,10 @@ def limpar_historico_antigo(valores):
         if datetime.strptime(v["data"], "%Y-%m-%d") >= limite_30_dias
     ]
 
+def formatar_real(valor):
+    """Converte um float para string no formato de moeda brasileiro (Ex: 132,99 ou 1.250,00)"""
+    return f"{valor:,.2f}".replace(",", "v").replace(".", ",").replace("v", ".")
+
 # ==========================================================
 # INTEGRAÇÃO COM GOOGLE SHEETS VIA CSV PÚBLICO
 # ==========================================================
@@ -63,7 +67,11 @@ def buscar_ofertas_csv():
 
         ofertas = []
         for linha in leitor:
-            linha_limpa = {k.strip(): v.strip() for k, v in linha.items() if k}
+            # Correção do Erro de Lógica de Dicionário aqui:
+            linha_limpa = {}
+            for k, v in linha.items():
+                if k is not None and v is not None:
+                    linha_limpa[k.strip()] = v.strip()
 
             id_item = linha_limpa.get("id", "")
             titulo = linha_limpa.get("titulo", "")
@@ -110,7 +118,7 @@ def gerar_sitemap():
     
     with open("sitemap.xml", "w", encoding="utf-8") as f:
         f.write(xml_content)
-    print("✅ sitemap.xml atualizado.")
+    print("✅ sitemap.xml updated.")
 
 def gerar_site_estatico(ofertas, historico):
     """Gera o HTML com Meta Tags OG, Schema.org e FAQ para IA."""
@@ -258,7 +266,6 @@ def gerar_site_estatico(ofertas, historico):
         elif preco_atual < media:
             status_badge = '<span class="px-2 py-1 text-xs font-bold text-green-100 bg-green-900/60 border border-green-700 rounded absolute -top-3 -right-3 shadow-sm">Abaixo da Média</span>'
 
-        # Correção do Bug de Truncamento do Título
         titulo_exibido = f"{titulo[:47]}..." if len(titulo) > 50 else titulo
 
         card_html = f"""
@@ -269,15 +276,15 @@ def gerar_site_estatico(ofertas, historico):
                     <div class="space-y-3 mb-6">
                         <div class="flex justify-between items-end border-b border-gray-700/50 pb-3">
                             <span class="text-sm text-gray-400">Preço Agora</span>
-                            <span class="text-2xl font-bold text-bardo-success">R$ {preco_atual:.2f}</span>
+                            <span class="text-2xl font-bold text-bardo-success">R$ {formatar_real(preco_atual)}</span>
                         </div>
                         <div class="flex justify-between items-center text-sm">
                             <span class="text-gray-500">Média (30 dias)</span>
-                            <span class="font-medium text-gray-300">R$ {media:.2f}</span>
+                            <span class="font-medium text-gray-300">R$ {formatar_real(media)}</span>
                         </div>
                         <div class="flex justify-between items-center text-sm">
                             <span class="text-gray-500">Menor Histórico</span>
-                            <span class="font-medium text-gray-300">R$ {menor:.2f}</span>
+                            <span class="font-medium text-gray-300">R$ {formatar_real(menor)}</span>
                         </div>
                     </div>
                 </div>
@@ -365,7 +372,6 @@ async def processar_ofertas():
             condicao_2 = (preco_atual < media_preco) and (preco_atual < ultimo_divulgado)
         condicao_forcada = ultimo_divulgado is None
 
-        # Correção do Bug de Bloqueio de Lote: Removida a trava global 'postar'
         if condicao_1 or condicao_2 or condicao_forcada:
             print(f"🔥 Aprovado para postagem: {item['titulo']} (R$ {preco_atual:.2f})")
             
@@ -379,8 +385,8 @@ async def processar_ofertas():
             mensagem = (
                 f"{detalhe_gatilho}\n\n"
                 f"📚 *{item['titulo']}*\n"
-                f"💰 Por apenas: *R$ {preco_atual:.2f}*\n"
-                f"📊 Média de 30 dias: R$ {media_preco:.2f}\n\n"
+                f"💰 Por apenas: *R$ {formatar_real(preco_atual)}*\n"
+                f"📊 Média de 30 dias: R$ {formatar_real(media_preco)}\n\n"
                 f"🛒 Compre pelo link:\n{item['url']}"
             )
             
@@ -416,7 +422,7 @@ async def processar_ofertas():
             except Exception as ge:
                 print(f"Erro ao gerar gráfico para {item_id}: {ge}")
                 caminho_grafico = None
-                plt.close() # Correção de Vazamento de Memória RAM no runner
+                plt.close()
             
             try:
                 await enviar_mensagem_telegram(mensagem, caminho_foto=caminho_grafico)
@@ -428,7 +434,8 @@ async def processar_ofertas():
             except Exception as e:
                 print(f"Erro ao enviar postagem: {e}")
         else:
-            print(f"❌ Retido pelas regras de preço: {item['titulo']} (Atual: R$ {preco_atual:.2f} | Recorde: R$ {menor_historico:.2f})")
+            # Correção da Formatação no print do Terminal
+            print(f"❌ Retido pelas regras de preço: {item['titulo']} (Atual: R$ {formatar_real(preco_atual)} | Recorde: R$ {formatar_real(menor_historico)})")
 
         if preco_atual < menor_historico:
             historico[item_id]["menor_preco_historico"] = preco_atual
