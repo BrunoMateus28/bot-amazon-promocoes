@@ -39,17 +39,20 @@ jobs:
           GOOGLE_SHEETS_CSV_URL: ${{ secrets.GOOGLE_SHEETS_CSV_URL }}
         run: python bot.py
 
-      # SALVA O HISTÓRICO, SITE ESTÁTICO E SITEMAP
+      # SALVA HISTÓRICO, SITE, SITEMAP E IMAGENS DOS BANNERS
       - name: Commitar alteracoes
         run: |
           git config --global user.name "GitHub Actions Bot"
           git config --global user.email "actions@github.com"
           
-          git add historico_precos.json index.html sitemap.xml
+          # Cria a pasta assets se ela não existir para não dar erro no git add
+          mkdir -p assets
+          
+          git add historico_precos.json index.html sitemap.xml assets/*.png
           
           if git diff --staged --quiet; then
             echo "Nenhuma alteração detectada para commitar."
           else
-            git commit -m "🤖 Bot: Atualização do histórico, portal de ofertas e sitemap [skip ci]"
+            git commit -m "🤖 Bot: Atualização do histórico, portal de ofertas e banners [skip ci]"
             git push origin main
           fi

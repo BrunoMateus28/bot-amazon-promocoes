@@ -10,11 +10,17 @@ from src.telegram import enviar_mensagem_telegram
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
+from PIL import Image
+from io import BytesIO
 
 # ==========================================================
 # CONFIGURAÇÕES E UTILITÁRIOS
 # ==========================================================
 HISTORICO_FILE = "historico_precos.json"
+ASSETS_DIR = "assets"
+
+# Garante que a pasta de assets exista localmente e na nuvem
+os.makedirs(ASSETS_DIR, exist_ok=True)
 
 def carregar_json(caminho, default):
     if os.path.exists(caminho):
@@ -67,7 +73,6 @@ def buscar_ofertas_csv():
 
         ofertas = []
         for linha in leitor:
-            # Correção do Erro de Lógica de Dicionário aqui:
             linha_limpa = {}
             for k, v in linha.items():
                 if k is not None and v is not None:
@@ -75,9 +80,10 @@ def buscar_ofertas_csv():
 
             id_item = linha_limpa.get("id", "")
             titulo = linha_limpa.get("titulo", "")
-            preco_raw = linha_limpa.get("preco_atual", "0")
+            preco_raw = inline_clean := linha_limpa.get("preco_atual", "0")
             preco_str = preco_raw.replace("R$", "").replace(" ", "").replace(",", ".").strip()
             url = linha_limpa.get("url", "")
+            imagem_url = linha_limpa.get("imagem_url", "")
 
             if id_item and titulo and url:
                 try:
@@ -86,7 +92,8 @@ def buscar_ofertas_csv():
                         "id": id_item,
                         "titulo": titulo,
                         "preco_atual": preco_atual,
-                        "url": url
+                        "url": url,
+                        "imagem_url": imagem_url
                     })
                 except ValueError:
                     print(f"-> AVISO: Preço inválido no item '{id_item}' ({preco_raw}). Pulando...")
@@ -262,35 +269,50 @@ def gerar_site_estatico(ofertas, historico):
         
         status_badge = ""
         if preco_atual < menor:
-            status_badge = '<span class="px-2 py-1 text-xs font-bold text-red-100 bg-red-900/60 border border-red-700 rounded absolute -top-3 -right-3 rotate-3 shadow-sm">Recorde!</span>'
+            status_badge = '<span class="px-2 py-1 text-xs font-bold text-red-100 bg-red-900/60 border border-red-700 rounded absolute top-3 right-3 rotate-3 shadow-sm z-20">Recorde!</span>'
         elif preco_atual < media:
-            status_badge = '<span class="px-2 py-1 text-xs font-bold text-green-100 bg-green-900/60 border border-green-700 rounded absolute -top-3 -right-3 shadow-sm">Abaixo da Média</span>'
+            status_badge = '<span class="px-2 py-1 text-xs font-bold text-green-100 bg-green-900/60 border border-green-700 rounded absolute top-3 right-3 shadow-sm z-20">Abaixo da Média</span>'
 
         titulo_exibido = f"{titulo[:47]}..." if len(titulo) > 50 else titulo
 
+        # NOVO: Checa se existe a composição de imagem na pasta assets, senão usa a capa padrão
+        path_banner_local = os.path.join(ASSETS_DIR, f"banner_{item_id}.png")
+        if os.path.exists(path_banner_local):
+            src_imagem = f"assets/banner_{item_id}.png"
+        else:
+            src_imagem = item.get("imagem_url", "bau.png") # Fallback para a capa ou icone do bot
+
         card_html = f"""
-            <article class="glass-card rounded-xl p-6 relative flex flex-col h-full group">
+            <article class="glass-card rounded-xl overflow-hidden relative flex flex-col h-full group">
                 {status_badge}
-                <div class="flex-grow">
-                    <h3 class="text-lg font-bold text-gray-100 leading-snug mb-5 group-hover:text-bardo-gold transition-colors" title="{titulo}">{titulo_exibido}</h3>
-                    <div class="space-y-3 mb-6">
-                        <div class="flex justify-between items-end border-b border-gray-700/50 pb-3">
-                            <span class="text-sm text-gray-400">Preço Agora</span>
-                            <span class="text-2xl font-bold text-bardo-success">R$ {formatar_real(preco_atual)}</span>
-                        </div>
-                        <div class="flex justify-between items-center text-sm">
-                            <span class="text-gray-500">Média (30 dias)</span>
-                            <span class="font-medium text-gray-300">R$ {formatar_real(media)}</span>
-                        </div>
-                        <div class="flex justify-between items-center text-sm">
-                            <span class="text-gray-500">Menor Histórico</span>
-                            <span class="font-medium text-gray-300">R$ {formatar_real(menor)}</span>
+                
+                <div class="w-full h-48 bg-black/40 flex items-center justify-center overflow-hidden border-b border-gray-800">
+                    <img src="{src_imagem}" alt="{titulo}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                </div>
+
+                <div class="p-6 flex-grow flex flex-col justify-between">
+                    <div>
+                        <h3 class="text-lg font-bold text-gray-100 leading-snug mb-5 group-hover:text-bardo-gold transition-colors" title="{titulo}">{titulo_exibido}</h3>
+                        <div class="space-y-3 mb-6">
+                            <div class="flex justify-between items-end border-b border-gray-700/50 pb-3">
+                                <span class="text-sm text-gray-400">Preço Agora</span>
+                                <span class="text-2xl font-bold text-bardo-success">R$ {formatar_real(preco_atual)}</span>
+                            </div>
+                            <div class="flex justify-between items-center text-sm">
+                                <span class="text-gray-500">Média (30 dias)</span>
+                                <span class="font-medium text-gray-300">R$ {formatar_real(media)}</span>
+                            </div>
+                            <div class="flex justify-between items-center text-sm">
+                                <span class="text-gray-500">Menor Histórico</span>
+                                <span class="font-medium text-gray-300">R$ {formatar_real(menor)}</span>
+                            </div>
                         </div>
                     </div>
+                    
+                    <a href="{url}" target="_blank" rel="nofollow noopener" class="w-full block text-center py-3 px-4 bg-gray-800 hover:bg-bardo-accent text-white font-medium rounded-lg transition-colors border border-gray-700 hover:border-bardo-accent">
+                        Ver na Loja &rarr;
+                    </a>
                 </div>
-                <a href="{url}" target="_blank" rel="nofollow noopener" class="w-full block text-center py-3 px-4 bg-gray-800 hover:bg-bardo-accent text-white font-medium rounded-lg transition-colors border border-gray-700 hover:border-bardo-accent">
-                    Ver na Loja &rarr;
-                </a>
             </article>"""
         html_template += card_html
 
@@ -391,7 +413,10 @@ async def processar_ofertas():
             )
             
             # --- GERAÇÃO DO GRÁFICO DE ANÁLISE ---
-            caminho_grafico = f"grafico_{item_id}.png"
+            caminho_grafico = os.path.join(ASSETS_DIR, f"grafico_{item_id}.png")
+            caminho_banner = os.path.join(ASSETS_DIR, f"banner_{item_id}.png")
+            imagem_envio = None
+            
             try:
                 valores_ordenados = sorted(dados_item["valores_30_dias"], key=lambda x: x["data"])
                 datas_grafico = [v["data"] for v in valores_ordenados]
@@ -419,22 +444,50 @@ async def processar_ofertas():
                 plt.tight_layout()
                 plt.savefig(caminho_grafico, facecolor=fig.get_facecolor(), edgecolor='none', dpi=120)
                 plt.close()
+                
+                imagem_envio = caminho_grafico
+                
+                # --- MONTAGEM DA IMAGEM COMPOSTA (Capa + Gráfico) ---
+                if item.get('imagem_url'):
+                    try:
+                        res_img = requests.get(item['imagem_url'], timeout=10)
+                        if res_img.status_code == 200:
+                            capa_livro = Image.open(BytesIO(res_img.content))
+                            grafico_img = Image.open(caminho_grafico)
+                            
+                            altura_alvo = grafico_img.height
+                            proporcao_capa = capa_livro.width / capa_livro.height
+                            largura_nova_capa = int(altura_alvo * proporcao_capa)
+                            
+                            capa_livro = capa_livro.resize((largura_nova_capa, altura_alvo), Image.Resampling.LANCZOS)
+                            
+                            largura_total = largura_nova_capa + grafico_img.width
+                            banner = Image.new('RGB', (largura_total, altura_alvo), color='#1d1d1d')
+                            
+                            banner.paste(capa_livro, (0, 0))
+                            banner.paste(grafico_img, (largura_nova_capa, 0))
+                            
+                            # MODIFICADO: Salva permanentemente para o site ler
+                            banner.save(caminho_banner)
+                            imagem_envio = caminho_banner
+                    except Exception as e_img:
+                        print(f"Erro na montagem do banner para {item_id}: {e_img}")
+
             except Exception as ge:
                 print(f"Erro ao gerar gráfico para {item_id}: {ge}")
-                caminho_grafico = None
                 plt.close()
             
             try:
-                await enviar_mensagem_telegram(mensagem, caminho_foto=caminho_grafico)
+                await enviar_mensagem_telegram(mensagem, caminho_foto=imagem_envio)
                 
-                if caminho_grafico and os.path.exists(caminho_grafico):
+                # MODIFICADO: Remove apenas o grafico isolado se o banner composto foi criado com sucesso
+                if imagem_envio == caminho_banner and os.path.exists(caminho_grafico):
                     os.remove(caminho_grafico)
                     
                 dados_item["ultimo_preco_divulgado"] = preco_atual
             except Exception as e:
                 print(f"Erro ao enviar postagem: {e}")
         else:
-            # Correção da Formatação no print do Terminal
             print(f"❌ Retido pelas regras de preço: {item['titulo']} (Atual: R$ {formatar_real(preco_atual)} | Recorde: R$ {formatar_real(menor_historico)})")
 
         if preco_atual < menor_historico:
