@@ -4,8 +4,10 @@ import json
 import asyncio
 import requests
 import numpy as np
-import textwrap # <--- NOVO: Biblioteca para quebrar os textos
+import textwrap
 from datetime import datetime, timedelta
+import google.generativeai as genai
+
 from src.telegram import enviar_mensagem_telegram, enviar_video_telegram
 
 import matplotlib
@@ -44,22 +46,68 @@ def formatar_real(valor):
     return f"{valor:,.2f}".replace(",", "v").replace(".", ",").replace("v", ".")
 
 # ==========================================================
+# INTEGRAÇÃO GEMINI: GERAÇÃO DE LEGENDA PARA TIKTOK
+# ==========================================================
+def gerar_legenda_ia(titulo, preco_atual, media_preco):
+    """Usa a API do Gemini para gerar uma legenda envolvente para o TikTok."""
+    api_key = os.getenv("GEMINI_API_KEY")
+    
+    # Fallback seguro caso a API falhe ou a chave não exista
+    legenda_padrao = (
+        f"🔥 *QUEDA DE PREÇO!* {titulo}\n\n"
+        f"💰 *Preço Atual:* R$ {formatar_real(preco_atual)}\n"
+        f"📊 *Média de 30 dias:* R$ {formatar_real(media_preco)}\n\n"
+        f"🔗 *Link de compra com desconto no nosso canal do Telegram (link na bio)!*\n\n"
+        f"#booktokbrasil #booktok #livros #promocaodelivros #livrosdefantasia #lendo #leitores"
+    )
+
+    if not api_key:
+        print("⚠️ GEMINI_API_KEY não configurada. Usando legenda padrão.")
+        return legenda_padrao
+
+    try:
+        genai.configure(api_key=api_key)
+        model = genai.GenerativeModel('gemini-1.5-flash')
+        
+        prompt = f"""
+        Aja como um criador de conteúdo focado no nicho de BookTok e Cultura Geek no TikTok. 
+        O livro '{titulo}' acabou de bater uma grande promoção na Amazon, caindo de uma média de R$ {formatar_real(media_preco)} para apenas R$ {formatar_real(preco_atual)}.
+        
+        Escreva uma legenda curta e extremamente envolvente para acompanhar o meu vídeo. 
+        Regras obrigatórias:
+        1. Comece com um gancho desafiador, uma curiosidade do lore ou uma pergunta intrigante sobre a história (ex: 'Você teria coragem de...', 'Qual sua desculpa para não ler...', 'Sabia que o autor...').
+        2. NÃO pareça um vendedor de varejo. Seja um fã recomendando algo incrível para outro fã.
+        3. Mencione a queda de preço de forma natural no texto.
+        4. No final, indique EXATAMENTE a seguinte frase: "🔗 Link de compra com desconto no nosso canal do Telegram (link na bio)!"
+        5. Adicione 6 hashtags misturando termos gerais do #BookTokBrasil com palavras específicas sobre o gênero ou universo desse livro.
+        
+        Responda APENAS com o texto da legenda formatada, sem introduções.
+        """
+        
+        print(f"🧠 Gerando legenda com IA para '{titulo[:20]}...'")
+        response = model.generate_content(prompt)
+        
+        if response.text:
+            return response.text.strip()
+        return legenda_padrao
+        
+    except Exception as e:
+        print(f"❌ Erro ao gerar legenda com Gemini: {e}")
+        return legenda_padrao
+
+# ==========================================================
 # DESIGNER DE VÍDEO (TIKTOK V3 PREMIUM)
 # ==========================================================
 def obter_fonte(tamanho):
-    """Baixa a fonte profissional Montserrat para o vídeo."""
     caminho_fonte = os.path.join(ASSETS_DIR, "Montserrat-Bold.ttf")
     if not os.path.exists(caminho_fonte):
         url = "https://github.com/JulietaUla/Montserrat/raw/master/fonts/ttf/Montserrat-Bold.ttf"
         try:
-            print("⬇️ Baixando fonte premium...")
             res = requests.get(url, timeout=15)
             res.raise_for_status()
             with open(caminho_fonte, 'wb') as f:
                 f.write(res.content)
-            print("✅ Fonte baixada com sucesso.")
-        except Exception as e:
-            print(f"⚠️ Erro ao baixar fonte: {e}. Usando padrão.")
+        except Exception:
             return ImageFont.load_default()
     try:
         return ImageFont.truetype(caminho_fonte, tamanho)
@@ -76,14 +124,13 @@ def criar_gradiente_vertical(largura, altura, cor_topo, cor_base):
     return Image.composite(base, topo, mask)
 
 def gerar_video_tiktok(item, media_preco, caminho_capa, caminho_grafico, caminho_saida_video):
-    """Renderiza o vídeo vertical 9:16 com animações responsivas."""
     print(f"🎬 Criando vídeo premium responsivo: {item['titulo'][:30]}...")
     largura, altura = 1080, 1920
     fps, duracao = 24, 6
     total_frames = fps * duracao
 
     fonte_h = obter_fonte(45)
-    fonte_t = obter_fonte(55) # Diminuí um pouco para caber melhor
+    fonte_t = obter_fonte(55) 
     fonte_p = obter_fonte(140)
     fonte_m = obter_fonte(40)
     fonte_c = obter_fonte(35)
@@ -101,8 +148,8 @@ def gerar_video_tiktok(item, media_preco, caminho_capa, caminho_grafico, caminho
     fundo_base = criar_gradiente_vertical(largura, altura, (20, 15, 40, 255), (10, 5, 20, 255))
     frames = []
 
-    # Se não houver capa, ele sobe todo o layout para não deixar buraco
-    offset_sem_capa = -300 if not capa else 0
+    pos_y_card = 840 if capa else 350 
+    altura_card = 380 if capa else 480 
 
     for f_idx in range(total_frames):
         t = f_idx / fps
@@ -112,7 +159,7 @@ def gerar_video_tiktok(item, media_preco, caminho_capa, caminho_grafico, caminho
         # Barra progresso
         draw.rectangle([0, 0, int((f_idx/total_frames)*largura), 15], fill=(255, 179, 0, 255))
         
-        # Header (Sem Emojis para evitar os quadrados)
+        # Header 
         draw.rounded_rectangle([140, 70, 940, 160], radius=25, fill=(74, 20, 140, 220), outline=(255, 179, 0, 255), width=3)
         draw.text((540, 115), "BARDO DAS PROMOÇÕES", font=fonte_h, fill=(255, 255, 255, 255), anchor="mm")
 
@@ -123,28 +170,25 @@ def gerar_video_tiktok(item, media_preco, caminho_capa, caminho_grafico, caminho
 
         # Card Preço
         if t >= 0.6:
-            pulse = 1.0 + 0.05 * np.sin(t * 10)
-            top_card = 840 + offset_sem_capa
-            draw.rounded_rectangle([70, top_card, 1010, top_card + 380], radius=30, fill=(25, 25, 35, 240), outline=(255, 179, 0, 255), width=4)
+            draw.rounded_rectangle([70, pos_y_card, 1010, pos_y_card + altura_card], radius=30, fill=(25, 25, 35, 240), outline=(255, 179, 0, 255), width=4)
             
-            # Badge
-            draw.text((540, top_card + 40), "DESCONTO DETECTADO!", font=fonte_h, fill=(255, 179, 0, 255), anchor="mm")
+            draw.text((540, pos_y_card + 50), "DESCONTO DETECTADO!", font=fonte_h, fill=(255, 179, 0, 255), anchor="mm")
 
-            # Quebra automática de texto para não vazar a tela
             linhas_titulo = textwrap.wrap(item["titulo"], width=30)
-            y_titulo = top_card + 110
-            for linha in linhas_titulo[:2]: # Pega no máximo 2 linhas para não amassar o preço
+            y_titulo = pos_y_card + 120
+            for linha in linhas_titulo[:2]: 
                 draw.text((540, y_titulo), linha, font=fonte_t, fill=(220, 220, 230, 255), anchor="mm")
                 y_titulo += 65
 
-            draw.text((540, top_card + 260), f"R$ {formatar_real(item['preco_atual'])}", font=fonte_p, fill=(16, 185, 129, 255), anchor="mm")
-            draw.text((540, top_card + 340), f"Média 30 dias: R$ {formatar_real(media_preco)}", font=fonte_m, fill=(160, 160, 180, 255), anchor="mm")
+            draw.text((540, pos_y_card + 280), f"R$ {formatar_real(item['preco_atual'])}", font=fonte_p, fill=(16, 185, 129, 255), anchor="mm")
+            draw.text((540, pos_y_card + 380), f"Média 30 dias: R$ {formatar_real(media_preco)}", font=fonte_m, fill=(160, 160, 180, 255), anchor="mm")
 
         # Gráfico
         if grafico and t >= 1.5:
-            img.paste(grafico, ((largura - grafico.width)//2, 1270 + (offset_sem_capa // 2)), grafico)
+            pos_y_grafico = 1270 if capa else 950 
+            img.paste(grafico, ((largura - grafico.width)//2, pos_y_grafico), grafico)
 
-        # CTA (Sem Emojis)
+        # CTA 
         if t >= 2.0:
             draw.rounded_rectangle([150, 1780, 930, 1860], radius=40, fill=(255, 179, 0, 255))
             draw.text((540, 1820), "LINK DE COMPRA NO CANAL! (LINK NA BIO)", font=fonte_c, fill=(15, 15, 20, 255), anchor="mm")
@@ -472,23 +516,14 @@ async def processar_ofertas():
 
             # --- 5. ENVIA DADOS PARA O TELEGRAM ---
             try:
-                # Envia mensagem normal com Foto/Banner
                 await enviar_mensagem_telegram(mensagem, caminho_foto=imagem_envio)
                 
-                # Envia o arquivo .MP4 do TikTok
                 if caminho_video and os.path.exists(caminho_video):
-                    legenda_tiktok = (
-                        f"🔥 *QUEDA DE PREÇO!* {item['titulo']}\n\n"
-                        f"💰 *Preço Atual:* R$ {formatar_real(preco_atual)}\n"
-                        f"📊 *Média de 30 dias:* R$ {formatar_real(media_preco)}\n"
-                        f"🚨 {detalhe_gatilho}\n\n"
-                        f"🔗 *Link de compra com desconto no nosso canal do Telegram (link na bio)!*\n\n"
-                        f"#booktokbrasil #booktok #livros #promocaodelivros #livrosdefantasia #lendo #leitores"
-                    )
+                    # CHAMA A INTELIGÊNCIA ARTIFICIAL AQUI
+                    legenda_tiktok = gerar_legenda_ia(item['titulo'], preco_atual, media_preco)
                     await enviar_video_telegram(legenda_tiktok, caminho_video)
                     os.remove(caminho_video)
                     
-                # Limpeza final dos assets intermediários
                 if os.path.exists(caminho_capa): os.remove(caminho_capa)
                 if imagem_envio == caminho_banner and os.path.exists(caminho_grafico):
                     os.remove(caminho_grafico)
