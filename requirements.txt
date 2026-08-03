@@ -5,4 +5,4 @@ matplotlib>=3.9.0
 Pillow>=10.4.0
 moviepy==1.0.3
 numpy
-google-generativeai>=0.5.2
+google-genai>=0.3.0

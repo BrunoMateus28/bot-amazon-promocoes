@@ -6,7 +6,8 @@ import requests
 import numpy as np
 import textwrap
 from datetime import datetime, timedelta
-import google.generativeai as genai
+from google import genai
+from google.genai import types
 
 from src.telegram import enviar_mensagem_telegram, enviar_video_telegram
 
@@ -49,7 +50,7 @@ def formatar_real(valor):
 # INTEGRAÇÃO GEMINI: GERAÇÃO DE LEGENDA PARA TIKTOK
 # ==========================================================
 def gerar_legenda_ia(titulo, preco_atual, media_preco):
-    """Usa a API do Gemini para gerar uma legenda envolvente para o TikTok."""
+    """Usa a nova SDK do Gemini para gerar uma legenda envolvente para o TikTok."""
     api_key = os.getenv("GEMINI_API_KEY")
     
     # Fallback seguro caso a API falhe ou a chave não exista
@@ -66,8 +67,8 @@ def gerar_legenda_ia(titulo, preco_atual, media_preco):
         return legenda_padrao
 
     try:
-        genai.configure(api_key=api_key)
-        model = genai.GenerativeModel('gemini-1.5-flash')
+        # Inicializa o cliente com a nova SDK
+        client = genai.Client(api_key=api_key)
         
         prompt = f"""
         Aja como um criador de conteúdo focado no nicho de BookTok e Cultura Geek no TikTok. 
@@ -85,7 +86,12 @@ def gerar_legenda_ia(titulo, preco_atual, media_preco):
         """
         
         print(f"🧠 Gerando legenda com IA para '{titulo[:20]}...'")
-        response = model.generate_content(prompt)
+        
+        # Chamada usando o modelo atualizado
+        response = client.models.generate_content(
+            model='gemini-2.5-flash',
+            contents=prompt,
+        )
         
         if response.text:
             return response.text.strip()
@@ -94,7 +100,6 @@ def gerar_legenda_ia(titulo, preco_atual, media_preco):
     except Exception as e:
         print(f"❌ Erro ao gerar legenda com Gemini: {e}")
         return legenda_padrao
-
 # ==========================================================
 # DESIGNER DE VÍDEO (TIKTOK V3 PREMIUM)
 # ==========================================================
