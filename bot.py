@@ -80,7 +80,11 @@ def gerar_legenda_ia(titulo, preco_atual, media_preco):
         2. NÃO pareça um vendedor de varejo. Seja um fã recomendando algo incrível para outro fã.
         3. Mencione a queda de preço de forma natural no texto.
         4. No final, indique EXATAMENTE a seguinte frase: "🔗 Link de compra com desconto no nosso canal do Telegram (link na bio)!"
-        5. Adicione 6 hashtags misturando termos gerais do #BookTokBrasil com palavras específicas sobre o gênero ou universo desse livro.
+        5. Adicione 5 hashtags misturando termos gerais do #BookTokBrasil com palavras específicas sobre o gênero ou universo desse livro.
+        6. Use emojis e linguagem informal, mas sem exageros. Evite clichês de marketing.
+        7. Pule as linhas para deixar a leitura mais facil.
+        8. Não use aspas, não use travessão, não use parênteses, não use colchetes, não use emojis de bandeira.
+        9. Nunca de spoilers do livro, mas intrigue o leitor com curiosidades do lore ou do autor.
         
         Responda APENAS com o texto da legenda formatada, sem introduções.
         """
@@ -89,7 +93,7 @@ def gerar_legenda_ia(titulo, preco_atual, media_preco):
         
         # Chamada usando o modelo atualizado
         response = client.models.generate_content(
-            model='gemini-2.5-flash',
+            model='gemini-3.5-flash',
             contents=prompt,
         )
         
