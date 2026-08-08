@@ -85,7 +85,7 @@ def gerar_legenda_ia(titulo, preco_atual, media_preco):
         7. Pule as linhas para deixar a leitura mais facil.
         8. Não use aspas, não use travessão, não use parênteses, não use colchetes, não use emojis de bandeira.
         9. Nunca de spoilers do livro, mas intrigue o leitor com curiosidades do lore ou do autor.
-        10. Use no maximo 150 caracteres.
+        10. Use no maximo 150 caracteres na descrição, sem contar com titulo, menção ao link na descrição e hashtags.
         11. Analise se existe algum cupom ou dia especial da amazon que faça sentido mencionar, como Black Friday, Cyber Monday, Prime Day, etc. Se houver, mencione de forma sutil e divertida.
         
         Responda APENAS com o texto da legenda formatada, sem introduções.
