@@ -404,10 +404,10 @@ def gerar_site_estatico(ofertas, historico):
             src_imagem = item.get("imagem_url") if item.get("imagem_url") else "bau.png"
 
         card_html = f"""
-            <article class="glass-card rounded-xl overflow-hidden relative flex flex-col h-full group">
+            <article class="glass-card rounded-xl overflow-hidden relative flex flex-col h-full group bg-bardo-card">
                 {status_badge}
-                <div class="w-full h-48 bg-black/40 flex items-center justify-center overflow-hidden border-b border-gray-800">
-                    <img src="{src_imagem}" alt="{titulo}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                <div class="w-full h-72 py-4 flex items-center justify-center overflow-hidden border-b border-gray-800 bg-black/20">
+                    <img src="{src_imagem}" alt="{titulo}" class="max-w-full max-h-full object-contain drop-shadow-2xl group-hover:scale-105 transition-transform duration-300" />
                 </div>
                 <div class="p-6 flex-grow flex flex-col justify-between">
                     <div>
