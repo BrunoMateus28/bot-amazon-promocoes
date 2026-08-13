@@ -325,65 +325,84 @@ def gerar_sitemap():
     with open("sitemap.xml", "w", encoding="utf-8") as f:
         f.write(xml_content)
 
+# Adicione esta função auxiliar logo ACIMA da sua gerar_site_estatico
+def _gerar_card_produto(item, preco_atual, media, menor):
+    item_id = item["id"]
+    titulo = item["titulo"]
+    
+    # Lógica de Badges Profissionais
+    badge_html = ""
+    if preco_atual < menor:
+        badge_html = """
+        <div class="absolute top-3 left-3 z-10">
+            <span class="px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-rose-300 bg-rose-500/10 border border-rose-500/20 rounded-full backdrop-blur-md flex items-center gap-1 shadow-lg">
+                <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+                Recorde Histórico
+            </span>
+        </div>"""
+    elif preco_atual < media:
+        badge_html = """
+        <div class="absolute top-3 left-3 z-10">
+            <span class="px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 rounded-full backdrop-blur-md shadow-lg">
+                Abaixo da Média
+            </span>
+        </div>"""
+
+    # Tratamento da Imagem
+    path_banner_local = os.path.join(ASSETS_DIR, f"banner_{item_id}.png")
+    if os.path.exists(path_banner_local):
+        src_imagem = f"assets/banner_{item_id}.png"
+    else:
+        src_imagem = item.get("imagem_url") if item.get("imagem_url") else "bau.png"
+
+    # Retorna o HTML do Componente (E-commerce Style)
+    return f"""
+    <article class="relative flex flex-col bg-surface rounded-2xl border border-white/5 overflow-hidden hover:border-bardo-gold/40 hover:shadow-2xl hover:shadow-bardo-gold/5 transition-all duration-300 group">
+        {badge_html}
+        
+        <!-- Vitrine do Livro (Frame perfeito) -->
+        <div class="relative h-64 w-full p-8 flex items-center justify-center bg-gradient-to-b from-white/[0.03] to-transparent border-b border-white/5">
+            <img src="{src_imagem}" alt="Capa de {titulo}" loading="lazy" 
+                 class="h-full w-auto object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] group-hover:-translate-y-1.5 group-hover:scale-[1.03] transition-all duration-500 ease-out" />
+        </div>
+
+        <!-- Conteúdo do E-commerce -->
+        <div class="p-5 flex flex-col flex-grow">
+            <h3 class="text-base font-semibold text-gray-100 leading-snug line-clamp-2 mb-4 group-hover:text-bardo-gold transition-colors duration-300" title="{titulo}">
+                {titulo}
+            </h3>
+
+            <!-- Ancoragem Psicológica de Preços -->
+            <div class="flex flex-col mt-auto mb-5">
+                <div class="flex items-baseline gap-2">
+                    <span class="text-2xl font-bold text-white tracking-tight">R$ {formatar_real(preco_atual)}</span>
+                    <span class="text-sm text-gray-500 line-through mb-0.5" title="Preço Médio 30 dias">R$ {formatar_real(media)}</span>
+                </div>
+                <div class="mt-1 flex items-center gap-1.5">
+                    <span class="text-[11px] font-medium text-gray-400 bg-white/5 px-2 py-0.5 rounded">
+                        Mínimo visto: R$ {formatar_real(menor)}
+                    </span>
+                </div>
+            </div>
+
+            <!-- Botão CTA Principal -->
+            <a href="{item['url']}" target="_blank" rel="nofollow noopener" 
+               class="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-white/5 hover:bg-bardo-gold hover:text-bardo-dark text-sm font-bold text-gray-200 transition-all duration-300 active:scale-[0.98]">
+                Comprar na Amazon
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+            </a>
+        </div>
+    </article>"""
+
+# Substitua a sua gerar_site_estatico atual por esta
 def gerar_site_estatico(ofertas, historico):
-    print("-> Gerando portal estático para SEO...")
+    print("-> Gerando portal estático e-commerce para SEO...")
+    
     produtos_schema = []
-    for item in ofertas:
-        produtos_schema.append({
-            "@type": "Product",
-            "name": item["titulo"],
-            "url": item["url"],
-            "offers": {
-                "@type": "Offer",
-                "priceCurrency": "BRL",
-                "price": item["preco_atual"],
-                "availability": "[https://schema.org/InStock](https://schema.org/InStock)"
-            }
-        })
-    json_ld = json.dumps({
-        "@context": "[https://schema.org](https://schema.org)",
-        "@type": "ItemList",
-        "name": "Promoções Ativas de Fantasia",
-        "itemListElement": [{"@type": "ListItem", "position": i+1, "item": p} for i, p in enumerate(produtos_schema)]
-    }, ensure_ascii=False)
+    cards_html_list = []
 
-    html_template = f"""<!DOCTYPE html>
-<html lang="pt-BR" class="scroll-smooth">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bardo das Promoções | Curadoria de Livros</title>
-    <meta name="description" content="Rastreamento matemático de preços de livros de fantasia e sci-fi na Amazon.">
-    <script type="application/ld+json">{json_ld}</script>
-    <link href="[https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Playfair+Display:ital,wght@0,700;1,700&display=swap](https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Playfair+Display:ital,wght@0,700;1,700&display=swap)" rel="stylesheet">
-    <script src="[https://cdn.tailwindcss.com](https://cdn.tailwindcss.com)"></script>
-    <script>
-        tailwind.config = {{
-            theme: {{ extend: {{ colors: {{ bardo: {{ dark: '#0f0f13', card: '#1a1a20', accent: '#4A148C', gold: '#FFB300', success: '#10B981' }} }} }} }}
-        }}
-    </script>
-    <style>
-        body {{ background-color: #0f0f13; color: #e2e8f0; font-family: 'Inter', sans-serif; }}
-        h1, h2, h3 {{ font-family: 'Playfair Display', serif; }}
-        .glass-card {{ background: rgba(26, 26, 32, 0.7); backdrop-filter: blur(10px); border: 1px solid rgba(74, 20, 140, 0.3); transition: all 0.3s; }}
-        .glass-card:hover {{ transform: translateY(-8px); border-color: rgba(255, 179, 0, 0.6); box-shadow: 0 10px 30px -10px rgba(74, 20, 140, 0.5); }}
-        .text-gradient {{ background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-image: linear-gradient(90deg, #FFB300, #F59E0B); }}
-    </style>
-</head>
-<body class="antialiased min-h-screen flex flex-col relative overflow-x-hidden">
-    <header class="container mx-auto px-6 pt-16 pb-12 text-center relative z-10">
-        <h1 class="text-5xl md:text-6xl font-bold text-white mb-6">Bardo das <span class="text-gradient">Promoções</span></h1>
-        <p class="max-w-2xl mx-auto text-lg text-gray-400 mb-10">Rastreamento matemático de preços de livros de Fantasia e Sci-Fi.</p>
-        <a href="[https://t.me/bardodaspromos](https://t.me/bardodaspromos)" target="_blank" class="inline-flex items-center px-8 py-4 font-bold text-bardo-dark bg-bardo-gold hover:bg-yellow-400 rounded-lg shadow-lg gap-3">
-            Entrar no Canal do Telegram
-        </a>
-    </header>
-    <main class="container mx-auto px-6 py-8 flex-grow z-10">
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">"""
-
-    for item in ofertas:
+    for i, item in enumerate(ofertas):
         item_id = item["id"]
-        titulo = item["titulo"]
         preco_atual = item["preco_atual"]
         
         dados_item = historico.get(item_id, {})
@@ -391,55 +410,101 @@ def gerar_site_estatico(ofertas, historico):
         media = sum(precos_30) / len(precos_30) if precos_30 else preco_atual
         menor = dados_item.get("menor_preco_historico", preco_atual)
         
-        status_badge = ""
-        if preco_atual < menor:
-            status_badge = '<span class="px-2 py-1 text-xs font-bold text-red-100 bg-red-900/60 border border-red-700 rounded absolute top-3 right-3 rotate-3 shadow-sm z-20">Recorde!</span>'
-        elif preco_atual < media:
-            status_badge = '<span class="px-2 py-1 text-xs font-bold text-green-100 bg-green-900/60 border border-green-700 rounded absolute top-3 right-3 shadow-sm z-20">Abaixo da Média</span>'
+        # Gera o JSON-LD
+        produtos_schema.append({
+            "@type": "ListItem",
+            "position": i + 1,
+            "item": {
+                "@type": "Product",
+                "name": item["titulo"],
+                "url": item["url"],
+                "offers": {
+                    "@type": "Offer",
+                    "priceCurrency": "BRL",
+                    "price": preco_atual,
+                    "availability": "https://schema.org/InStock"
+                }
+            }
+        })
 
-        path_banner_local = os.path.join(ASSETS_DIR, f"banner_{item_id}.png")
-        if os.path.exists(path_banner_local):
-            src_imagem = f"assets/banner_{item_id}.png"
-        else:
-            src_imagem = item.get("imagem_url") if item.get("imagem_url") else "bau.png"
+        # Gera o HTML do card chamando a nossa nova função modular
+        cards_html_list.append(_gerar_card_produto(item, preco_atual, media, menor))
 
-        card_html = f"""
-            <article class="glass-card rounded-xl overflow-hidden relative flex flex-col h-full group bg-bardo-card">
-                {status_badge}
-                <div class="w-full h-72 py-4 flex items-center justify-center overflow-hidden border-b border-gray-800 bg-black/20">
-                    <img src="{src_imagem}" alt="{titulo}" class="max-w-full max-h-full object-contain drop-shadow-2xl group-hover:scale-105 transition-transform duration-300" />
-                </div>
-                <div class="p-6 flex-grow flex flex-col justify-between">
-                    <div>
-                        <h3 class="text-lg font-bold text-gray-100 leading-snug mb-5 line-clamp-2">{titulo}</h3>
-                        <div class="space-y-3 mb-6">
-                            <div class="flex justify-between border-b border-gray-700/50 pb-3">
-                                <span class="text-sm text-gray-400">Preço Agora</span>
-                                <span class="text-xl font-bold text-bardo-success">R$ {formatar_real(preco_atual)}</span>
-                            </div>
-                            <div class="flex justify-between text-sm">
-                                <span class="text-gray-500">Média (30 dias)</span><span class="text-gray-300">R$ {formatar_real(media)}</span>
-                            </div>
-                            <div class="flex justify-between text-sm">
-                                <span class="text-gray-500">Menor Histórico</span><span class="text-gray-300">R$ {formatar_real(menor)}</span>
-                            </div>
-                        </div>
-                    </div>
-                    <a href="{item['url']}" target="_blank" rel="nofollow" class="w-full block text-center py-3 bg-gray-800 hover:bg-bardo-accent text-white font-medium rounded-lg transition-colors border border-gray-700">Ver na Loja &rarr;</a>
-                </div>
-            </article>"""
-        html_template += card_html
+    json_ld = json.dumps({
+        "@context": "https://schema.org",
+        "@type": "ItemList",
+        "name": "Promoções Ativas de Fantasia",
+        "itemListElement": produtos_schema
+    }, ensure_ascii=False)
 
-    html_template += """
+    html_template = f"""<!DOCTYPE html>
+<html lang="pt-BR" class="scroll-smooth bg-background">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bardo das Promoções | Curadoria de Livros</title>
+    <meta name="description" content="Rastreamento matemático de preços de livros de fantasia e sci-fi na Amazon.">
+    <script type="application/ld+json">{json_ld}</script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {{
+            theme: {{ 
+                extend: {{ 
+                    fontFamily: {{
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                    }},
+                    colors: {{ 
+                        background: '#0a0a0c',
+                        surface: '#121217',
+                        bardo: {{ dark: '#0a0a0c', accent: '#4A148C', gold: '#FFB300', success: '#10B981' }} 
+                    }} 
+                }} 
+            }}
+        }}
+    </script>
+    <style>
+        .text-gradient {{ 
+            background-clip: text; 
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent; 
+            background-image: linear-gradient(90deg, #FFB300, #F59E0B); 
+        }}
+    </style>
+</head>
+<body class="antialiased min-h-screen flex flex-col relative overflow-x-hidden text-gray-300">
+    <header class="container mx-auto px-6 pt-16 pb-14 text-center relative z-10">
+        <h1 class="text-4xl md:text-5xl lg:text-6xl font-serif font-bold text-white mb-4 tracking-tight">
+            Bardo das <span class="text-gradient">Promoções</span>
+        </h1>
+        <p class="max-w-2xl mx-auto text-base md:text-lg text-gray-400 mb-10 font-sans">
+            Curadoria automática e rastreamento de preços de livros de Fantasia e Sci-Fi.
+        </p>
+        <a href="https://t.me/bardodaspromos" target="_blank" rel="noopener noreferrer" 
+           class="inline-flex items-center px-8 py-3.5 font-bold text-background bg-bardo-gold hover:bg-yellow-400 hover:scale-105 rounded-xl shadow-[0_0_20px_rgba(255,179,0,0.3)] transition-all duration-300 gap-3">
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.446 1.394c-.14.18-.357.295-.6.295-.002 0-.003 0-.005 0l.213-3.054 5.56-5.022c.24-.213-.054-.334-.373-.121l-6.869 4.326-2.96-.924c-.64-.203-.658-.64.135-.954l11.566-4.458c.538-.196 1.006.128.832.94z"/></svg>
+            Acessar Canal Gratuito
+        </a>
+    </header>
+
+    <main class="container mx-auto px-4 md:px-6 py-8 flex-grow z-10 max-w-7xl">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8">
+            {''.join(cards_html_list)}
         </div>
     </main>
+    
+    <footer class="mt-auto border-t border-white/5 py-8 text-center text-sm text-gray-500">
+        <p>Atualizado automaticamente. Os preços podem variar na Amazon.</p>
+    </footer>
 </body>
 </html>"""
     
     with open("index.html", "w", encoding="utf-8") as f:
         f.write(html_template)
     gerar_sitemap()
-
 # ==========================================================
 # LÓGICA PRINCIPAL DO BOT
 # ==========================================================
