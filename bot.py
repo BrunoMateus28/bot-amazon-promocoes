@@ -407,11 +407,11 @@ def gerar_site_estatico(ofertas, historico):
             <article class="glass-card rounded-xl overflow-hidden relative flex flex-col h-full group">
                 {status_badge}
                 <div class="w-full h-48 bg-black/40 flex items-center justify-center overflow-hidden border-b border-gray-800">
-                    <img src="{src_imagem}" alt="{titulo}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                    <img src="{src_imagem}" alt="{titulo}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
                 </div>
                 <div class="p-6 flex-grow flex flex-col justify-between">
                     <div>
-                        <h3 class="text-lg font-bold text-gray-100 leading-snug mb-5">{titulo[:47]}...</h3>
+                        <h3 class="text-lg font-bold text-gray-100 leading-snug mb-5 line-clamp-2">{titulo}</h3>
                         <div class="space-y-3 mb-6">
                             <div class="flex justify-between border-b border-gray-700/50 pb-3">
                                 <span class="text-sm text-gray-400">Preço Agora</span>
