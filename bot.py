@@ -101,7 +101,7 @@ def raspar_preco_amazon(url):
 
     try:
         # Chama o Actor oficial do Apify para Amazon
-        run = client.actor("apify/amazon-scraper").call(run_input=run_input)
+        run = client.actor("junglee/Amazon-crawler").call(run_input=run_input)
         
         # Pega o resultado direto do dataset
         dataset = client.dataset(run["defaultDatasetId"]).iterate_items()
