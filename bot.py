@@ -83,7 +83,7 @@ def obter_asin_do_link(url_curta):
     return None
 
 def raspar_preco_amazon(url):
-    """Busca o preço usando o Actor oficial da Apify (junglee/Amazon-crawler)."""
+    """Busca o preço usando o Actor oficial da Apify (junglee/amazon-crawler)."""
     api_token = os.getenv("APIFY_TOKEN")
     if not api_token:
         print("❌ APIFY_TOKEN não configurada.")
@@ -91,22 +91,22 @@ def raspar_preco_amazon(url):
 
     client = ApifyClient(api_token)
     
-    # Payload configurado corretamente para o junglee/Amazon-crawler
+    # Payload ajustado com a chave exata exigida pelo junglee/amazon-crawler
     run_input = {
-        "startUrls": [{"url": url}],
+        "categoryOrProductUrls": [{"url": url}],
         "maxConcurrency": 1,
         "proxyConfiguration": { "useApifyProxy": True }
     }
 
     try:
-        # Aciona o Actor oficial da Apify
-        run = client.actor("junglee/Amazon-crawler").call(run_input=run_input)
+        # Aciona o Actor da Apify
+        run = client.actor("junglee/amazon-crawler").call(run_input=run_input)
         
         # Coleta os itens do dataset gerado
         dataset = client.dataset(run["defaultDatasetId"]).iterate_items()
         
         for item in dataset:
-            # 1. Tenta pegar direto do formato estruturado do Apify (ex: {"value": 145.5})
+            # 1. Pega do formato estruturado do Apify (ex: {"value": 145.5})
             preco_obj = item.get("price")
             if isinstance(preco_obj, dict) and "value" in preco_obj:
                 return float(preco_obj["value"])
@@ -123,7 +123,6 @@ def raspar_preco_amazon(url):
         print(f"❌ Erro ao buscar preço via Apify: {e}")
         
     return None
-
 # ==========================================================
 # INTEGRAÇÃO GEMINI: GERAÇÃO DE LEGENDA PARA TIKTOK
 # ==========================================================
