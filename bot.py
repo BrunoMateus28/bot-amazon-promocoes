@@ -83,35 +83,36 @@ def obter_asin_do_link(url_curta):
     return None
 
 def raspar_preco_amazon(url):
-    """Busca o preço usando o Actor oficial da Apify (junglee/amazon-crawler)."""
+    """Expande o link curto para URL oficial da Amazon e busca o preço via Apify."""
     api_token = os.getenv("APIFY_TOKEN")
     if not api_token:
         print("❌ APIFY_TOKEN não configurada.")
         return None
 
+    # 1. Transforma o link curto (link.amazon) em link direto (/dp/ASIN)
+    asin = obter_asin_do_link(url)
+    if asin:
+        url_direta = f"https://www.amazon.com.br/dp/{asin}"
+    else:
+        url_direta = url
+
     client = ApifyClient(api_token)
     
-    # Payload ajustado com a chave exata exigida pelo junglee/amazon-crawler
     run_input = {
-        "categoryOrProductUrls": [{"url": url}],
+        "categoryOrProductUrls": [{"url": url_direta}],
         "maxConcurrency": 1,
         "proxyConfiguration": { "useApifyProxy": True }
     }
 
     try:
-        # Aciona o Actor da Apify
         run = client.actor("junglee/amazon-crawler").call(run_input=run_input)
-        
-        # Coleta os itens do dataset gerado
         dataset = client.dataset(run["defaultDatasetId"]).iterate_items()
         
         for item in dataset:
-            # 1. Pega do formato estruturado do Apify (ex: {"value": 145.5})
             preco_obj = item.get("price")
             if isinstance(preco_obj, dict) and "value" in preco_obj:
                 return float(preco_obj["value"])
             
-            # 2. Fallback caso venha em formato de texto (ex: "R$ 78,99")
             if isinstance(preco_obj, (str, int, float)):
                 preco_str = str(preco_obj).replace("R$", "").replace("\xa0", "").replace(" ", "")
                 preco_str = preco_str.replace(".", "").replace(",", ".").strip()
@@ -122,8 +123,7 @@ def raspar_preco_amazon(url):
     except Exception as e:
         print(f"❌ Erro ao buscar preço via Apify: {e}")
         
-    return None
-# ==========================================================
+    return None# ==========================================================
 # INTEGRAÇÃO GEMINI: GERAÇÃO DE LEGENDA PARA TIKTOK
 # ==========================================================
 def gerar_legenda_ia(titulo, preco_atual, media_preco):
