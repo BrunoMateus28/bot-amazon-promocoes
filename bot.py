@@ -83,7 +83,7 @@ def obter_asin_do_link(url_curta):
     return None
 
 def raspar_preco_amazon(url):
-    """Busca o preço usando a infraestrutura do Apify (Proxy Residencial)."""
+    """Busca o preço usando o Actor oficial da Apify (junglee/Amazon-crawler)."""
     api_token = os.getenv("APIFY_TOKEN")
     if not api_token:
         print("❌ APIFY_TOKEN não configurada.")
@@ -91,32 +91,39 @@ def raspar_preco_amazon(url):
 
     client = ApifyClient(api_token)
     
-    # Prepara a entrada para o Actor da Amazon (apify/amazon-scraper)
+    # Payload configurado corretamente para o junglee/Amazon-crawler
     run_input = {
-        "queries": [url],
-        "maxItemsPerQuery": 1,
-        "categoryDetails": False,
-        "reviewsDetails": False,
+        "startUrls": [{"url": url}],
+        "maxConcurrency": 1,
+        "proxyConfiguration": { "useApifyProxy": True }
     }
 
     try:
-        # Chama o Actor oficial do Apify para Amazon
+        # Aciona o Actor oficial da Apify
         run = client.actor("junglee/Amazon-crawler").call(run_input=run_input)
         
-        # Pega o resultado direto do dataset
+        # Coleta os itens do dataset gerado
         dataset = client.dataset(run["defaultDatasetId"]).iterate_items()
         
         for item in dataset:
-            # O Apify retorna o preço formatado e limpo
-            preco_str = item.get("price") # Ex: "R$ 78,99"
-            if preco_str:
-                preco_limpo = preco_str.replace("R$", "").replace(".", "").replace(",", ".").strip()
-                return float(preco_limpo)
+            # 1. Tenta pegar direto do formato estruturado do Apify (ex: {"value": 145.5})
+            preco_obj = item.get("price")
+            if isinstance(preco_obj, dict) and "value" in preco_obj:
+                return float(preco_obj["value"])
+            
+            # 2. Fallback caso venha em formato de texto (ex: "R$ 78,99")
+            if isinstance(preco_obj, (str, int, float)):
+                preco_str = str(preco_obj).replace("R$", "").replace("\xa0", "").replace(" ", "")
+                preco_str = preco_str.replace(".", "").replace(",", ".").strip()
+                match = re.search(r"(\d+\.\d{2})", preco_str)
+                if match:
+                    return float(match.group(1))
                 
     except Exception as e:
         print(f"❌ Erro ao buscar preço via Apify: {e}")
         
     return None
+
 # ==========================================================
 # INTEGRAÇÃO GEMINI: GERAÇÃO DE LEGENDA PARA TIKTOK
 # ==========================================================
