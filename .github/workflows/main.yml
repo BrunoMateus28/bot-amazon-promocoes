@@ -2,7 +2,7 @@ name: Bot de Promocoes
 
 on:
   schedule:
-    - cron: '17 */2 * * *'
+    - cron: '30 15 * * *'
   workflow_dispatch:
 
 # Permite que o workflow commite as alterações de volta no repositório
