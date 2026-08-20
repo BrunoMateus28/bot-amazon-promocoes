@@ -9,6 +9,9 @@ import textwrap
 from datetime import datetime, timedelta
 from google import genai
 from google.genai import types
+import time
+import random
+from bs4 import BeautifulSoup
 
 from src.telegram import enviar_mensagem_telegram, enviar_video_telegram
 
@@ -52,6 +55,57 @@ def remover_emojis(texto):
     if not texto:
         return ""
     return re.sub(r'[^\x00-\x7F\x80-\xFF\u0100-\u017F\u0180-\u024F\u1E00-\u1EFF]', '', texto).strip()
+
+def raspar_preco_amazon(url):
+    """Acessa a página da Amazon simulando um navegador real e extrai o preço."""
+    # Cabeçalhos robustos para enganar as proteções antibot da Amazon
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
+        "Accept-Language": "pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7",
+        "Accept-Encoding": "gzip, deflate, br",
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
+        "Connection": "keep-alive",
+        "Upgrade-Insecure-Requests": "1"
+    }
+    
+    # Sistema de tentativa e erro (Tenta 3 vezes antes de desistir)
+    for tentativa in range(3):
+        try:
+            res = requests.get(url, headers=headers, timeout=15)
+            
+            # Verifica se a Amazon enviou um desafio de CAPTCHA
+            if "api-services-support@amazon.com" in res.text or "Digite os caracteres" in res.text:
+                print(f"  ⚠️ [Tentativa {tentativa+1}/3] CAPTCHA detectado. Tentando novamente...")
+                time.sleep(random.uniform(3.0, 6.0))
+                continue
+
+            if res.status_code == 200:
+                soup = BeautifulSoup(res.content, "html.parser")
+                
+                # Procura o preço em vários elementos possíveis (Livros físicos, Kindle, Ofertas)
+                preco_elemento = soup.select_one(".a-price .a-offscreen, #price, .a-color-price, #corePrice_desktop .a-price-whole")
+                
+                if preco_elemento:
+                    texto_preco = preco_elemento.get_text().strip()
+                    # Limpa R$, espaços e ajusta vírgulas
+                    texto_limpo = texto_preco.replace("R$", "").replace("\xa0", "").replace(" ", "")
+                    texto_limpo = texto_limpo.replace(".", "").replace(",", ".").strip()
+                    
+                    match = re.search(r"(\d+\.\d{2})", texto_limpo)
+                    if match:
+                        return float(match.group(1))
+                else:
+                    print(f"  ⚠️ [Tentativa {tentativa+1}/3] Página carregada, mas preço não encontrado (Pode estar sem estoque).")
+            else:
+                print(f"  ⚠️ [Tentativa {tentativa+1}/3] Erro HTTP {res.status_code}")
+                
+        except Exception as e:
+            print(f"  ❌ Erro de conexão: {e}")
+            
+        time.sleep(random.uniform(2.0, 4.0)) # Pausa humana antes de tentar de novo
+        
+    return None
+
 
 # ==========================================================
 # INTEGRAÇÃO GEMINI: GERAÇÃO DE LEGENDA PARA TIKTOK
@@ -283,8 +337,8 @@ def buscar_ofertas_csv():
 
             id_item = linha_limpa.get("id", "").strip()
             titulo = linha_limpa.get("titulo", "").strip()
-            preco_raw = linha_limpa.get("preco_atual", "0")
-            preco_str = preco_raw.replace("R$", "").replace(" ", "").replace(",", ".").strip()
+            preco_raw = linha_limpa.get("preco_atual", "")
+            preco_str = preco_raw.replace("R$", "").replace(" ", "").replace(",", ".").strip() if preco_raw else "0"
             url = linha_limpa.get("url", "").strip()
             imagem_url = linha_limpa.get("imagem_url", "").strip()
 
@@ -520,8 +574,28 @@ async def processar_ofertas():
 
     for item in ofertas:
         item_id = item["id"]
-        preco_atual = item["preco_atual"]
         
+        # 🕵️ NOVO: Tenta raspar o preço da Amazon direto da fonte!
+        print(f"\n🔍 Raspando a Amazon: {item['titulo'][:30]}...")
+        preco_raspado = raspar_preco_amazon(item["url"])
+        
+        if preco_raspado:
+            preco_atual = preco_raspado
+            item["preco_atual"] = preco_atual # Salva para o card HTML usar o preço correto
+            print(f"   ✅ Preço atualizado via Web Scraping: R$ {preco_atual:.2f}")
+        else:
+            # Fallback: Se a Amazon bloquear o bot, usa o preço da planilha (se existir)
+            preco_atual = item.get("preco_atual", 0)
+            if preco_atual <= 0:
+                print(f"   ⏭️ Pulando: Bloqueado pela Amazon e sem preço de backup na planilha.")
+                continue
+            else:
+                print(f"   ⚠️ Usando preço de backup da planilha: R$ {preco_atual:.2f}")
+
+        # Pausa aleatória para simular comportamento humano e evitar banimento de IP do GitHub Actions
+        time.sleep(random.uniform(2.5, 5.5))
+        
+        # O resto do seu código continua idêntico daqui para baixo:
         if item_id not in historico:
             historico[item_id] = {
                 "menor_preco_historico": preco_atual,
