@@ -10,6 +10,9 @@ import random
 from datetime import datetime, timedelta
 from bs4 import BeautifulSoup
 
+from dotenv import load_dotenv
+load_dotenv()
+
 # Motor de Falsificação de Assinatura (Burla o TLS Fingerprint da Amazon)
 from curl_cffi import requests 
 
