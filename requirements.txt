@@ -6,4 +6,5 @@ Pillow>=10.4.0
 moviepy==1.0.3
 numpy
 google-genai>=0.3.0
+curl_cffi>=0.7.1
 beautifulsoup4>=4.12.0

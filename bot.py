@@ -3,15 +3,18 @@ import re
 import csv
 import json
 import asyncio
-import requests
 import numpy as np
 import textwrap
-from datetime import datetime, timedelta
-from google import genai
-from google.genai import types
 import time
 import random
+from datetime import datetime, timedelta
 from bs4 import BeautifulSoup
+
+# Motor de Falsificação de Assinatura (Burla o TLS Fingerprint da Amazon)
+from curl_cffi import requests 
+
+from google import genai
+from google.genai import types
 
 from src.telegram import enviar_mensagem_telegram, enviar_video_telegram
 
@@ -56,56 +59,69 @@ def remover_emojis(texto):
         return ""
     return re.sub(r'[^\x00-\x7F\x80-\xFF\u0100-\u017F\u0180-\u024F\u1E00-\u1EFF]', '', texto).strip()
 
-def raspar_preco_amazon(url):
-    """Acessa a página da Amazon simulando um navegador real e extrai o preço."""
-    # Cabeçalhos robustos para enganar as proteções antibot da Amazon
-    headers = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
-        "Accept-Language": "pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7",
-        "Accept-Encoding": "gzip, deflate, br",
-        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
-        "Connection": "keep-alive",
-        "Upgrade-Insecure-Requests": "1"
-    }
-    
-    # Sistema de tentativa e erro (Tenta 3 vezes antes de desistir)
-    for tentativa in range(3):
-        try:
-            res = requests.get(url, headers=headers, timeout=15)
+# ==========================================================
+# CÉREBRO DE RASPAGEM NATIVA (ZERO CUSTO E ANTI-BLOQUEIO)
+# ==========================================================
+def obter_asin_do_link(url_curta):
+    """Segue o redirecionamento disfarçado de Chrome para capturar o ASIN oficial."""
+    try:
+        res = requests.get(url_curta, impersonate="chrome", timeout=15, allow_redirects=True)
+        url_final = res.url
+        
+        match = re.search(r'/(?:dp|product|ASIN)/([A-Z0-9]{10})', url_final, re.IGNORECASE)
+        if not match:
+            match = re.search(r'/([A-Z0-9]{10})(?:[/?]|$)', url_final, re.IGNORECASE)
             
-            # Verifica se a Amazon enviou um desafio de CAPTCHA
-            if "api-services-support@amazon.com" in res.text or "Digite os caracteres" in res.text:
-                print(f"  ⚠️ [Tentativa {tentativa+1}/3] CAPTCHA detectado. Tentando novamente...")
-                time.sleep(random.uniform(3.0, 6.0))
-                continue
-
-            if res.status_code == 200:
-                soup = BeautifulSoup(res.content, "html.parser")
-                
-                # Procura o preço em vários elementos possíveis (Livros físicos, Kindle, Ofertas)
-                preco_elemento = soup.select_one(".a-price .a-offscreen, #price, .a-color-price, #corePrice_desktop .a-price-whole")
-                
-                if preco_elemento:
-                    texto_preco = preco_elemento.get_text().strip()
-                    # Limpa R$, espaços e ajusta vírgulas
-                    texto_limpo = texto_preco.replace("R$", "").replace("\xa0", "").replace(" ", "")
-                    texto_limpo = texto_limpo.replace(".", "").replace(",", ".").strip()
-                    
-                    match = re.search(r"(\d+\.\d{2})", texto_limpo)
-                    if match:
-                        return float(match.group(1))
-                else:
-                    print(f"  ⚠️ [Tentativa {tentativa+1}/3] Página carregada, mas preço não encontrado (Pode estar sem estoque).")
-            else:
-                print(f"  ⚠️ [Tentativa {tentativa+1}/3] Erro HTTP {res.status_code}")
-                
-        except Exception as e:
-            print(f"  ❌ Erro de conexão: {e}")
+        if match:
+            return match.group(1).upper()
             
-        time.sleep(random.uniform(2.0, 4.0)) # Pausa humana antes de tentar de novo
+    except Exception as e:
+        print(f"  ❌ Erro ao decodificar link: {e}")
         
     return None
 
+def raspar_preco_amazon_direto(url_original):
+    """Raspa o preço nativamente burlando o TLS Fingerprint da Amazon via página de busca."""
+    asin = obter_asin_do_link(url_original)
+    
+    if not asin:
+        print("  ❌ ASIN não encontrado na URL final.")
+        return None
+        
+    url_busca = f"https://www.amazon.com.br/s?k={asin}"
+
+    for tentativa in range(3):
+        try:
+            res = requests.get(url_busca, impersonate="chrome", timeout=15)
+            
+            if res.status_code == 200:
+                soup = BeautifulSoup(res.content, "html.parser")
+                
+                # Procura a div de preço no primeiro cartão de resultado da pesquisa
+                preco_elemento = soup.select_one(f'div[data-asin="{asin}"] .a-price .a-offscreen')
+                
+                # Fallback se a classe data-asin não estiver disponível
+                if not preco_elemento:
+                    preco_elemento = soup.select_one('.s-result-item .a-price .a-offscreen')
+                
+                if preco_elemento:
+                    texto_preco = preco_elemento.get_text().strip()
+                    texto_limpo = texto_preco.replace("R$", "").replace("\xa0", "").replace(" ", "").replace(".", "").replace(",", ".").strip()
+                    
+                    match_preco = re.search(r"(\d+\.\d{2})", texto_limpo)
+                    if match_preco:
+                        return float(match_preco.group(1))
+                else:
+                    print(f"  ⚠️ [Tentativa {tentativa+1}/3] Página carregou sem o preço (Fora de estoque).")
+            else:
+                print(f"  ⚠️ [Tentativa {tentativa+1}/3] Erro HTTP: {res.status_code}")
+                
+        except Exception as e:
+            print(f"  ❌ Erro de conexão com a Amazon: {e}")
+            
+        time.sleep(random.uniform(2.0, 5.0))
+        
+    return None
 
 # ==========================================================
 # INTEGRAÇÃO GEMINI: GERAÇÃO DE LEGENDA PARA TIKTOK
@@ -181,7 +197,8 @@ def obter_fonte(tamanho):
     if not os.path.exists(caminho_fonte):
         url = "[https://github.com/JulietaUla/Montserrat/raw/master/fonts/ttf/Montserrat-Bold.ttf](https://github.com/JulietaUla/Montserrat/raw/master/fonts/ttf/Montserrat-Bold.ttf)"
         try:
-            res = requests.get(url, timeout=15)
+            # Usando curl_cffi para downloads também
+            res = requests.get(url, impersonate="chrome", timeout=15)
             res.raise_for_status()
             with open(caminho_fonte, 'wb') as f:
                 f.write(res.content)
@@ -229,18 +246,16 @@ def gerar_video_tiktok(item, media_preco, caminho_capa, caminho_grafico, caminho
     fundo_contraste = criar_gradiente_vertical(largura, altura, (40, 15, 55, 255), (15, 5, 25, 255))
     fundo_alerta = criar_gradiente_vertical(largura, altura, (25, 20, 30, 255), (5, 5, 10, 255))
 
-    gancho_tela = remover_emojis(gancho_ia) if gancho_ia else "Voce ja leu essa historia?"
+    gancho_tela = remover_emojis(gancho_ia) if gancho_ia else "Você já leu essa história?"
 
     frames = []
 
-    # Ajuste dinâmico se houver capa
     pos_y_card = 840 if capa else 600
     altura_card = 380 if capa else 500
 
     for f_idx in range(total_frames):
         t = f_idx / fps
         
-        # CENA 1: O GANCHO MATADOR (0.0s a 1.5s)
         if t < 1.5:
             img = fundo_escuro.copy()
             draw = ImageDraw.Draw(img)
@@ -251,7 +266,6 @@ def gerar_video_tiktok(item, media_preco, caminho_capa, caminho_grafico, caminho
                 draw.text((540, y_g), lg.upper(), font=fonte_gancho, fill=(255, 179, 0, 255), anchor="mm")
                 y_g += 70
 
-        # CENA 2: A PROVOCAÇÃO / REVELAÇÃO (1.5s a 3.0s)
         elif 1.5 <= t < 3.0:
             img = fundo_contraste.copy()
             draw = ImageDraw.Draw(img)
@@ -272,7 +286,6 @@ def gerar_video_tiktok(item, media_preco, caminho_capa, caminho_grafico, caminho
             draw.text((540, pos_y_card + 280), f"R$ {formatar_real(item['preco_atual'])}", font=fonte_p, fill=(16, 185, 129, 255), anchor="mm")
             draw.text((540, pos_y_card + 370), f"Média 30 dias: R$ {formatar_real(media_preco)}", font=fonte_m, fill=(160, 160, 180, 255), anchor="mm")
 
-        # CENA 3: O GRÁFICO / PROVA MATEMÁTICA (3.0s a 4.8s)
         elif 3.0 <= t < 4.8:
             img = fundo_alerta.copy()
             draw = ImageDraw.Draw(img)
@@ -284,7 +297,6 @@ def gerar_video_tiktok(item, media_preco, caminho_capa, caminho_grafico, caminho
             if grafico:
                 img.paste(grafico, ((largura - grafico.width)//2, 450), grafico)
 
-        # CENA 4: CTA FINAL DE RETENÇÃO (4.8s a 6.0s)
         else:
             img = fundo_escuro.copy()
             draw = ImageDraw.Draw(img)
@@ -295,12 +307,10 @@ def gerar_video_tiktok(item, media_preco, caminho_capa, caminho_grafico, caminho
             draw.rounded_rectangle([150, 1350, 930, 1450], radius=40, fill=(255, 179, 0, 255))
             draw.text((540, 1400), "CORRA PARA APROVEITAR", font=fonte_c, fill=(15, 15, 20, 255), anchor="mm")
 
-        # Top Header fixo apenas nas Cenas do meio para limpar o visual
         if 1.5 <= t < 4.8:
             draw.rounded_rectangle([140, 50, 940, 130], radius=25, fill=(74, 20, 140, 220), outline=(255, 179, 0, 255), width=3)
             draw.text((540, 90), "BARDO DAS PROMOÇÕES", font=fonte_h, fill=(255, 255, 255, 255), anchor="mm")
 
-        # Barra de progresso do vídeo rodando no topo
         draw.rectangle([0, 0, int((f_idx/total_frames)*largura), 15], fill=(255, 179, 0, 255))
 
         frames.append(np.array(img.convert("RGB")))
@@ -319,7 +329,7 @@ def buscar_ofertas_csv():
 
     print("-> Sincronizando lista de produtos via CSV do Google Sheets...")
     try:
-        response = requests.get(url_csv, timeout=15)
+        response = requests.get(url_csv, impersonate="chrome", timeout=15)
         response.encoding = 'utf-8'
         response.raise_for_status()
 
@@ -379,12 +389,10 @@ def gerar_sitemap():
     with open("sitemap.xml", "w", encoding="utf-8") as f:
         f.write(xml_content)
 
-# Adicione esta função auxiliar logo ACIMA da sua gerar_site_estatico
 def _gerar_card_produto(item, preco_atual, media, menor):
     item_id = item["id"]
     titulo = item["titulo"]
     
-    # Lógica de Badges Profissionais
     badge_html = ""
     if preco_atual < menor:
         badge_html = """
@@ -402,31 +410,26 @@ def _gerar_card_produto(item, preco_atual, media, menor):
             </span>
         </div>"""
 
-    # Tratamento da Imagem
     path_banner_local = os.path.join(ASSETS_DIR, f"banner_{item_id}.png")
     if os.path.exists(path_banner_local):
         src_imagem = f"assets/banner_{item_id}.png"
     else:
         src_imagem = item.get("imagem_url") if item.get("imagem_url") else "bau.png"
 
-    # Retorna o HTML do Componente (E-commerce Style)
     return f"""
     <article class="relative flex flex-col bg-surface rounded-2xl border border-white/5 overflow-hidden hover:border-bardo-gold/40 hover:shadow-2xl hover:shadow-bardo-gold/5 transition-all duration-300 group">
         {badge_html}
         
-        <!-- Vitrine do Livro (Frame perfeito) -->
         <div class="relative h-64 w-full p-8 flex items-center justify-center bg-gradient-to-b from-white/[0.03] to-transparent border-b border-white/5">
             <img src="{src_imagem}" alt="Capa de {titulo}" loading="lazy" 
                  class="h-full w-auto object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] group-hover:-translate-y-1.5 group-hover:scale-[1.03] transition-all duration-500 ease-out" />
         </div>
 
-        <!-- Conteúdo do E-commerce -->
         <div class="p-5 flex flex-col flex-grow">
             <h3 class="text-base font-semibold text-gray-100 leading-snug line-clamp-2 mb-4 group-hover:text-bardo-gold transition-colors duration-300" title="{titulo}">
                 {titulo}
             </h3>
 
-            <!-- Ancoragem Psicológica de Preços -->
             <div class="flex flex-col mt-auto mb-5">
                 <div class="flex items-baseline gap-2">
                     <span class="text-2xl font-bold text-white tracking-tight">R$ {formatar_real(preco_atual)}</span>
@@ -439,7 +442,6 @@ def _gerar_card_produto(item, preco_atual, media, menor):
                 </div>
             </div>
 
-            <!-- Botão CTA Principal -->
             <a href="{item['url']}" target="_blank" rel="nofollow noopener" 
                class="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-white/5 hover:bg-bardo-gold hover:text-bardo-dark text-sm font-bold text-gray-200 transition-all duration-300 active:scale-[0.98]">
                 Comprar na Amazon
@@ -448,7 +450,6 @@ def _gerar_card_produto(item, preco_atual, media, menor):
         </div>
     </article>"""
 
-# Substitua a sua gerar_site_estatico atual por esta
 def gerar_site_estatico(ofertas, historico):
     print("-> Gerando portal estático e-commerce para SEO...")
     
@@ -464,7 +465,6 @@ def gerar_site_estatico(ofertas, historico):
         media = sum(precos_30) / len(precos_30) if precos_30 else preco_atual
         menor = dados_item.get("menor_preco_historico", preco_atual)
         
-        # Gera o JSON-LD
         produtos_schema.append({
             "@type": "ListItem",
             "position": i + 1,
@@ -476,16 +476,15 @@ def gerar_site_estatico(ofertas, historico):
                     "@type": "Offer",
                     "priceCurrency": "BRL",
                     "price": preco_atual,
-                    "availability": "https://schema.org/InStock"
+                    "availability": "[https://schema.org/InStock](https://schema.org/InStock)"
                 }
             }
         })
 
-        # Gera o HTML do card chamando a nossa nova função modular
         cards_html_list.append(_gerar_card_produto(item, preco_atual, media, menor))
 
     json_ld = json.dumps({
-        "@context": "https://schema.org",
+        "@context": "[https://schema.org](https://schema.org)",
         "@type": "ItemList",
         "name": "Promoções Ativas de Fantasia",
         "itemListElement": produtos_schema
@@ -499,10 +498,10 @@ def gerar_site_estatico(ofertas, historico):
     <title>Bardo das Promoções | Curadoria de Livros</title>
     <meta name="description" content="Rastreamento matemático de preços de livros de fantasia e sci-fi na Amazon.">
     <script type="application/ld+json">{json_ld}</script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="[https://fonts.googleapis.com](https://fonts.googleapis.com)">
+    <link rel="preconnect" href="[https://fonts.gstatic.com](https://fonts.gstatic.com)" crossorigin>
+    <link href="[https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,700;1,700&display=swap](https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,700;1,700&display=swap)" rel="stylesheet">
+    <script src="[https://cdn.tailwindcss.com](https://cdn.tailwindcss.com)"></script>
     <script>
         tailwind.config = {{
             theme: {{ 
@@ -537,7 +536,7 @@ def gerar_site_estatico(ofertas, historico):
         <p class="max-w-2xl mx-auto text-base md:text-lg text-gray-400 mb-10 font-sans">
             Curadoria automática e rastreamento de preços de livros de Fantasia e Sci-Fi.
         </p>
-        <a href="https://t.me/bardodaspromos" target="_blank" rel="noopener noreferrer" 
+        <a href="[https://t.me/bardodaspromos](https://t.me/bardodaspromos)" target="_blank" rel="noopener noreferrer" 
            class="inline-flex items-center px-8 py-3.5 font-bold text-background bg-bardo-gold hover:bg-yellow-400 hover:scale-105 rounded-xl shadow-[0_0_20px_rgba(255,179,0,0.3)] transition-all duration-300 gap-3">
             <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.446 1.394c-.14.18-.357.295-.6.295-.002 0-.003 0-.005 0l.213-3.054 5.56-5.022c.24-.213-.054-.334-.373-.121l-6.869 4.326-2.96-.924c-.64-.203-.658-.64.135-.954l11.566-4.458c.538-.196 1.006.128.832.94z"/></svg>
             Acessar Canal Gratuito
@@ -559,6 +558,7 @@ def gerar_site_estatico(ofertas, historico):
     with open("index.html", "w", encoding="utf-8") as f:
         f.write(html_template)
     gerar_sitemap()
+
 # ==========================================================
 # LÓGICA PRINCIPAL DO BOT
 # ==========================================================
@@ -575,16 +575,14 @@ async def processar_ofertas():
     for item in ofertas:
         item_id = item["id"]
         
-        # 🕵️ NOVO: Tenta raspar o preço da Amazon direto da fonte!
         print(f"\n🔍 Raspando a Amazon: {item['titulo'][:30]}...")
-        preco_raspado = raspar_preco_amazon(item["url"])
+        preco_raspado = raspar_preco_amazon_direto(item["url"])
         
         if preco_raspado:
             preco_atual = preco_raspado
-            item["preco_atual"] = preco_atual # Salva para o card HTML usar o preço correto
+            item["preco_atual"] = preco_atual 
             print(f"   ✅ Preço atualizado via Web Scraping: R$ {preco_atual:.2f}")
         else:
-            # Fallback: Se a Amazon bloquear o bot, usa o preço da planilha (se existir)
             preco_atual = item.get("preco_atual", 0)
             if preco_atual <= 0:
                 print(f"   ⏭️ Pulando: Bloqueado pela Amazon e sem preço de backup na planilha.")
@@ -592,10 +590,6 @@ async def processar_ofertas():
             else:
                 print(f"   ⚠️ Usando preço de backup da planilha: R$ {preco_atual:.2f}")
 
-        # Pausa aleatória para simular comportamento humano e evitar banimento de IP do GitHub Actions
-        time.sleep(random.uniform(2.5, 5.5))
-        
-        # O resto do seu código continua idêntico daqui para baixo:
         if item_id not in historico:
             historico[item_id] = {
                 "menor_preco_historico": preco_atual,
@@ -639,18 +633,16 @@ async def processar_ofertas():
             caminho_video = os.path.join(ASSETS_DIR, f"tiktok_{item_id}.mp4")
             imagem_envio = None
             
-            # --- 1. BAIXA A CAPA SE EXISTIR ---
             if item.get("imagem_url"):
                 try:
-                    headers = {"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36"}
-                    res_capa = requests.get(item["imagem_url"], headers=headers, timeout=10)
+                    # Também usamos a falsificação TLS aqui para burlar bloqueios de imagens da Amazon
+                    res_capa = requests.get(item["imagem_url"], impersonate="chrome", timeout=10)
                     if res_capa.status_code == 200:
                         with open(caminho_capa, 'wb') as f:
                             f.write(res_capa.content)
                 except Exception as e:
                     print(f"Erro ao baixar capa: {e}")
             
-            # --- 2. GERA O GRÁFICO ---
             try:
                 valores_ordenados = sorted(dados_item["valores_30_dias"], key=lambda x: x["data"])
                 datas_grafico = [v["data"] for v in valores_ordenados]
@@ -680,7 +672,6 @@ async def processar_ofertas():
                 
                 imagem_envio = caminho_grafico
                 
-                # --- 3. MONTA BANNER SE HOUVER CAPA BAIXADA ---
                 if os.path.exists(caminho_capa):
                     try:
                         capa_livro = Image.open(caminho_capa)
@@ -702,12 +693,10 @@ async def processar_ofertas():
                 print(f"Erro ao gerar gráfico: {ge}")
                 plt.close()
             
-            # --- 4. GERA CONTEÚDO VIA IA (GANCHO + LEGENDA) ---
             conteudo_ia = gerar_legenda_ia(item['titulo'], preco_atual, media_preco)
             gancho_video = conteudo_ia["gancho"]
             legenda_tiktok = conteudo_ia["legenda"]
 
-            # --- 5. GERA O VÍDEO DO TIKTOK COM O GANCHO DA IA ---
             try:
                 gerar_video_tiktok(
                     item, 
@@ -721,7 +710,6 @@ async def processar_ofertas():
                 print(f"Erro ao gerar vídeo TikTok: {ve}")
                 caminho_video = None
 
-            # --- 6. ENVIA DADOS PARA O TELEGRAM ---
             try:
                 await enviar_mensagem_telegram(mensagem, caminho_foto=imagem_envio)
                 
