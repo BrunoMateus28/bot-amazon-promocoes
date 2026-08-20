@@ -13,6 +13,8 @@ from bs4 import BeautifulSoup
 # Motor de Falsificação de Assinatura (Burla o TLS Fingerprint da Amazon)
 from curl_cffi import requests 
 
+from apify_client import ApifyClient
+
 from google import genai
 from google.genai import types
 
@@ -80,49 +82,41 @@ def obter_asin_do_link(url_curta):
         
     return None
 
-def raspar_preco_amazon_direto(url_original):
-    """Raspa o preço nativamente burlando o TLS Fingerprint da Amazon via página de busca."""
-    asin = obter_asin_do_link(url_original)
-    
-    if not asin:
-        print("  ❌ ASIN não encontrado na URL final.")
+def raspar_preco_amazon(url):
+    """Busca o preço usando a infraestrutura do Apify (Proxy Residencial)."""
+    api_token = os.getenv("APIFY_TOKEN")
+    if not api_token:
+        print("❌ APIFY_TOKEN não configurada.")
         return None
-        
-    url_busca = f"https://www.amazon.com.br/s?k={asin}"
 
-    for tentativa in range(3):
-        try:
-            res = requests.get(url_busca, impersonate="chrome", timeout=15)
-            
-            if res.status_code == 200:
-                soup = BeautifulSoup(res.content, "html.parser")
+    client = ApifyClient(api_token)
+    
+    # Prepara a entrada para o Actor da Amazon (apify/amazon-scraper)
+    run_input = {
+        "queries": [url],
+        "maxItemsPerQuery": 1,
+        "categoryDetails": False,
+        "reviewsDetails": False,
+    }
+
+    try:
+        # Chama o Actor oficial do Apify para Amazon
+        run = client.actor("apify/amazon-scraper").call(run_input=run_input)
+        
+        # Pega o resultado direto do dataset
+        dataset = client.dataset(run["defaultDatasetId"]).iterate_items()
+        
+        for item in dataset:
+            # O Apify retorna o preço formatado e limpo
+            preco_str = item.get("price") # Ex: "R$ 78,99"
+            if preco_str:
+                preco_limpo = preco_str.replace("R$", "").replace(".", "").replace(",", ".").strip()
+                return float(preco_limpo)
                 
-                # Procura a div de preço no primeiro cartão de resultado da pesquisa
-                preco_elemento = soup.select_one(f'div[data-asin="{asin}"] .a-price .a-offscreen')
-                
-                # Fallback se a classe data-asin não estiver disponível
-                if not preco_elemento:
-                    preco_elemento = soup.select_one('.s-result-item .a-price .a-offscreen')
-                
-                if preco_elemento:
-                    texto_preco = preco_elemento.get_text().strip()
-                    texto_limpo = texto_preco.replace("R$", "").replace("\xa0", "").replace(" ", "").replace(".", "").replace(",", ".").strip()
-                    
-                    match_preco = re.search(r"(\d+\.\d{2})", texto_limpo)
-                    if match_preco:
-                        return float(match_preco.group(1))
-                else:
-                    print(f"  ⚠️ [Tentativa {tentativa+1}/3] Página carregou sem o preço (Fora de estoque).")
-            else:
-                print(f"  ⚠️ [Tentativa {tentativa+1}/3] Erro HTTP: {res.status_code}")
-                
-        except Exception as e:
-            print(f"  ❌ Erro de conexão com a Amazon: {e}")
-            
-        time.sleep(random.uniform(2.0, 5.0))
+    except Exception as e:
+        print(f"❌ Erro ao buscar preço via Apify: {e}")
         
     return None
-
 # ==========================================================
 # INTEGRAÇÃO GEMINI: GERAÇÃO DE LEGENDA PARA TIKTOK
 # ==========================================================
@@ -575,14 +569,14 @@ async def processar_ofertas():
     for item in ofertas:
         item_id = item["id"]
         
-        print(f"\n🔍 Raspando a Amazon: {item['titulo'][:30]}...")
-        preco_raspado = raspar_preco_amazon_direto(item["url"])
+        print(f"\n🔍 Consultando Amazon via Apify: {item['titulo'][:30]}...")
+        preco_atual = raspar_preco_amazon(item["url"])
         
-        if preco_raspado:
-            preco_atual = preco_raspado
-            item["preco_atual"] = preco_atual 
-            print(f"   ✅ Preço atualizado via Web Scraping: R$ {preco_atual:.2f}")
+        if preco_atual:
+            item["preco_atual"] = preco_atual
+            print(f"   ✅ Preço obtido: R$ {preco_atual:.2f}")
         else:
+            # Fallback mantido caso o Apify não retorne preço (ou esteja sem estoque)
             preco_atual = item.get("preco_atual", 0)
             if preco_atual <= 0:
                 print(f"   ⏭️ Pulando: Bloqueado pela Amazon e sem preço de backup na planilha.")
