@@ -21,23 +21,34 @@
     </script>
 </head>
 <body class="bg-background text-gray-300 min-h-screen p-4 md:p-8">
-    <header class="max-w-7xl mx-auto mb-10 text-center">
+    <header class="max-w-7xl mx-auto mb-12 text-center">
         <h1 class="text-3xl md:text-5xl font-bold text-white mb-3">Bardo das Promoções</h1>
-        <p class="text-bardo-gold font-semibold tracking-wide uppercase text-sm md:text-base">Monitoramento 24h de Fantasia & Sci-Fi</p>
+        <p class="text-bardo-gold font-semibold tracking-wide uppercase text-sm md:text-base mb-6">Monitoramento 24h de Fantasia & Sci-Fi</p>
+        
+        <!-- BOTÃO DO TELEGRAM AQUI -->
+        <a href="https://t.me/bardodaspromos" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 px-8 py-3.5 text-sm md:text-base font-bold text-bardo-dark bg-bardo-gold rounded-full hover:bg-yellow-400 hover:-translate-y-1 transition-all duration-300 shadow-[0_0_20px_rgba(255,179,0,0.3)] hover:shadow-[0_0_30px_rgba(255,179,0,0.6)]">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.446 1.394c-.14.18-.357.295-.6.295-.002 0-.003 0-.005 0l.213-3.054 5.56-5.022c.24-.213-.054-.334-.373-.121l-6.869 4.326-2.96-.924c-.64-.203-.658-.64.135-.954l11.566-4.458c.538-.196 1.006.128.832.941z"/></svg>
+            Entrar no Canal do Telegram
+        </a>
     </header>
+    
     <main class="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         
     <article class="relative flex flex-col bg-surface rounded-2xl border border-white/5 overflow-hidden hover:border-bardo-gold/40 transition-all duration-300 group shadow-lg">
         
-        <div class="relative h-64 w-full p-8 flex items-center justify-center bg-gradient-to-b from-white/[0.03] to-transparent border-b border-white/5">
-            <img src="https://m.media-amazon.com/images/I/71YJPBeADiL._SL1000_.jpg" alt="Capa de Box Ficção Completa de Edgar Allan Poe" loading="lazy" class="h-full w-auto object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] group-hover:scale-[1.03] transition-all duration-500" />
+        <!-- Vitrine com Efeito Hover Swap -->
+        <div class="relative h-64 w-full bg-gradient-to-b from-white/[0.03] to-transparent border-b border-white/5 overflow-hidden">
+            <!-- Imagem 1: Capa (Soma ao Hover) -->
+            <img src="https://m.media-amazon.com/images/I/71YJPBeADiL._SL1000_.jpg" alt="Capa de Box Ficção Completa de Edgar Allan Poe" loading="lazy" class="absolute inset-0 w-full h-full p-6 object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] transition-opacity duration-500 opacity-100 group-hover:opacity-0" />
+            <!-- Imagem 2: Gráfico (Aparece no Hover) -->
+            <img src="assets/grafico_box_ficcao_completa_edgar_allan_poe.png" alt="Gráfico de Box Ficção Completa de Edgar Allan Poe" loading="lazy" class="absolute inset-0 w-full h-full p-4 object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] transition-opacity duration-500 opacity-0 group-hover:opacity-100" />
         </div>
         <div class="p-5 flex flex-col flex-grow">
             <h3 class="text-base font-semibold text-gray-100 leading-snug line-clamp-2 mb-4 group-hover:text-bardo-gold transition-colors">Box Ficção Completa de Edgar Allan Poe</h3>
             <div class="flex flex-col mt-auto mb-5">
                 <div class="flex items-baseline gap-2">
                     <span class="text-2xl font-bold text-white tracking-tight">R$ 279,90</span>
-                    <span class="text-sm text-gray-500 line-through">R$ 246,84</span>
+                    <span class="text-sm text-gray-500 line-through">R$ 246,95</span>
                 </div>
             </div>
             <a href="https://link.amazon/B0bxqDHXJ" target="_blank" rel="nofollow noopener" class="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-white/5 hover:bg-bardo-gold hover:text-bardo-dark text-sm font-bold text-gray-200 transition-all">Comprar na Amazon</a>
@@ -45,8 +56,12 @@
     </article>
     <article class="relative flex flex-col bg-surface rounded-2xl border border-white/5 overflow-hidden hover:border-bardo-gold/40 transition-all duration-300 group shadow-lg">
         
-        <div class="relative h-64 w-full p-8 flex items-center justify-center bg-gradient-to-b from-white/[0.03] to-transparent border-b border-white/5">
-            <img src="https://m.media-amazon.com/images/I/81C0dfrhh4L._SL1500_.jpg" alt="Capa de O sacrifício" loading="lazy" class="h-full w-auto object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] group-hover:scale-[1.03] transition-all duration-500" />
+        <!-- Vitrine com Efeito Hover Swap -->
+        <div class="relative h-64 w-full bg-gradient-to-b from-white/[0.03] to-transparent border-b border-white/5 overflow-hidden">
+            <!-- Imagem 1: Capa (Soma ao Hover) -->
+            <img src="https://m.media-amazon.com/images/I/81C0dfrhh4L._SL1500_.jpg" alt="Capa de O sacrifício" loading="lazy" class="absolute inset-0 w-full h-full p-6 object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] transition-opacity duration-500 opacity-100 group-hover:opacity-0" />
+            <!-- Imagem 2: Gráfico (Aparece no Hover) -->
+            <img src="assets/grafico_o_sacrificio.png" alt="Gráfico de O sacrifício" loading="lazy" class="absolute inset-0 w-full h-full p-4 object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] transition-opacity duration-500 opacity-0 group-hover:opacity-100" />
         </div>
         <div class="p-5 flex flex-col flex-grow">
             <h3 class="text-base font-semibold text-gray-100 leading-snug line-clamp-2 mb-4 group-hover:text-bardo-gold transition-colors">O sacrifício</h3>
@@ -61,15 +76,19 @@
     </article>
     <article class="relative flex flex-col bg-surface rounded-2xl border border-white/5 overflow-hidden hover:border-bardo-gold/40 transition-all duration-300 group shadow-lg">
         
-        <div class="relative h-64 w-full p-8 flex items-center justify-center bg-gradient-to-b from-white/[0.03] to-transparent border-b border-white/5">
-            <img src="https://m.media-amazon.com/images/I/71-YhujYUxS._SL1500_.jpg" alt="Capa de A cabeça do santo" loading="lazy" class="h-full w-auto object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] group-hover:scale-[1.03] transition-all duration-500" />
+        <!-- Vitrine com Efeito Hover Swap -->
+        <div class="relative h-64 w-full bg-gradient-to-b from-white/[0.03] to-transparent border-b border-white/5 overflow-hidden">
+            <!-- Imagem 1: Capa (Soma ao Hover) -->
+            <img src="https://m.media-amazon.com/images/I/71-YhujYUxS._SL1500_.jpg" alt="Capa de A cabeça do santo" loading="lazy" class="absolute inset-0 w-full h-full p-6 object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] transition-opacity duration-500 opacity-100 group-hover:opacity-0" />
+            <!-- Imagem 2: Gráfico (Aparece no Hover) -->
+            <img src="assets/grafico_a_cabeca_do_santo.png" alt="Gráfico de A cabeça do santo" loading="lazy" class="absolute inset-0 w-full h-full p-4 object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] transition-opacity duration-500 opacity-0 group-hover:opacity-100" />
         </div>
         <div class="p-5 flex flex-col flex-grow">
             <h3 class="text-base font-semibold text-gray-100 leading-snug line-clamp-2 mb-4 group-hover:text-bardo-gold transition-colors">A cabeça do santo</h3>
             <div class="flex flex-col mt-auto mb-5">
                 <div class="flex items-baseline gap-2">
                     <span class="text-2xl font-bold text-white tracking-tight">R$ 47,59</span>
-                    <span class="text-sm text-gray-500 line-through">R$ 46,72</span>
+                    <span class="text-sm text-gray-500 line-through">R$ 46,73</span>
                 </div>
             </div>
             <a href="https://link.amazon/B07BZ9Phr" target="_blank" rel="nofollow noopener" class="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-white/5 hover:bg-bardo-gold hover:text-bardo-dark text-sm font-bold text-gray-200 transition-all">Comprar na Amazon</a>
@@ -77,8 +96,12 @@
     </article>
     <article class="relative flex flex-col bg-surface rounded-2xl border border-white/5 overflow-hidden hover:border-bardo-gold/40 transition-all duration-300 group shadow-lg">
         <div class="absolute top-3 left-3 z-10"><span class="px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 rounded-full backdrop-blur-md shadow-lg">Abaixo da Média</span></div>
-        <div class="relative h-64 w-full p-8 flex items-center justify-center bg-gradient-to-b from-white/[0.03] to-transparent border-b border-white/5">
-            <img src="assets/banner_a_biblioteca_da_meia_noite.png" alt="Capa de A Biblioteca da Meia-Noite" loading="lazy" class="h-full w-auto object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] group-hover:scale-[1.03] transition-all duration-500" />
+        <!-- Vitrine com Efeito Hover Swap -->
+        <div class="relative h-64 w-full bg-gradient-to-b from-white/[0.03] to-transparent border-b border-white/5 overflow-hidden">
+            <!-- Imagem 1: Capa (Soma ao Hover) -->
+            <img src="https://m.media-amazon.com/images/I/81iqH8dpjuL._SL1500_.jpg" alt="Capa de A Biblioteca da Meia-Noite" loading="lazy" class="absolute inset-0 w-full h-full p-6 object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] transition-opacity duration-500 opacity-100 group-hover:opacity-0" />
+            <!-- Imagem 2: Gráfico (Aparece no Hover) -->
+            <img src="https://m.media-amazon.com/images/I/81iqH8dpjuL._SL1500_.jpg" alt="Gráfico de A Biblioteca da Meia-Noite" loading="lazy" class="absolute inset-0 w-full h-full p-4 object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] transition-opacity duration-500 opacity-0 group-hover:opacity-100" />
         </div>
         <div class="p-5 flex flex-col flex-grow">
             <h3 class="text-base font-semibold text-gray-100 leading-snug line-clamp-2 mb-4 group-hover:text-bardo-gold transition-colors">A Biblioteca da Meia-Noite</h3>
@@ -93,8 +116,12 @@
     </article>
     <article class="relative flex flex-col bg-surface rounded-2xl border border-white/5 overflow-hidden hover:border-bardo-gold/40 transition-all duration-300 group shadow-lg">
         <div class="absolute top-3 left-3 z-10"><span class="px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 rounded-full backdrop-blur-md shadow-lg">Abaixo da Média</span></div>
-        <div class="relative h-64 w-full p-8 flex items-center justify-center bg-gradient-to-b from-white/[0.03] to-transparent border-b border-white/5">
-            <img src="assets/banner_o_hobbit_poster.png" alt="Capa de O Hobbit + pôster" loading="lazy" class="h-full w-auto object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] group-hover:scale-[1.03] transition-all duration-500" />
+        <!-- Vitrine com Efeito Hover Swap -->
+        <div class="relative h-64 w-full bg-gradient-to-b from-white/[0.03] to-transparent border-b border-white/5 overflow-hidden">
+            <!-- Imagem 1: Capa (Soma ao Hover) -->
+            <img src="https://m.media-amazon.com/images/I/91M9xPIf10L._SL1500_.jpg" alt="Capa de O Hobbit + pôster" loading="lazy" class="absolute inset-0 w-full h-full p-6 object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] transition-opacity duration-500 opacity-100 group-hover:opacity-0" />
+            <!-- Imagem 2: Gráfico (Aparece no Hover) -->
+            <img src="https://m.media-amazon.com/images/I/91M9xPIf10L._SL1500_.jpg" alt="Gráfico de O Hobbit + pôster" loading="lazy" class="absolute inset-0 w-full h-full p-4 object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] transition-opacity duration-500 opacity-0 group-hover:opacity-100" />
         </div>
         <div class="p-5 flex flex-col flex-grow">
             <h3 class="text-base font-semibold text-gray-100 leading-snug line-clamp-2 mb-4 group-hover:text-bardo-gold transition-colors">O Hobbit + pôster</h3>
@@ -109,15 +136,19 @@
     </article>
     <article class="relative flex flex-col bg-surface rounded-2xl border border-white/5 overflow-hidden hover:border-bardo-gold/40 transition-all duration-300 group shadow-lg">
         
-        <div class="relative h-64 w-full p-8 flex items-center justify-center bg-gradient-to-b from-white/[0.03] to-transparent border-b border-white/5">
-            <img src="assets/banner_a_ascensao_do_dragon.png" alt="Capa de A Ascensão do Dragão" loading="lazy" class="h-full w-auto object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] group-hover:scale-[1.03] transition-all duration-500" />
+        <!-- Vitrine com Efeito Hover Swap -->
+        <div class="relative h-64 w-full bg-gradient-to-b from-white/[0.03] to-transparent border-b border-white/5 overflow-hidden">
+            <!-- Imagem 1: Capa (Soma ao Hover) -->
+            <img src="https://m.media-amazon.com/images/I/91889MYAFqL._SL1500_.jpg" alt="Capa de A Ascensão do Dragão" loading="lazy" class="absolute inset-0 w-full h-full p-6 object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] transition-opacity duration-500 opacity-100 group-hover:opacity-0" />
+            <!-- Imagem 2: Gráfico (Aparece no Hover) -->
+            <img src="https://m.media-amazon.com/images/I/91889MYAFqL._SL1500_.jpg" alt="Gráfico de A Ascensão do Dragão" loading="lazy" class="absolute inset-0 w-full h-full p-4 object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] transition-opacity duration-500 opacity-0 group-hover:opacity-100" />
         </div>
         <div class="p-5 flex flex-col flex-grow">
             <h3 class="text-base font-semibold text-gray-100 leading-snug line-clamp-2 mb-4 group-hover:text-bardo-gold transition-colors">A Ascensão do Dragão</h3>
             <div class="flex flex-col mt-auto mb-5">
                 <div class="flex items-baseline gap-2">
                     <span class="text-2xl font-bold text-white tracking-tight">R$ 139,93</span>
-                    <span class="text-sm text-gray-500 line-through">R$ 129,44</span>
+                    <span class="text-sm text-gray-500 line-through">R$ 129,47</span>
                 </div>
             </div>
             <a href="https://link.amazon/B04OFbHZF" target="_blank" rel="nofollow noopener" class="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-white/5 hover:bg-bardo-gold hover:text-bardo-dark text-sm font-bold text-gray-200 transition-all">Comprar na Amazon</a>
@@ -125,15 +156,19 @@
     </article>
     <article class="relative flex flex-col bg-surface rounded-2xl border border-white/5 overflow-hidden hover:border-bardo-gold/40 transition-all duration-300 group shadow-lg">
         <div class="absolute top-3 left-3 z-10"><span class="px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 rounded-full backdrop-blur-md shadow-lg">Abaixo da Média</span></div>
-        <div class="relative h-64 w-full p-8 flex items-center justify-center bg-gradient-to-b from-white/[0.03] to-transparent border-b border-white/5">
-            <img src="https://m.media-amazon.com/images/I/81ULs0trrDL._SL1311_.jpg" alt="Capa de O mundo de gelo e fogo" loading="lazy" class="h-full w-auto object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] group-hover:scale-[1.03] transition-all duration-500" />
+        <!-- Vitrine com Efeito Hover Swap -->
+        <div class="relative h-64 w-full bg-gradient-to-b from-white/[0.03] to-transparent border-b border-white/5 overflow-hidden">
+            <!-- Imagem 1: Capa (Soma ao Hover) -->
+            <img src="https://m.media-amazon.com/images/I/81ULs0trrDL._SL1311_.jpg" alt="Capa de O mundo de gelo e fogo" loading="lazy" class="absolute inset-0 w-full h-full p-6 object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] transition-opacity duration-500 opacity-100 group-hover:opacity-0" />
+            <!-- Imagem 2: Gráfico (Aparece no Hover) -->
+            <img src="assets/grafico_o_mundo_de_gelo_e_fogo.png" alt="Gráfico de O mundo de gelo e fogo" loading="lazy" class="absolute inset-0 w-full h-full p-4 object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] transition-opacity duration-500 opacity-0 group-hover:opacity-100" />
         </div>
         <div class="p-5 flex flex-col flex-grow">
             <h3 class="text-base font-semibold text-gray-100 leading-snug line-clamp-2 mb-4 group-hover:text-bardo-gold transition-colors">O mundo de gelo e fogo</h3>
             <div class="flex flex-col mt-auto mb-5">
                 <div class="flex items-baseline gap-2">
                     <span class="text-2xl font-bold text-white tracking-tight">R$ 132,93</span>
-                    <span class="text-sm text-gray-500 line-through">R$ 133,90</span>
+                    <span class="text-sm text-gray-500 line-through">R$ 133,89</span>
                 </div>
             </div>
             <a href="https://link.amazon/B0bOFsgQ9" target="_blank" rel="nofollow noopener" class="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-white/5 hover:bg-bardo-gold hover:text-bardo-dark text-sm font-bold text-gray-200 transition-all">Comprar na Amazon</a>
@@ -141,15 +176,19 @@
     </article>
     <article class="relative flex flex-col bg-surface rounded-2xl border border-white/5 overflow-hidden hover:border-bardo-gold/40 transition-all duration-300 group shadow-lg">
         
-        <div class="relative h-64 w-full p-8 flex items-center justify-center bg-gradient-to-b from-white/[0.03] to-transparent border-b border-white/5">
-            <img src="https://m.media-amazon.com/images/I/818A5R3Bq+L._SL1500_.jpg" alt="Capa de Box Trilogia O Senhor dos Anéis" loading="lazy" class="h-full w-auto object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] group-hover:scale-[1.03] transition-all duration-500" />
+        <!-- Vitrine com Efeito Hover Swap -->
+        <div class="relative h-64 w-full bg-gradient-to-b from-white/[0.03] to-transparent border-b border-white/5 overflow-hidden">
+            <!-- Imagem 1: Capa (Soma ao Hover) -->
+            <img src="https://m.media-amazon.com/images/I/818A5R3Bq+L._SL1500_.jpg" alt="Capa de Box Trilogia O Senhor dos Anéis" loading="lazy" class="absolute inset-0 w-full h-full p-6 object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] transition-opacity duration-500 opacity-100 group-hover:opacity-0" />
+            <!-- Imagem 2: Gráfico (Aparece no Hover) -->
+            <img src="assets/grafico_box_trilogia_o_senhor_dos_aneis.png" alt="Gráfico de Box Trilogia O Senhor dos Anéis" loading="lazy" class="absolute inset-0 w-full h-full p-4 object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] transition-opacity duration-500 opacity-0 group-hover:opacity-100" />
         </div>
         <div class="p-5 flex flex-col flex-grow">
             <h3 class="text-base font-semibold text-gray-100 leading-snug line-clamp-2 mb-4 group-hover:text-bardo-gold transition-colors">Box Trilogia O Senhor dos Anéis</h3>
             <div class="flex flex-col mt-auto mb-5">
                 <div class="flex items-baseline gap-2">
                     <span class="text-2xl font-bold text-white tracking-tight">R$ 227,40</span>
-                    <span class="text-sm text-gray-500 line-through">R$ 215,42</span>
+                    <span class="text-sm text-gray-500 line-through">R$ 215,46</span>
                 </div>
             </div>
             <a href="https://link.amazon/B0cOS4omj" target="_blank" rel="nofollow noopener" class="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-white/5 hover:bg-bardo-gold hover:text-bardo-dark text-sm font-bold text-gray-200 transition-all">Comprar na Amazon</a>
@@ -157,8 +196,12 @@
     </article>
     <article class="relative flex flex-col bg-surface rounded-2xl border border-white/5 overflow-hidden hover:border-bardo-gold/40 transition-all duration-300 group shadow-lg">
         
-        <div class="relative h-64 w-full p-8 flex items-center justify-center bg-gradient-to-b from-white/[0.03] to-transparent border-b border-white/5">
-            <img src="assets/banner_o_cavaleiro_dos_sete_reinos.png" alt="Capa de O cavaleiro dos Sete Reinos" loading="lazy" class="h-full w-auto object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] group-hover:scale-[1.03] transition-all duration-500" />
+        <!-- Vitrine com Efeito Hover Swap -->
+        <div class="relative h-64 w-full bg-gradient-to-b from-white/[0.03] to-transparent border-b border-white/5 overflow-hidden">
+            <!-- Imagem 1: Capa (Soma ao Hover) -->
+            <img src="https://m.media-amazon.com/images/I/818OkmNM6YL._SL1500_.jpg" alt="Capa de O cavaleiro dos Sete Reinos" loading="lazy" class="absolute inset-0 w-full h-full p-6 object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] transition-opacity duration-500 opacity-100 group-hover:opacity-0" />
+            <!-- Imagem 2: Gráfico (Aparece no Hover) -->
+            <img src="https://m.media-amazon.com/images/I/818OkmNM6YL._SL1500_.jpg" alt="Gráfico de O cavaleiro dos Sete Reinos" loading="lazy" class="absolute inset-0 w-full h-full p-4 object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] transition-opacity duration-500 opacity-0 group-hover:opacity-100" />
         </div>
         <div class="p-5 flex flex-col flex-grow">
             <h3 class="text-base font-semibold text-gray-100 leading-snug line-clamp-2 mb-4 group-hover:text-bardo-gold transition-colors">O cavaleiro dos Sete Reinos</h3>
@@ -173,15 +216,19 @@
     </article>
     <article class="relative flex flex-col bg-surface rounded-2xl border border-white/5 overflow-hidden hover:border-bardo-gold/40 transition-all duration-300 group shadow-lg">
         
-        <div class="relative h-64 w-full p-8 flex items-center justify-center bg-gradient-to-b from-white/[0.03] to-transparent border-b border-white/5">
-            <img src="assets/banner_fogo_sangue_1.png" alt="Capa de Fogo & Sangue – Volume 1" loading="lazy" class="h-full w-auto object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] group-hover:scale-[1.03] transition-all duration-500" />
+        <!-- Vitrine com Efeito Hover Swap -->
+        <div class="relative h-64 w-full bg-gradient-to-b from-white/[0.03] to-transparent border-b border-white/5 overflow-hidden">
+            <!-- Imagem 1: Capa (Soma ao Hover) -->
+            <img src="https://m.media-amazon.com/images/I/818yNY0mMZL._SL1500_.jpg" alt="Capa de Fogo & Sangue – Volume 1" loading="lazy" class="absolute inset-0 w-full h-full p-6 object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] transition-opacity duration-500 opacity-100 group-hover:opacity-0" />
+            <!-- Imagem 2: Gráfico (Aparece no Hover) -->
+            <img src="https://m.media-amazon.com/images/I/818yNY0mMZL._SL1500_.jpg" alt="Gráfico de Fogo & Sangue – Volume 1" loading="lazy" class="absolute inset-0 w-full h-full p-4 object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] transition-opacity duration-500 opacity-0 group-hover:opacity-100" />
         </div>
         <div class="p-5 flex flex-col flex-grow">
             <h3 class="text-base font-semibold text-gray-100 leading-snug line-clamp-2 mb-4 group-hover:text-bardo-gold transition-colors">Fogo & Sangue – Volume 1</h3>
             <div class="flex flex-col mt-auto mb-5">
                 <div class="flex items-baseline gap-2">
                     <span class="text-2xl font-bold text-white tracking-tight">R$ 78,99</span>
-                    <span class="text-sm text-gray-500 line-through">R$ 75,76</span>
+                    <span class="text-sm text-gray-500 line-through">R$ 75,77</span>
                 </div>
             </div>
             <a href="https://link.amazon/B01CIGwaZ" target="_blank" rel="nofollow noopener" class="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-white/5 hover:bg-bardo-gold hover:text-bardo-dark text-sm font-bold text-gray-200 transition-all">Comprar na Amazon</a>
@@ -189,15 +236,19 @@
     </article>
     <article class="relative flex flex-col bg-surface rounded-2xl border border-white/5 overflow-hidden hover:border-bardo-gold/40 transition-all duration-300 group shadow-lg">
         <div class="absolute top-3 left-3 z-10"><span class="px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 rounded-full backdrop-blur-md shadow-lg">Abaixo da Média</span></div>
-        <div class="relative h-64 w-full p-8 flex items-center justify-center bg-gradient-to-b from-white/[0.03] to-transparent border-b border-white/5">
-            <img src="https://m.media-amazon.com/images/I/71kLDHqJFWL._SL1500_.jpg" alt="Capa de Box Torre negra" loading="lazy" class="h-full w-auto object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] group-hover:scale-[1.03] transition-all duration-500" />
+        <!-- Vitrine com Efeito Hover Swap -->
+        <div class="relative h-64 w-full bg-gradient-to-b from-white/[0.03] to-transparent border-b border-white/5 overflow-hidden">
+            <!-- Imagem 1: Capa (Soma ao Hover) -->
+            <img src="https://m.media-amazon.com/images/I/71kLDHqJFWL._SL1500_.jpg" alt="Capa de Box Torre negra" loading="lazy" class="absolute inset-0 w-full h-full p-6 object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] transition-opacity duration-500 opacity-100 group-hover:opacity-0" />
+            <!-- Imagem 2: Gráfico (Aparece no Hover) -->
+            <img src="assets/grafico_box_torre_negra.png" alt="Gráfico de Box Torre negra" loading="lazy" class="absolute inset-0 w-full h-full p-4 object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] transition-opacity duration-500 opacity-0 group-hover:opacity-100" />
         </div>
         <div class="p-5 flex flex-col flex-grow">
             <h3 class="text-base font-semibold text-gray-100 leading-snug line-clamp-2 mb-4 group-hover:text-bardo-gold transition-colors">Box Torre negra</h3>
             <div class="flex flex-col mt-auto mb-5">
                 <div class="flex items-baseline gap-2">
                     <span class="text-2xl font-bold text-white tracking-tight">R$ 346,19</span>
-                    <span class="text-sm text-gray-500 line-through">R$ 378,13</span>
+                    <span class="text-sm text-gray-500 line-through">R$ 378,02</span>
                 </div>
             </div>
             <a href="https://link.amazon/B0czAwuOp" target="_blank" rel="nofollow noopener" class="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-white/5 hover:bg-bardo-gold hover:text-bardo-dark text-sm font-bold text-gray-200 transition-all">Comprar na Amazon</a>
@@ -205,8 +256,12 @@
     </article>
     <article class="relative flex flex-col bg-surface rounded-2xl border border-white/5 overflow-hidden hover:border-bardo-gold/40 transition-all duration-300 group shadow-lg">
         
-        <div class="relative h-64 w-full p-8 flex items-center justify-center bg-gradient-to-b from-white/[0.03] to-transparent border-b border-white/5">
-            <img src="assets/banner_fragmentos_bovadium.png" alt="Capa de Os fragmentos de Bovadium" loading="lazy" class="h-full w-auto object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] group-hover:scale-[1.03] transition-all duration-500" />
+        <!-- Vitrine com Efeito Hover Swap -->
+        <div class="relative h-64 w-full bg-gradient-to-b from-white/[0.03] to-transparent border-b border-white/5 overflow-hidden">
+            <!-- Imagem 1: Capa (Soma ao Hover) -->
+            <img src="https://m.media-amazon.com/images/I/81Gf0gK2zaL._SL1500_.jpg" alt="Capa de Os fragmentos de Bovadium" loading="lazy" class="absolute inset-0 w-full h-full p-6 object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] transition-opacity duration-500 opacity-100 group-hover:opacity-0" />
+            <!-- Imagem 2: Gráfico (Aparece no Hover) -->
+            <img src="https://m.media-amazon.com/images/I/81Gf0gK2zaL._SL1500_.jpg" alt="Gráfico de Os fragmentos de Bovadium" loading="lazy" class="absolute inset-0 w-full h-full p-4 object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] transition-opacity duration-500 opacity-0 group-hover:opacity-100" />
         </div>
         <div class="p-5 flex flex-col flex-grow">
             <h3 class="text-base font-semibold text-gray-100 leading-snug line-clamp-2 mb-4 group-hover:text-bardo-gold transition-colors">Os fragmentos de Bovadium</h3>
@@ -221,15 +276,19 @@
     </article>
     <article class="relative flex flex-col bg-surface rounded-2xl border border-white/5 overflow-hidden hover:border-bardo-gold/40 transition-all duration-300 group shadow-lg">
         
-        <div class="relative h-64 w-full p-8 flex items-center justify-center bg-gradient-to-b from-white/[0.03] to-transparent border-b border-white/5">
-            <img src="assets/banner_mistborn_1.png" alt="Capa de Mistborn: O Império Final: Livro 1 de Mistborn" loading="lazy" class="h-full w-auto object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] group-hover:scale-[1.03] transition-all duration-500" />
+        <!-- Vitrine com Efeito Hover Swap -->
+        <div class="relative h-64 w-full bg-gradient-to-b from-white/[0.03] to-transparent border-b border-white/5 overflow-hidden">
+            <!-- Imagem 1: Capa (Soma ao Hover) -->
+            <img src="https://m.media-amazon.com/images/I/61oP2JqzhTL._SL1000_.jpg" alt="Capa de Mistborn: O Império Final: Livro 1 de Mistborn" loading="lazy" class="absolute inset-0 w-full h-full p-6 object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] transition-opacity duration-500 opacity-100 group-hover:opacity-0" />
+            <!-- Imagem 2: Gráfico (Aparece no Hover) -->
+            <img src="https://m.media-amazon.com/images/I/61oP2JqzhTL._SL1000_.jpg" alt="Gráfico de Mistborn: O Império Final: Livro 1 de Mistborn" loading="lazy" class="absolute inset-0 w-full h-full p-4 object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] transition-opacity duration-500 opacity-0 group-hover:opacity-100" />
         </div>
         <div class="p-5 flex flex-col flex-grow">
             <h3 class="text-base font-semibold text-gray-100 leading-snug line-clamp-2 mb-4 group-hover:text-bardo-gold transition-colors">Mistborn: O Império Final: Livro 1 de Mistborn</h3>
             <div class="flex flex-col mt-auto mb-5">
                 <div class="flex items-baseline gap-2">
                     <span class="text-2xl font-bold text-white tracking-tight">R$ 67,18</span>
-                    <span class="text-sm text-gray-500 line-through">R$ 66,18</span>
+                    <span class="text-sm text-gray-500 line-through">R$ 66,19</span>
                 </div>
             </div>
             <a href="https://link.amazon/B0bJ5jTSU" target="_blank" rel="nofollow noopener" class="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-white/5 hover:bg-bardo-gold hover:text-bardo-dark text-sm font-bold text-gray-200 transition-all">Comprar na Amazon</a>
@@ -237,15 +296,19 @@
     </article>
     <article class="relative flex flex-col bg-surface rounded-2xl border border-white/5 overflow-hidden hover:border-bardo-gold/40 transition-all duration-300 group shadow-lg">
         <div class="absolute top-3 left-3 z-10"><span class="px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 rounded-full backdrop-blur-md shadow-lg">Abaixo da Média</span></div>
-        <div class="relative h-64 w-full p-8 flex items-center justify-center bg-gradient-to-b from-white/[0.03] to-transparent border-b border-white/5">
-            <img src="assets/banner_guerra_papoula_1.png" alt="Capa de A guerra da papoula" loading="lazy" class="h-full w-auto object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] group-hover:scale-[1.03] transition-all duration-500" />
+        <!-- Vitrine com Efeito Hover Swap -->
+        <div class="relative h-64 w-full bg-gradient-to-b from-white/[0.03] to-transparent border-b border-white/5 overflow-hidden">
+            <!-- Imagem 1: Capa (Soma ao Hover) -->
+            <img src="https://m.media-amazon.com/images/I/613YunBw8yL._SL1500_.jpg" alt="Capa de A guerra da papoula" loading="lazy" class="absolute inset-0 w-full h-full p-6 object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] transition-opacity duration-500 opacity-100 group-hover:opacity-0" />
+            <!-- Imagem 2: Gráfico (Aparece no Hover) -->
+            <img src="https://m.media-amazon.com/images/I/613YunBw8yL._SL1500_.jpg" alt="Gráfico de A guerra da papoula" loading="lazy" class="absolute inset-0 w-full h-full p-4 object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] transition-opacity duration-500 opacity-0 group-hover:opacity-100" />
         </div>
         <div class="p-5 flex flex-col flex-grow">
             <h3 class="text-base font-semibold text-gray-100 leading-snug line-clamp-2 mb-4 group-hover:text-bardo-gold transition-colors">A guerra da papoula</h3>
             <div class="flex flex-col mt-auto mb-5">
                 <div class="flex items-baseline gap-2">
                     <span class="text-2xl font-bold text-white tracking-tight">R$ 46,14</span>
-                    <span class="text-sm text-gray-500 line-through">R$ 54,53</span>
+                    <span class="text-sm text-gray-500 line-through">R$ 54,50</span>
                 </div>
             </div>
             <a href="https://link.amazon/B075ASsRo" target="_blank" rel="nofollow noopener" class="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-white/5 hover:bg-bardo-gold hover:text-bardo-dark text-sm font-bold text-gray-200 transition-all">Comprar na Amazon</a>
@@ -253,15 +316,19 @@
     </article>
     <article class="relative flex flex-col bg-surface rounded-2xl border border-white/5 overflow-hidden hover:border-bardo-gold/40 transition-all duration-300 group shadow-lg">
         
-        <div class="relative h-64 w-full p-8 flex items-center justify-center bg-gradient-to-b from-white/[0.03] to-transparent border-b border-white/5">
-            <img src="assets/banner_guerra_papoula_2.png" alt="Capa de A república do dragão: 2" loading="lazy" class="h-full w-auto object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] group-hover:scale-[1.03] transition-all duration-500" />
+        <!-- Vitrine com Efeito Hover Swap -->
+        <div class="relative h-64 w-full bg-gradient-to-b from-white/[0.03] to-transparent border-b border-white/5 overflow-hidden">
+            <!-- Imagem 1: Capa (Soma ao Hover) -->
+            <img src="https://m.media-amazon.com/images/I/61bHMCxghFL._SL1005_.jpg" alt="Capa de A república do dragão: 2" loading="lazy" class="absolute inset-0 w-full h-full p-6 object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] transition-opacity duration-500 opacity-100 group-hover:opacity-0" />
+            <!-- Imagem 2: Gráfico (Aparece no Hover) -->
+            <img src="https://m.media-amazon.com/images/I/61bHMCxghFL._SL1005_.jpg" alt="Gráfico de A república do dragão: 2" loading="lazy" class="absolute inset-0 w-full h-full p-4 object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] transition-opacity duration-500 opacity-0 group-hover:opacity-100" />
         </div>
         <div class="p-5 flex flex-col flex-grow">
             <h3 class="text-base font-semibold text-gray-100 leading-snug line-clamp-2 mb-4 group-hover:text-bardo-gold transition-colors">A república do dragão: 2</h3>
             <div class="flex flex-col mt-auto mb-5">
                 <div class="flex items-baseline gap-2">
                     <span class="text-2xl font-bold text-white tracking-tight">R$ 59,75</span>
-                    <span class="text-sm text-gray-500 line-through">R$ 58,40</span>
+                    <span class="text-sm text-gray-500 line-through">R$ 58,41</span>
                 </div>
             </div>
             <a href="https://link.amazon/B05s4V4tS" target="_blank" rel="nofollow noopener" class="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-white/5 hover:bg-bardo-gold hover:text-bardo-dark text-sm font-bold text-gray-200 transition-all">Comprar na Amazon</a>
@@ -269,8 +336,12 @@
     </article>
     <article class="relative flex flex-col bg-surface rounded-2xl border border-white/5 overflow-hidden hover:border-bardo-gold/40 transition-all duration-300 group shadow-lg">
         
-        <div class="relative h-64 w-full p-8 flex items-center justify-center bg-gradient-to-b from-white/[0.03] to-transparent border-b border-white/5">
-            <img src="https://m.media-amazon.com/images/I/61RD8yx2UVL._SL1043_.jpg" alt="Capa de A deusa em chamas: 3" loading="lazy" class="h-full w-auto object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] group-hover:scale-[1.03] transition-all duration-500" />
+        <!-- Vitrine com Efeito Hover Swap -->
+        <div class="relative h-64 w-full bg-gradient-to-b from-white/[0.03] to-transparent border-b border-white/5 overflow-hidden">
+            <!-- Imagem 1: Capa (Soma ao Hover) -->
+            <img src="https://m.media-amazon.com/images/I/61RD8yx2UVL._SL1043_.jpg" alt="Capa de A deusa em chamas: 3" loading="lazy" class="absolute inset-0 w-full h-full p-6 object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] transition-opacity duration-500 opacity-100 group-hover:opacity-0" />
+            <!-- Imagem 2: Gráfico (Aparece no Hover) -->
+            <img src="assets/grafico_guerra_papoula_3.png" alt="Gráfico de A deusa em chamas: 3" loading="lazy" class="absolute inset-0 w-full h-full p-4 object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] transition-opacity duration-500 opacity-0 group-hover:opacity-100" />
         </div>
         <div class="p-5 flex flex-col flex-grow">
             <h3 class="text-base font-semibold text-gray-100 leading-snug line-clamp-2 mb-4 group-hover:text-bardo-gold transition-colors">A deusa em chamas: 3</h3>
@@ -285,15 +356,19 @@
     </article>
     <article class="relative flex flex-col bg-surface rounded-2xl border border-white/5 overflow-hidden hover:border-bardo-gold/40 transition-all duration-300 group shadow-lg">
         <div class="absolute top-3 left-3 z-10"><span class="px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 rounded-full backdrop-blur-md shadow-lg">Abaixo da Média</span></div>
-        <div class="relative h-64 w-full p-8 flex items-center justify-center bg-gradient-to-b from-white/[0.03] to-transparent border-b border-white/5">
-            <img src="assets/banner_caminho_dos_reis.png" alt="Capa de O caminho dos reis" loading="lazy" class="h-full w-auto object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] group-hover:scale-[1.03] transition-all duration-500" />
+        <!-- Vitrine com Efeito Hover Swap -->
+        <div class="relative h-64 w-full bg-gradient-to-b from-white/[0.03] to-transparent border-b border-white/5 overflow-hidden">
+            <!-- Imagem 1: Capa (Soma ao Hover) -->
+            <img src="https://m.media-amazon.com/images/I/61ArouGe9VL._SL1000_.jpg" alt="Capa de O caminho dos reis" loading="lazy" class="absolute inset-0 w-full h-full p-6 object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] transition-opacity duration-500 opacity-100 group-hover:opacity-0" />
+            <!-- Imagem 2: Gráfico (Aparece no Hover) -->
+            <img src="https://m.media-amazon.com/images/I/61ArouGe9VL._SL1000_.jpg" alt="Gráfico de O caminho dos reis" loading="lazy" class="absolute inset-0 w-full h-full p-4 object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] transition-opacity duration-500 opacity-0 group-hover:opacity-100" />
         </div>
         <div class="p-5 flex flex-col flex-grow">
             <h3 class="text-base font-semibold text-gray-100 leading-snug line-clamp-2 mb-4 group-hover:text-bardo-gold transition-colors">O caminho dos reis</h3>
             <div class="flex flex-col mt-auto mb-5">
                 <div class="flex items-baseline gap-2">
                     <span class="text-2xl font-bold text-white tracking-tight">R$ 92,70</span>
-                    <span class="text-sm text-gray-500 line-through">R$ 105,49</span>
+                    <span class="text-sm text-gray-500 line-through">R$ 105,45</span>
                 </div>
             </div>
             <a href="https://link.amazon/B0g8PJdyP" target="_blank" rel="nofollow noopener" class="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-white/5 hover:bg-bardo-gold hover:text-bardo-dark text-sm font-bold text-gray-200 transition-all">Comprar na Amazon</a>
@@ -301,8 +376,12 @@
     </article>
     <article class="relative flex flex-col bg-surface rounded-2xl border border-white/5 overflow-hidden hover:border-bardo-gold/40 transition-all duration-300 group shadow-lg">
         <div class="absolute top-3 left-3 z-10"><span class="px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 rounded-full backdrop-blur-md shadow-lg">Abaixo da Média</span></div>
-        <div class="relative h-64 w-full p-8 flex items-center justify-center bg-gradient-to-b from-white/[0.03] to-transparent border-b border-white/5">
-            <img src="assets/banner_palavras_de_radiancia.png" alt="Capa de Palavras de Radiância" loading="lazy" class="h-full w-auto object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] group-hover:scale-[1.03] transition-all duration-500" />
+        <!-- Vitrine com Efeito Hover Swap -->
+        <div class="relative h-64 w-full bg-gradient-to-b from-white/[0.03] to-transparent border-b border-white/5 overflow-hidden">
+            <!-- Imagem 1: Capa (Soma ao Hover) -->
+            <img src="https://m.media-amazon.com/images/I/91yCf2XXZjL._SL1500_.jpg" alt="Capa de Palavras de Radiância" loading="lazy" class="absolute inset-0 w-full h-full p-6 object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] transition-opacity duration-500 opacity-100 group-hover:opacity-0" />
+            <!-- Imagem 2: Gráfico (Aparece no Hover) -->
+            <img src="https://m.media-amazon.com/images/I/91yCf2XXZjL._SL1500_.jpg" alt="Gráfico de Palavras de Radiância" loading="lazy" class="absolute inset-0 w-full h-full p-4 object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] transition-opacity duration-500 opacity-0 group-hover:opacity-100" />
         </div>
         <div class="p-5 flex flex-col flex-grow">
             <h3 class="text-base font-semibold text-gray-100 leading-snug line-clamp-2 mb-4 group-hover:text-bardo-gold transition-colors">Palavras de Radiância</h3>
@@ -317,15 +396,19 @@
     </article>
     <article class="relative flex flex-col bg-surface rounded-2xl border border-white/5 overflow-hidden hover:border-bardo-gold/40 transition-all duration-300 group shadow-lg">
         <div class="absolute top-3 left-3 z-10"><span class="px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 rounded-full backdrop-blur-md shadow-lg">Abaixo da Média</span></div>
-        <div class="relative h-64 w-full p-8 flex items-center justify-center bg-gradient-to-b from-white/[0.03] to-transparent border-b border-white/5">
-            <img src="assets/banner_sacramentadora.png" alt="Capa de Sacramentadora" loading="lazy" class="h-full w-auto object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] group-hover:scale-[1.03] transition-all duration-500" />
+        <!-- Vitrine com Efeito Hover Swap -->
+        <div class="relative h-64 w-full bg-gradient-to-b from-white/[0.03] to-transparent border-b border-white/5 overflow-hidden">
+            <!-- Imagem 1: Capa (Soma ao Hover) -->
+            <img src="assets/capa_sacramentadora.jpg" alt="Capa de Sacramentadora" loading="lazy" class="absolute inset-0 w-full h-full p-6 object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] transition-opacity duration-500 opacity-100 group-hover:opacity-0" />
+            <!-- Imagem 2: Gráfico (Aparece no Hover) -->
+            <img src="assets/grafico_sacramentadora.png" alt="Gráfico de Sacramentadora" loading="lazy" class="absolute inset-0 w-full h-full p-4 object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] transition-opacity duration-500 opacity-0 group-hover:opacity-100" />
         </div>
         <div class="p-5 flex flex-col flex-grow">
             <h3 class="text-base font-semibold text-gray-100 leading-snug line-clamp-2 mb-4 group-hover:text-bardo-gold transition-colors">Sacramentadora</h3>
             <div class="flex flex-col mt-auto mb-5">
                 <div class="flex items-baseline gap-2">
                     <span class="text-2xl font-bold text-white tracking-tight">R$ 137,70</span>
-                    <span class="text-sm text-gray-500 line-through">R$ 147,63</span>
+                    <span class="text-sm text-gray-500 line-through">R$ 147,59</span>
                 </div>
             </div>
             <a href="https://link.amazon/B0cBFS3o1" target="_blank" rel="nofollow noopener" class="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-white/5 hover:bg-bardo-gold hover:text-bardo-dark text-sm font-bold text-gray-200 transition-all">Comprar na Amazon</a>
@@ -333,15 +416,19 @@
     </article>
     <article class="relative flex flex-col bg-surface rounded-2xl border border-white/5 overflow-hidden hover:border-bardo-gold/40 transition-all duration-300 group shadow-lg">
         
-        <div class="relative h-64 w-full p-8 flex items-center justify-center bg-gradient-to-b from-white/[0.03] to-transparent border-b border-white/5">
-            <img src="assets/banner_ritmo_de_guerra.png" alt="Capa de Ritmo da Guerra" loading="lazy" class="h-full w-auto object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] group-hover:scale-[1.03] transition-all duration-500" />
+        <!-- Vitrine com Efeito Hover Swap -->
+        <div class="relative h-64 w-full bg-gradient-to-b from-white/[0.03] to-transparent border-b border-white/5 overflow-hidden">
+            <!-- Imagem 1: Capa (Soma ao Hover) -->
+            <img src="https://m.media-amazon.com/images/I/71uORoYKL-L._SL1000_.jpg" alt="Capa de Ritmo da Guerra" loading="lazy" class="absolute inset-0 w-full h-full p-6 object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] transition-opacity duration-500 opacity-100 group-hover:opacity-0" />
+            <!-- Imagem 2: Gráfico (Aparece no Hover) -->
+            <img src="https://m.media-amazon.com/images/I/71uORoYKL-L._SL1000_.jpg" alt="Gráfico de Ritmo da Guerra" loading="lazy" class="absolute inset-0 w-full h-full p-4 object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] transition-opacity duration-500 opacity-0 group-hover:opacity-100" />
         </div>
         <div class="p-5 flex flex-col flex-grow">
             <h3 class="text-base font-semibold text-gray-100 leading-snug line-clamp-2 mb-4 group-hover:text-bardo-gold transition-colors">Ritmo da Guerra</h3>
             <div class="flex flex-col mt-auto mb-5">
                 <div class="flex items-baseline gap-2">
                     <span class="text-2xl font-bold text-white tracking-tight">R$ 148,29</span>
-                    <span class="text-sm text-gray-500 line-through">R$ 146,55</span>
+                    <span class="text-sm text-gray-500 line-through">R$ 146,56</span>
                 </div>
             </div>
             <a href="https://link.amazon/B0f81O992" target="_blank" rel="nofollow noopener" class="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-white/5 hover:bg-bardo-gold hover:text-bardo-dark text-sm font-bold text-gray-200 transition-all">Comprar na Amazon</a>
@@ -349,15 +436,19 @@
     </article>
     <article class="relative flex flex-col bg-surface rounded-2xl border border-white/5 overflow-hidden hover:border-bardo-gold/40 transition-all duration-300 group shadow-lg">
         
-        <div class="relative h-64 w-full p-8 flex items-center justify-center bg-gradient-to-b from-white/[0.03] to-transparent border-b border-white/5">
-            <img src="https://m.media-amazon.com/images/I/81slUinjTlS._SL1500_.jpg" alt="Capa de O alquimista" loading="lazy" class="h-full w-auto object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] group-hover:scale-[1.03] transition-all duration-500" />
+        <!-- Vitrine com Efeito Hover Swap -->
+        <div class="relative h-64 w-full bg-gradient-to-b from-white/[0.03] to-transparent border-b border-white/5 overflow-hidden">
+            <!-- Imagem 1: Capa (Soma ao Hover) -->
+            <img src="https://m.media-amazon.com/images/I/81slUinjTlS._SL1500_.jpg" alt="Capa de O alquimista" loading="lazy" class="absolute inset-0 w-full h-full p-6 object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] transition-opacity duration-500 opacity-100 group-hover:opacity-0" />
+            <!-- Imagem 2: Gráfico (Aparece no Hover) -->
+            <img src="assets/grafico_o_alquimista.png" alt="Gráfico de O alquimista" loading="lazy" class="absolute inset-0 w-full h-full p-4 object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] transition-opacity duration-500 opacity-0 group-hover:opacity-100" />
         </div>
         <div class="p-5 flex flex-col flex-grow">
             <h3 class="text-base font-semibold text-gray-100 leading-snug line-clamp-2 mb-4 group-hover:text-bardo-gold transition-colors">O alquimista</h3>
             <div class="flex flex-col mt-auto mb-5">
                 <div class="flex items-baseline gap-2">
                     <span class="text-2xl font-bold text-white tracking-tight">R$ 44,89</span>
-                    <span class="text-sm text-gray-500 line-through">R$ 42,97</span>
+                    <span class="text-sm text-gray-500 line-through">R$ 42,98</span>
                 </div>
             </div>
             <a href="https://link.amazon/B00bB1BuS" target="_blank" rel="nofollow noopener" class="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-white/5 hover:bg-bardo-gold hover:text-bardo-dark text-sm font-bold text-gray-200 transition-all">Comprar na Amazon</a>
@@ -365,8 +456,12 @@
     </article>
     <article class="relative flex flex-col bg-surface rounded-2xl border border-white/5 overflow-hidden hover:border-bardo-gold/40 transition-all duration-300 group shadow-lg">
         <div class="absolute top-3 left-3 z-10"><span class="px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 rounded-full backdrop-blur-md shadow-lg">Abaixo da Média</span></div>
-        <div class="relative h-64 w-full p-8 flex items-center justify-center bg-gradient-to-b from-white/[0.03] to-transparent border-b border-white/5">
-            <img src="https://m.media-amazon.com/images/I/81CGmkRG9GL._SL1500_.jpg" alt="Capa de O nome do vento" loading="lazy" class="h-full w-auto object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] group-hover:scale-[1.03] transition-all duration-500" />
+        <!-- Vitrine com Efeito Hover Swap -->
+        <div class="relative h-64 w-full bg-gradient-to-b from-white/[0.03] to-transparent border-b border-white/5 overflow-hidden">
+            <!-- Imagem 1: Capa (Soma ao Hover) -->
+            <img src="https://m.media-amazon.com/images/I/81CGmkRG9GL._SL1500_.jpg" alt="Capa de O nome do vento" loading="lazy" class="absolute inset-0 w-full h-full p-6 object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] transition-opacity duration-500 opacity-100 group-hover:opacity-0" />
+            <!-- Imagem 2: Gráfico (Aparece no Hover) -->
+            <img src="assets/grafico_o_nome_do_vento.png" alt="Gráfico de O nome do vento" loading="lazy" class="absolute inset-0 w-full h-full p-4 object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] transition-opacity duration-500 opacity-0 group-hover:opacity-100" />
         </div>
         <div class="p-5 flex flex-col flex-grow">
             <h3 class="text-base font-semibold text-gray-100 leading-snug line-clamp-2 mb-4 group-hover:text-bardo-gold transition-colors">O nome do vento</h3>
@@ -381,8 +476,12 @@
     </article>
     <article class="relative flex flex-col bg-surface rounded-2xl border border-white/5 overflow-hidden hover:border-bardo-gold/40 transition-all duration-300 group shadow-lg">
         <div class="absolute top-3 left-3 z-10"><span class="px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 rounded-full backdrop-blur-md shadow-lg">Abaixo da Média</span></div>
-        <div class="relative h-64 w-full p-8 flex items-center justify-center bg-gradient-to-b from-white/[0.03] to-transparent border-b border-white/5">
-            <img src="assets/banner_a_musica_do_silencio.png" alt="Capa de A música do silêncio" loading="lazy" class="h-full w-auto object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] group-hover:scale-[1.03] transition-all duration-500" />
+        <!-- Vitrine com Efeito Hover Swap -->
+        <div class="relative h-64 w-full bg-gradient-to-b from-white/[0.03] to-transparent border-b border-white/5 overflow-hidden">
+            <!-- Imagem 1: Capa (Soma ao Hover) -->
+            <img src="https://m.media-amazon.com/images/I/812b+Dv8pvL._SL1500_.jpg" alt="Capa de A música do silêncio" loading="lazy" class="absolute inset-0 w-full h-full p-6 object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] transition-opacity duration-500 opacity-100 group-hover:opacity-0" />
+            <!-- Imagem 2: Gráfico (Aparece no Hover) -->
+            <img src="https://m.media-amazon.com/images/I/812b+Dv8pvL._SL1500_.jpg" alt="Gráfico de A música do silêncio" loading="lazy" class="absolute inset-0 w-full h-full p-4 object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] transition-opacity duration-500 opacity-0 group-hover:opacity-100" />
         </div>
         <div class="p-5 flex flex-col flex-grow">
             <h3 class="text-base font-semibold text-gray-100 leading-snug line-clamp-2 mb-4 group-hover:text-bardo-gold transition-colors">A música do silêncio</h3>
@@ -397,8 +496,12 @@
     </article>
     <article class="relative flex flex-col bg-surface rounded-2xl border border-white/5 overflow-hidden hover:border-bardo-gold/40 transition-all duration-300 group shadow-lg">
         
-        <div class="relative h-64 w-full p-8 flex items-center justify-center bg-gradient-to-b from-white/[0.03] to-transparent border-b border-white/5">
-            <img src="https://m.media-amazon.com/images/I/91rGGj7JBhL._SL1500_.jpg" alt="Capa de O temor do sábio" loading="lazy" class="h-full w-auto object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] group-hover:scale-[1.03] transition-all duration-500" />
+        <!-- Vitrine com Efeito Hover Swap -->
+        <div class="relative h-64 w-full bg-gradient-to-b from-white/[0.03] to-transparent border-b border-white/5 overflow-hidden">
+            <!-- Imagem 1: Capa (Soma ao Hover) -->
+            <img src="https://m.media-amazon.com/images/I/91rGGj7JBhL._SL1500_.jpg" alt="Capa de O temor do sábio" loading="lazy" class="absolute inset-0 w-full h-full p-6 object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] transition-opacity duration-500 opacity-100 group-hover:opacity-0" />
+            <!-- Imagem 2: Gráfico (Aparece no Hover) -->
+            <img src="assets/grafico_o_temor_do_sabio.png" alt="Gráfico de O temor do sábio" loading="lazy" class="absolute inset-0 w-full h-full p-4 object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] transition-opacity duration-500 opacity-0 group-hover:opacity-100" />
         </div>
         <div class="p-5 flex flex-col flex-grow">
             <h3 class="text-base font-semibold text-gray-100 leading-snug line-clamp-2 mb-4 group-hover:text-bardo-gold transition-colors">O temor do sábio</h3>
@@ -413,8 +516,12 @@
     </article>
     <article class="relative flex flex-col bg-surface rounded-2xl border border-white/5 overflow-hidden hover:border-bardo-gold/40 transition-all duration-300 group shadow-lg">
         
-        <div class="relative h-64 w-full p-8 flex items-center justify-center bg-gradient-to-b from-white/[0.03] to-transparent border-b border-white/5">
-            <img src="assets/banner_box_cronicas_de_artur.png" alt="Capa de Box As crônicas de Artur" loading="lazy" class="h-full w-auto object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] group-hover:scale-[1.03] transition-all duration-500" />
+        <!-- Vitrine com Efeito Hover Swap -->
+        <div class="relative h-64 w-full bg-gradient-to-b from-white/[0.03] to-transparent border-b border-white/5 overflow-hidden">
+            <!-- Imagem 1: Capa (Soma ao Hover) -->
+            <img src="https://m.media-amazon.com/images/I/91bLIyETfnL._SL1500_.jpg" alt="Capa de Box As crônicas de Artur" loading="lazy" class="absolute inset-0 w-full h-full p-6 object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] transition-opacity duration-500 opacity-100 group-hover:opacity-0" />
+            <!-- Imagem 2: Gráfico (Aparece no Hover) -->
+            <img src="https://m.media-amazon.com/images/I/91bLIyETfnL._SL1500_.jpg" alt="Gráfico de Box As crônicas de Artur" loading="lazy" class="absolute inset-0 w-full h-full p-4 object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] transition-opacity duration-500 opacity-0 group-hover:opacity-100" />
         </div>
         <div class="p-5 flex flex-col flex-grow">
             <h3 class="text-base font-semibold text-gray-100 leading-snug line-clamp-2 mb-4 group-hover:text-bardo-gold transition-colors">Box As crônicas de Artur</h3>
@@ -429,15 +536,19 @@
     </article>
     <article class="relative flex flex-col bg-surface rounded-2xl border border-white/5 overflow-hidden hover:border-bardo-gold/40 transition-all duration-300 group shadow-lg">
         
-        <div class="relative h-64 w-full p-8 flex items-center justify-center bg-gradient-to-b from-white/[0.03] to-transparent border-b border-white/5">
-            <img src="assets/banner_mistborn_2.png" alt="Capa de Mistborn: O Poço da Ascensão" loading="lazy" class="h-full w-auto object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] group-hover:scale-[1.03] transition-all duration-500" />
+        <!-- Vitrine com Efeito Hover Swap -->
+        <div class="relative h-64 w-full bg-gradient-to-b from-white/[0.03] to-transparent border-b border-white/5 overflow-hidden">
+            <!-- Imagem 1: Capa (Soma ao Hover) -->
+            <img src="https://m.media-amazon.com/images/I/61Xy+u+qF8L._SL1000_.jpg" alt="Capa de Mistborn: O Poço da Ascensão" loading="lazy" class="absolute inset-0 w-full h-full p-6 object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] transition-opacity duration-500 opacity-100 group-hover:opacity-0" />
+            <!-- Imagem 2: Gráfico (Aparece no Hover) -->
+            <img src="https://m.media-amazon.com/images/I/61Xy+u+qF8L._SL1000_.jpg" alt="Gráfico de Mistborn: O Poço da Ascensão" loading="lazy" class="absolute inset-0 w-full h-full p-4 object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] transition-opacity duration-500 opacity-0 group-hover:opacity-100" />
         </div>
         <div class="p-5 flex flex-col flex-grow">
             <h3 class="text-base font-semibold text-gray-100 leading-snug line-clamp-2 mb-4 group-hover:text-bardo-gold transition-colors">Mistborn: O Poço da Ascensão</h3>
             <div class="flex flex-col mt-auto mb-5">
                 <div class="flex items-baseline gap-2">
                     <span class="text-2xl font-bold text-white tracking-tight">R$ 89,99</span>
-                    <span class="text-sm text-gray-500 line-through">R$ 82,39</span>
+                    <span class="text-sm text-gray-500 line-through">R$ 82,43</span>
                 </div>
             </div>
             <a href="https://link.amazon/B0fHxeIhM" target="_blank" rel="nofollow noopener" class="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-white/5 hover:bg-bardo-gold hover:text-bardo-dark text-sm font-bold text-gray-200 transition-all">Comprar na Amazon</a>
@@ -445,15 +556,19 @@
     </article>
     <article class="relative flex flex-col bg-surface rounded-2xl border border-white/5 overflow-hidden hover:border-bardo-gold/40 transition-all duration-300 group shadow-lg">
         
-        <div class="relative h-64 w-full p-8 flex items-center justify-center bg-gradient-to-b from-white/[0.03] to-transparent border-b border-white/5">
-            <img src="assets/banner_mistborn_3.png" alt="Capa de Mistborn: O Herói das Eras" loading="lazy" class="h-full w-auto object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] group-hover:scale-[1.03] transition-all duration-500" />
+        <!-- Vitrine com Efeito Hover Swap -->
+        <div class="relative h-64 w-full bg-gradient-to-b from-white/[0.03] to-transparent border-b border-white/5 overflow-hidden">
+            <!-- Imagem 1: Capa (Soma ao Hover) -->
+            <img src="https://m.media-amazon.com/images/I/61MAx1SPLfL._SL1000_.jpg" alt="Capa de Mistborn: O Herói das Eras" loading="lazy" class="absolute inset-0 w-full h-full p-6 object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] transition-opacity duration-500 opacity-100 group-hover:opacity-0" />
+            <!-- Imagem 2: Gráfico (Aparece no Hover) -->
+            <img src="https://m.media-amazon.com/images/I/61MAx1SPLfL._SL1000_.jpg" alt="Gráfico de Mistborn: O Herói das Eras" loading="lazy" class="absolute inset-0 w-full h-full p-4 object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] transition-opacity duration-500 opacity-0 group-hover:opacity-100" />
         </div>
         <div class="p-5 flex flex-col flex-grow">
             <h3 class="text-base font-semibold text-gray-100 leading-snug line-clamp-2 mb-4 group-hover:text-bardo-gold transition-colors">Mistborn: O Herói das Eras</h3>
             <div class="flex flex-col mt-auto mb-5">
                 <div class="flex items-baseline gap-2">
                     <span class="text-2xl font-bold text-white tracking-tight">R$ 76,38</span>
-                    <span class="text-sm text-gray-500 line-through">R$ 72,40</span>
+                    <span class="text-sm text-gray-500 line-through">R$ 72,42</span>
                 </div>
             </div>
             <a href="https://link.amazon/B09kGQop8" target="_blank" rel="nofollow noopener" class="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-white/5 hover:bg-bardo-gold hover:text-bardo-dark text-sm font-bold text-gray-200 transition-all">Comprar na Amazon</a>
@@ -461,24 +576,32 @@
     </article>
     <article class="relative flex flex-col bg-surface rounded-2xl border border-white/5 overflow-hidden hover:border-bardo-gold/40 transition-all duration-300 group shadow-lg">
         
-        <div class="relative h-64 w-full p-8 flex items-center justify-center bg-gradient-to-b from-white/[0.03] to-transparent border-b border-white/5">
-            <img src="https://m.media-amazon.com/images/I/81nSKeU2mEL._SL1500_.jpg" alt="Capa de Box Trono de vidro - Novas capas" loading="lazy" class="h-full w-auto object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] group-hover:scale-[1.03] transition-all duration-500" />
+        <!-- Vitrine com Efeito Hover Swap -->
+        <div class="relative h-64 w-full bg-gradient-to-b from-white/[0.03] to-transparent border-b border-white/5 overflow-hidden">
+            <!-- Imagem 1: Capa (Soma ao Hover) -->
+            <img src="assets/capa_box_trono_vidro.jpg" alt="Capa de Box Trono de vidro - Novas capas" loading="lazy" class="absolute inset-0 w-full h-full p-6 object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] transition-opacity duration-500 opacity-100 group-hover:opacity-0" />
+            <!-- Imagem 2: Gráfico (Aparece no Hover) -->
+            <img src="assets/grafico_box_trono_vidro.png" alt="Gráfico de Box Trono de vidro - Novas capas" loading="lazy" class="absolute inset-0 w-full h-full p-4 object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] transition-opacity duration-500 opacity-0 group-hover:opacity-100" />
         </div>
         <div class="p-5 flex flex-col flex-grow">
             <h3 class="text-base font-semibold text-gray-100 leading-snug line-clamp-2 mb-4 group-hover:text-bardo-gold transition-colors">Box Trono de vidro - Novas capas</h3>
             <div class="flex flex-col mt-auto mb-5">
                 <div class="flex items-baseline gap-2">
                     <span class="text-2xl font-bold text-white tracking-tight">R$ 240,96</span>
-                    <span class="text-sm text-gray-500 line-through">R$ 216,82</span>
+                    <span class="text-sm text-gray-500 line-through">R$ 220,84</span>
                 </div>
             </div>
             <a href="https://link.amazon/B046QvncM" target="_blank" rel="nofollow noopener" class="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-white/5 hover:bg-bardo-gold hover:text-bardo-dark text-sm font-bold text-gray-200 transition-all">Comprar na Amazon</a>
         </div>
     </article>
     <article class="relative flex flex-col bg-surface rounded-2xl border border-white/5 overflow-hidden hover:border-bardo-gold/40 transition-all duration-300 group shadow-lg">
-        
-        <div class="relative h-64 w-full p-8 flex items-center justify-center bg-gradient-to-b from-white/[0.03] to-transparent border-b border-white/5">
-            <img src="https://m.media-amazon.com/images/I/813qT5Dvd5L._SL1500_.jpg" alt="Capa de Box Corte de espinhos e rosas" loading="lazy" class="h-full w-auto object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] group-hover:scale-[1.03] transition-all duration-500" />
+        <div class="absolute top-3 left-3 z-10"><span class="px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 rounded-full backdrop-blur-md shadow-lg">Abaixo da Média</span></div>
+        <!-- Vitrine com Efeito Hover Swap -->
+        <div class="relative h-64 w-full bg-gradient-to-b from-white/[0.03] to-transparent border-b border-white/5 overflow-hidden">
+            <!-- Imagem 1: Capa (Soma ao Hover) -->
+            <img src="https://m.media-amazon.com/images/I/813qT5Dvd5L._SL1500_.jpg" alt="Capa de Box Corte de espinhos e rosas" loading="lazy" class="absolute inset-0 w-full h-full p-6 object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] transition-opacity duration-500 opacity-100 group-hover:opacity-0" />
+            <!-- Imagem 2: Gráfico (Aparece no Hover) -->
+            <img src="https://m.media-amazon.com/images/I/813qT5Dvd5L._SL1500_.jpg" alt="Gráfico de Box Corte de espinhos e rosas" loading="lazy" class="absolute inset-0 w-full h-full p-4 object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] transition-opacity duration-500 opacity-0 group-hover:opacity-100" />
         </div>
         <div class="p-5 flex flex-col flex-grow">
             <h3 class="text-base font-semibold text-gray-100 leading-snug line-clamp-2 mb-4 group-hover:text-bardo-gold transition-colors">Box Corte de espinhos e rosas</h3>
@@ -493,8 +616,12 @@
     </article>
     <article class="relative flex flex-col bg-surface rounded-2xl border border-white/5 overflow-hidden hover:border-bardo-gold/40 transition-all duration-300 group shadow-lg">
         
-        <div class="relative h-64 w-full p-8 flex items-center justify-center bg-gradient-to-b from-white/[0.03] to-transparent border-b border-white/5">
-            <img src="https://m.media-amazon.com/images/I/81qMLIEhMYL._SL1500_.jpg" alt="Capa de Corte de espinhos e rosas" loading="lazy" class="h-full w-auto object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] group-hover:scale-[1.03] transition-all duration-500" />
+        <!-- Vitrine com Efeito Hover Swap -->
+        <div class="relative h-64 w-full bg-gradient-to-b from-white/[0.03] to-transparent border-b border-white/5 overflow-hidden">
+            <!-- Imagem 1: Capa (Soma ao Hover) -->
+            <img src="https://m.media-amazon.com/images/I/81qMLIEhMYL._SL1500_.jpg" alt="Capa de Corte de espinhos e rosas" loading="lazy" class="absolute inset-0 w-full h-full p-6 object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] transition-opacity duration-500 opacity-100 group-hover:opacity-0" />
+            <!-- Imagem 2: Gráfico (Aparece no Hover) -->
+            <img src="https://m.media-amazon.com/images/I/81qMLIEhMYL._SL1500_.jpg" alt="Gráfico de Corte de espinhos e rosas" loading="lazy" class="absolute inset-0 w-full h-full p-4 object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] transition-opacity duration-500 opacity-0 group-hover:opacity-100" />
         </div>
         <div class="p-5 flex flex-col flex-grow">
             <h3 class="text-base font-semibold text-gray-100 leading-snug line-clamp-2 mb-4 group-hover:text-bardo-gold transition-colors">Corte de espinhos e rosas</h3>
@@ -508,9 +635,13 @@
         </div>
     </article>
     <article class="relative flex flex-col bg-surface rounded-2xl border border-white/5 overflow-hidden hover:border-bardo-gold/40 transition-all duration-300 group shadow-lg">
-        
-        <div class="relative h-64 w-full p-8 flex items-center justify-center bg-gradient-to-b from-white/[0.03] to-transparent border-b border-white/5">
-            <img src="https://m.media-amazon.com/images/I/81yonPQS4zL._SL1500_.jpg" alt="Capa de Corte de névoa e fúria" loading="lazy" class="h-full w-auto object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] group-hover:scale-[1.03] transition-all duration-500" />
+        <div class="absolute top-3 left-3 z-10"><span class="px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 rounded-full backdrop-blur-md shadow-lg">Abaixo da Média</span></div>
+        <!-- Vitrine com Efeito Hover Swap -->
+        <div class="relative h-64 w-full bg-gradient-to-b from-white/[0.03] to-transparent border-b border-white/5 overflow-hidden">
+            <!-- Imagem 1: Capa (Soma ao Hover) -->
+            <img src="https://m.media-amazon.com/images/I/81yonPQS4zL._SL1500_.jpg" alt="Capa de Corte de névoa e fúria" loading="lazy" class="absolute inset-0 w-full h-full p-6 object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] transition-opacity duration-500 opacity-100 group-hover:opacity-0" />
+            <!-- Imagem 2: Gráfico (Aparece no Hover) -->
+            <img src="https://m.media-amazon.com/images/I/81yonPQS4zL._SL1500_.jpg" alt="Gráfico de Corte de névoa e fúria" loading="lazy" class="absolute inset-0 w-full h-full p-4 object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] transition-opacity duration-500 opacity-0 group-hover:opacity-100" />
         </div>
         <div class="p-5 flex flex-col flex-grow">
             <h3 class="text-base font-semibold text-gray-100 leading-snug line-clamp-2 mb-4 group-hover:text-bardo-gold transition-colors">Corte de névoa e fúria</h3>
@@ -525,15 +656,19 @@
     </article>
     <article class="relative flex flex-col bg-surface rounded-2xl border border-white/5 overflow-hidden hover:border-bardo-gold/40 transition-all duration-300 group shadow-lg">
         
-        <div class="relative h-64 w-full p-8 flex items-center justify-center bg-gradient-to-b from-white/[0.03] to-transparent border-b border-white/5">
-            <img src="https://m.media-amazon.com/images/I/81-VXYgospL._SL1500_.jpg" alt="Capa de Corte de asas e ruína" loading="lazy" class="h-full w-auto object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] group-hover:scale-[1.03] transition-all duration-500" />
+        <!-- Vitrine com Efeito Hover Swap -->
+        <div class="relative h-64 w-full bg-gradient-to-b from-white/[0.03] to-transparent border-b border-white/5 overflow-hidden">
+            <!-- Imagem 1: Capa (Soma ao Hover) -->
+            <img src="https://m.media-amazon.com/images/I/81-VXYgospL._SL1500_.jpg" alt="Capa de Corte de asas e ruína" loading="lazy" class="absolute inset-0 w-full h-full p-6 object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] transition-opacity duration-500 opacity-100 group-hover:opacity-0" />
+            <!-- Imagem 2: Gráfico (Aparece no Hover) -->
+            <img src="https://m.media-amazon.com/images/I/81-VXYgospL._SL1500_.jpg" alt="Gráfico de Corte de asas e ruína" loading="lazy" class="absolute inset-0 w-full h-full p-4 object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] transition-opacity duration-500 opacity-0 group-hover:opacity-100" />
         </div>
         <div class="p-5 flex flex-col flex-grow">
             <h3 class="text-base font-semibold text-gray-100 leading-snug line-clamp-2 mb-4 group-hover:text-bardo-gold transition-colors">Corte de asas e ruína</h3>
             <div class="flex flex-col mt-auto mb-5">
                 <div class="flex items-baseline gap-2">
                     <span class="text-2xl font-bold text-white tracking-tight">R$ 57,78</span>
-                    <span class="text-sm text-gray-500 line-through">R$ 56,62</span>
+                    <span class="text-sm text-gray-500 line-through">R$ 56,82</span>
                 </div>
             </div>
             <a href="https://link.amazon/B0gViTEpL" target="_blank" rel="nofollow noopener" class="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-white/5 hover:bg-bardo-gold hover:text-bardo-dark text-sm font-bold text-gray-200 transition-all">Comprar na Amazon</a>
@@ -541,8 +676,12 @@
     </article>
     <article class="relative flex flex-col bg-surface rounded-2xl border border-white/5 overflow-hidden hover:border-bardo-gold/40 transition-all duration-300 group shadow-lg">
         
-        <div class="relative h-64 w-full p-8 flex items-center justify-center bg-gradient-to-b from-white/[0.03] to-transparent border-b border-white/5">
-            <img src="https://m.media-amazon.com/images/I/910yLnXkQnL._SL1500_.jpg" alt="Capa de Corte de chamas prateadas" loading="lazy" class="h-full w-auto object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] group-hover:scale-[1.03] transition-all duration-500" />
+        <!-- Vitrine com Efeito Hover Swap -->
+        <div class="relative h-64 w-full bg-gradient-to-b from-white/[0.03] to-transparent border-b border-white/5 overflow-hidden">
+            <!-- Imagem 1: Capa (Soma ao Hover) -->
+            <img src="https://m.media-amazon.com/images/I/910yLnXkQnL._SL1500_.jpg" alt="Capa de Corte de chamas prateadas" loading="lazy" class="absolute inset-0 w-full h-full p-6 object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] transition-opacity duration-500 opacity-100 group-hover:opacity-0" />
+            <!-- Imagem 2: Gráfico (Aparece no Hover) -->
+            <img src="https://m.media-amazon.com/images/I/910yLnXkQnL._SL1500_.jpg" alt="Gráfico de Corte de chamas prateadas" loading="lazy" class="absolute inset-0 w-full h-full p-4 object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] transition-opacity duration-500 opacity-0 group-hover:opacity-100" />
         </div>
         <div class="p-5 flex flex-col flex-grow">
             <h3 class="text-base font-semibold text-gray-100 leading-snug line-clamp-2 mb-4 group-hover:text-bardo-gold transition-colors">Corte de chamas prateadas</h3>
@@ -557,8 +696,12 @@
     </article>
     <article class="relative flex flex-col bg-surface rounded-2xl border border-white/5 overflow-hidden hover:border-bardo-gold/40 transition-all duration-300 group shadow-lg">
         
-        <div class="relative h-64 w-full p-8 flex items-center justify-center bg-gradient-to-b from-white/[0.03] to-transparent border-b border-white/5">
-            <img src="https://m.media-amazon.com/images/I/81BFOwnB6AL._SL1500_.jpg" alt="Capa de Corte de Gelo e Estrelas" loading="lazy" class="h-full w-auto object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] group-hover:scale-[1.03] transition-all duration-500" />
+        <!-- Vitrine com Efeito Hover Swap -->
+        <div class="relative h-64 w-full bg-gradient-to-b from-white/[0.03] to-transparent border-b border-white/5 overflow-hidden">
+            <!-- Imagem 1: Capa (Soma ao Hover) -->
+            <img src="https://m.media-amazon.com/images/I/81BFOwnB6AL._SL1500_.jpg" alt="Capa de Corte de Gelo e Estrelas" loading="lazy" class="absolute inset-0 w-full h-full p-6 object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] transition-opacity duration-500 opacity-100 group-hover:opacity-0" />
+            <!-- Imagem 2: Gráfico (Aparece no Hover) -->
+            <img src="https://m.media-amazon.com/images/I/81BFOwnB6AL._SL1500_.jpg" alt="Gráfico de Corte de Gelo e Estrelas" loading="lazy" class="absolute inset-0 w-full h-full p-4 object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] transition-opacity duration-500 opacity-0 group-hover:opacity-100" />
         </div>
         <div class="p-5 flex flex-col flex-grow">
             <h3 class="text-base font-semibold text-gray-100 leading-snug line-clamp-2 mb-4 group-hover:text-bardo-gold transition-colors">Corte de Gelo e Estrelas</h3>
@@ -573,8 +716,12 @@
     </article>
     <article class="relative flex flex-col bg-surface rounded-2xl border border-white/5 overflow-hidden hover:border-bardo-gold/40 transition-all duration-300 group shadow-lg">
         
-        <div class="relative h-64 w-full p-8 flex items-center justify-center bg-gradient-to-b from-white/[0.03] to-transparent border-b border-white/5">
-            <img src="https://m.media-amazon.com/images/I/71pSq7HXJ0L._SL1500_.jpg" alt="Capa de Quarta asa" loading="lazy" class="h-full w-auto object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] group-hover:scale-[1.03] transition-all duration-500" />
+        <!-- Vitrine com Efeito Hover Swap -->
+        <div class="relative h-64 w-full bg-gradient-to-b from-white/[0.03] to-transparent border-b border-white/5 overflow-hidden">
+            <!-- Imagem 1: Capa (Soma ao Hover) -->
+            <img src="https://m.media-amazon.com/images/I/71pSq7HXJ0L._SL1500_.jpg" alt="Capa de Quarta asa" loading="lazy" class="absolute inset-0 w-full h-full p-6 object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] transition-opacity duration-500 opacity-100 group-hover:opacity-0" />
+            <!-- Imagem 2: Gráfico (Aparece no Hover) -->
+            <img src="https://m.media-amazon.com/images/I/71pSq7HXJ0L._SL1500_.jpg" alt="Gráfico de Quarta asa" loading="lazy" class="absolute inset-0 w-full h-full p-4 object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] transition-opacity duration-500 opacity-0 group-hover:opacity-100" />
         </div>
         <div class="p-5 flex flex-col flex-grow">
             <h3 class="text-base font-semibold text-gray-100 leading-snug line-clamp-2 mb-4 group-hover:text-bardo-gold transition-colors">Quarta asa</h3>
@@ -589,8 +736,12 @@
     </article>
     <article class="relative flex flex-col bg-surface rounded-2xl border border-white/5 overflow-hidden hover:border-bardo-gold/40 transition-all duration-300 group shadow-lg">
         
-        <div class="relative h-64 w-full p-8 flex items-center justify-center bg-gradient-to-b from-white/[0.03] to-transparent border-b border-white/5">
-            <img src="https://m.media-amazon.com/images/I/91i+8KU2U5L._SL1500_.jpg" alt="Capa de Chama de Ferro" loading="lazy" class="h-full w-auto object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] group-hover:scale-[1.03] transition-all duration-500" />
+        <!-- Vitrine com Efeito Hover Swap -->
+        <div class="relative h-64 w-full bg-gradient-to-b from-white/[0.03] to-transparent border-b border-white/5 overflow-hidden">
+            <!-- Imagem 1: Capa (Soma ao Hover) -->
+            <img src="https://m.media-amazon.com/images/I/91i+8KU2U5L._SL1500_.jpg" alt="Capa de Chama de Ferro" loading="lazy" class="absolute inset-0 w-full h-full p-6 object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] transition-opacity duration-500 opacity-100 group-hover:opacity-0" />
+            <!-- Imagem 2: Gráfico (Aparece no Hover) -->
+            <img src="https://m.media-amazon.com/images/I/91i+8KU2U5L._SL1500_.jpg" alt="Gráfico de Chama de Ferro" loading="lazy" class="absolute inset-0 w-full h-full p-4 object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] transition-opacity duration-500 opacity-0 group-hover:opacity-100" />
         </div>
         <div class="p-5 flex flex-col flex-grow">
             <h3 class="text-base font-semibold text-gray-100 leading-snug line-clamp-2 mb-4 group-hover:text-bardo-gold transition-colors">Chama de Ferro</h3>
@@ -604,9 +755,13 @@
         </div>
     </article>
     <article class="relative flex flex-col bg-surface rounded-2xl border border-white/5 overflow-hidden hover:border-bardo-gold/40 transition-all duration-300 group shadow-lg">
-        <div class="absolute top-3 left-3 z-10"><span class="px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 rounded-full backdrop-blur-md shadow-lg">Abaixo da Média</span></div>
-        <div class="relative h-64 w-full p-8 flex items-center justify-center bg-gradient-to-b from-white/[0.03] to-transparent border-b border-white/5">
-            <img src="https://m.media-amazon.com/images/I/91915km0UdL._SL1500_.jpg" alt="Capa de Tempestade de Ônix" loading="lazy" class="h-full w-auto object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] group-hover:scale-[1.03] transition-all duration-500" />
+        
+        <!-- Vitrine com Efeito Hover Swap -->
+        <div class="relative h-64 w-full bg-gradient-to-b from-white/[0.03] to-transparent border-b border-white/5 overflow-hidden">
+            <!-- Imagem 1: Capa (Soma ao Hover) -->
+            <img src="https://m.media-amazon.com/images/I/91915km0UdL._SL1500_.jpg" alt="Capa de Tempestade de Ônix" loading="lazy" class="absolute inset-0 w-full h-full p-6 object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] transition-opacity duration-500 opacity-100 group-hover:opacity-0" />
+            <!-- Imagem 2: Gráfico (Aparece no Hover) -->
+            <img src="https://m.media-amazon.com/images/I/91915km0UdL._SL1500_.jpg" alt="Gráfico de Tempestade de Ônix" loading="lazy" class="absolute inset-0 w-full h-full p-4 object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] transition-opacity duration-500 opacity-0 group-hover:opacity-100" />
         </div>
         <div class="p-5 flex flex-col flex-grow">
             <h3 class="text-base font-semibold text-gray-100 leading-snug line-clamp-2 mb-4 group-hover:text-bardo-gold transition-colors">Tempestade de Ônix</h3>
@@ -621,15 +776,19 @@
     </article>
     <article class="relative flex flex-col bg-surface rounded-2xl border border-white/5 overflow-hidden hover:border-bardo-gold/40 transition-all duration-300 group shadow-lg">
         <div class="absolute top-3 left-3 z-10"><span class="px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 rounded-full backdrop-blur-md shadow-lg">Abaixo da Média</span></div>
-        <div class="relative h-64 w-full p-8 flex items-center justify-center bg-gradient-to-b from-white/[0.03] to-transparent border-b border-white/5">
-            <img src="https://m.media-amazon.com/images/I/81FH6q0EqYS._SL1500_.jpg" alt="Capa de O Príncipe Cruel" loading="lazy" class="h-full w-auto object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] group-hover:scale-[1.03] transition-all duration-500" />
+        <!-- Vitrine com Efeito Hover Swap -->
+        <div class="relative h-64 w-full bg-gradient-to-b from-white/[0.03] to-transparent border-b border-white/5 overflow-hidden">
+            <!-- Imagem 1: Capa (Soma ao Hover) -->
+            <img src="assets/capa_principe_cruel.jpg" alt="Capa de O Príncipe Cruel" loading="lazy" class="absolute inset-0 w-full h-full p-6 object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] transition-opacity duration-500 opacity-100 group-hover:opacity-0" />
+            <!-- Imagem 2: Gráfico (Aparece no Hover) -->
+            <img src="assets/grafico_principe_cruel.png" alt="Gráfico de O Príncipe Cruel" loading="lazy" class="absolute inset-0 w-full h-full p-4 object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] transition-opacity duration-500 opacity-0 group-hover:opacity-100" />
         </div>
         <div class="p-5 flex flex-col flex-grow">
             <h3 class="text-base font-semibold text-gray-100 leading-snug line-clamp-2 mb-4 group-hover:text-bardo-gold transition-colors">O Príncipe Cruel</h3>
             <div class="flex flex-col mt-auto mb-5">
                 <div class="flex items-baseline gap-2">
                     <span class="text-2xl font-bold text-white tracking-tight">R$ 39,87</span>
-                    <span class="text-sm text-gray-500 line-through">R$ 41,18</span>
+                    <span class="text-sm text-gray-500 line-through">R$ 40,96</span>
                 </div>
             </div>
             <a href="https://link.amazon/B0aKkKOM2" target="_blank" rel="nofollow noopener" class="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-white/5 hover:bg-bardo-gold hover:text-bardo-dark text-sm font-bold text-gray-200 transition-all">Comprar na Amazon</a>
@@ -637,15 +796,19 @@
     </article>
     <article class="relative flex flex-col bg-surface rounded-2xl border border-white/5 overflow-hidden hover:border-bardo-gold/40 transition-all duration-300 group shadow-lg">
         
-        <div class="relative h-64 w-full p-8 flex items-center justify-center bg-gradient-to-b from-white/[0.03] to-transparent border-b border-white/5">
-            <img src="https://m.media-amazon.com/images/I/81WdabEQELS._SL1500_.jpg" alt="Capa de Box O Povo do Ar" loading="lazy" class="h-full w-auto object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] group-hover:scale-[1.03] transition-all duration-500" />
+        <!-- Vitrine com Efeito Hover Swap -->
+        <div class="relative h-64 w-full bg-gradient-to-b from-white/[0.03] to-transparent border-b border-white/5 overflow-hidden">
+            <!-- Imagem 1: Capa (Soma ao Hover) -->
+            <img src="https://m.media-amazon.com/images/I/81WdabEQELS._SL1500_.jpg" alt="Capa de Box O Povo do Ar" loading="lazy" class="absolute inset-0 w-full h-full p-6 object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] transition-opacity duration-500 opacity-100 group-hover:opacity-0" />
+            <!-- Imagem 2: Gráfico (Aparece no Hover) -->
+            <img src="https://m.media-amazon.com/images/I/81WdabEQELS._SL1500_.jpg" alt="Gráfico de Box O Povo do Ar" loading="lazy" class="absolute inset-0 w-full h-full p-4 object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] transition-opacity duration-500 opacity-0 group-hover:opacity-100" />
         </div>
         <div class="p-5 flex flex-col flex-grow">
             <h3 class="text-base font-semibold text-gray-100 leading-snug line-clamp-2 mb-4 group-hover:text-bardo-gold transition-colors">Box O Povo do Ar</h3>
             <div class="flex flex-col mt-auto mb-5">
                 <div class="flex items-baseline gap-2">
                     <span class="text-2xl font-bold text-white tracking-tight">R$ 163,94</span>
-                    <span class="text-sm text-gray-500 line-through">R$ 144,48</span>
+                    <span class="text-sm text-gray-500 line-through">R$ 147,72</span>
                 </div>
             </div>
             <a href="https://link.amazon/B02R68ory" target="_blank" rel="nofollow noopener" class="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-white/5 hover:bg-bardo-gold hover:text-bardo-dark text-sm font-bold text-gray-200 transition-all">Comprar na Amazon</a>
@@ -653,8 +816,12 @@
     </article>
     <article class="relative flex flex-col bg-surface rounded-2xl border border-white/5 overflow-hidden hover:border-bardo-gold/40 transition-all duration-300 group shadow-lg">
         
-        <div class="relative h-64 w-full p-8 flex items-center justify-center bg-gradient-to-b from-white/[0.03] to-transparent border-b border-white/5">
-            <img src="https://m.media-amazon.com/images/I/71X245OYRBL._SL1500_.jpg" alt="Capa de A vida invisível de Addie LaRue" loading="lazy" class="h-full w-auto object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] group-hover:scale-[1.03] transition-all duration-500" />
+        <!-- Vitrine com Efeito Hover Swap -->
+        <div class="relative h-64 w-full bg-gradient-to-b from-white/[0.03] to-transparent border-b border-white/5 overflow-hidden">
+            <!-- Imagem 1: Capa (Soma ao Hover) -->
+            <img src="https://m.media-amazon.com/images/I/71X245OYRBL._SL1500_.jpg" alt="Capa de A vida invisível de Addie LaRue" loading="lazy" class="absolute inset-0 w-full h-full p-6 object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] transition-opacity duration-500 opacity-100 group-hover:opacity-0" />
+            <!-- Imagem 2: Gráfico (Aparece no Hover) -->
+            <img src="https://m.media-amazon.com/images/I/71X245OYRBL._SL1500_.jpg" alt="Gráfico de A vida invisível de Addie LaRue" loading="lazy" class="absolute inset-0 w-full h-full p-4 object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] transition-opacity duration-500 opacity-0 group-hover:opacity-100" />
         </div>
         <div class="p-5 flex flex-col flex-grow">
             <h3 class="text-base font-semibold text-gray-100 leading-snug line-clamp-2 mb-4 group-hover:text-bardo-gold transition-colors">A vida invisível de Addie LaRue</h3>
@@ -669,8 +836,12 @@
     </article>
     <article class="relative flex flex-col bg-surface rounded-2xl border border-white/5 overflow-hidden hover:border-bardo-gold/40 transition-all duration-300 group shadow-lg">
         
-        <div class="relative h-64 w-full p-8 flex items-center justify-center bg-gradient-to-b from-white/[0.03] to-transparent border-b border-white/5">
-            <img src="https://m.media-amazon.com/images/I/61ZNe-xE5cL._SL1024_.jpg" alt="Capa de Box The Witcher" loading="lazy" class="h-full w-auto object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] group-hover:scale-[1.03] transition-all duration-500" />
+        <!-- Vitrine com Efeito Hover Swap -->
+        <div class="relative h-64 w-full bg-gradient-to-b from-white/[0.03] to-transparent border-b border-white/5 overflow-hidden">
+            <!-- Imagem 1: Capa (Soma ao Hover) -->
+            <img src="https://m.media-amazon.com/images/I/61ZNe-xE5cL._SL1024_.jpg" alt="Capa de Box The Witcher" loading="lazy" class="absolute inset-0 w-full h-full p-6 object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] transition-opacity duration-500 opacity-100 group-hover:opacity-0" />
+            <!-- Imagem 2: Gráfico (Aparece no Hover) -->
+            <img src="https://m.media-amazon.com/images/I/61ZNe-xE5cL._SL1024_.jpg" alt="Gráfico de Box The Witcher" loading="lazy" class="absolute inset-0 w-full h-full p-4 object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] transition-opacity duration-500 opacity-0 group-hover:opacity-100" />
         </div>
         <div class="p-5 flex flex-col flex-grow">
             <h3 class="text-base font-semibold text-gray-100 leading-snug line-clamp-2 mb-4 group-hover:text-bardo-gold transition-colors">Box The Witcher</h3>
@@ -685,8 +856,12 @@
     </article>
     <article class="relative flex flex-col bg-surface rounded-2xl border border-white/5 overflow-hidden hover:border-bardo-gold/40 transition-all duration-300 group shadow-lg">
         
-        <div class="relative h-64 w-full p-8 flex items-center justify-center bg-gradient-to-b from-white/[0.03] to-transparent border-b border-white/5">
-            <img src="https://m.media-amazon.com/images/I/91CmC6MtLsL._SL1500_.jpg" alt="Capa de O Império do Vampiro" loading="lazy" class="h-full w-auto object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] group-hover:scale-[1.03] transition-all duration-500" />
+        <!-- Vitrine com Efeito Hover Swap -->
+        <div class="relative h-64 w-full bg-gradient-to-b from-white/[0.03] to-transparent border-b border-white/5 overflow-hidden">
+            <!-- Imagem 1: Capa (Soma ao Hover) -->
+            <img src="https://m.media-amazon.com/images/I/91CmC6MtLsL._SL1500_.jpg" alt="Capa de O Império do Vampiro" loading="lazy" class="absolute inset-0 w-full h-full p-6 object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] transition-opacity duration-500 opacity-100 group-hover:opacity-0" />
+            <!-- Imagem 2: Gráfico (Aparece no Hover) -->
+            <img src="https://m.media-amazon.com/images/I/91CmC6MtLsL._SL1500_.jpg" alt="Gráfico de O Império do Vampiro" loading="lazy" class="absolute inset-0 w-full h-full p-4 object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] transition-opacity duration-500 opacity-0 group-hover:opacity-100" />
         </div>
         <div class="p-5 flex flex-col flex-grow">
             <h3 class="text-base font-semibold text-gray-100 leading-snug line-clamp-2 mb-4 group-hover:text-bardo-gold transition-colors">O Império do Vampiro</h3>
@@ -701,8 +876,12 @@
     </article>
     <article class="relative flex flex-col bg-surface rounded-2xl border border-white/5 overflow-hidden hover:border-bardo-gold/40 transition-all duration-300 group shadow-lg">
         
-        <div class="relative h-64 w-full p-8 flex items-center justify-center bg-gradient-to-b from-white/[0.03] to-transparent border-b border-white/5">
-            <img src="https://m.media-amazon.com/images/I/71Ow4fYhwcL._SL1500_.jpg" alt="Capa de O Poder da Espada (A Primeira Lei)" loading="lazy" class="h-full w-auto object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] group-hover:scale-[1.03] transition-all duration-500" />
+        <!-- Vitrine com Efeito Hover Swap -->
+        <div class="relative h-64 w-full bg-gradient-to-b from-white/[0.03] to-transparent border-b border-white/5 overflow-hidden">
+            <!-- Imagem 1: Capa (Soma ao Hover) -->
+            <img src="https://m.media-amazon.com/images/I/71Ow4fYhwcL._SL1500_.jpg" alt="Capa de O Poder da Espada (A Primeira Lei)" loading="lazy" class="absolute inset-0 w-full h-full p-6 object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] transition-opacity duration-500 opacity-100 group-hover:opacity-0" />
+            <!-- Imagem 2: Gráfico (Aparece no Hover) -->
+            <img src="https://m.media-amazon.com/images/I/71Ow4fYhwcL._SL1500_.jpg" alt="Gráfico de O Poder da Espada (A Primeira Lei)" loading="lazy" class="absolute inset-0 w-full h-full p-4 object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] transition-opacity duration-500 opacity-0 group-hover:opacity-100" />
         </div>
         <div class="p-5 flex flex-col flex-grow">
             <h3 class="text-base font-semibold text-gray-100 leading-snug line-clamp-2 mb-4 group-hover:text-bardo-gold transition-colors">O Poder da Espada (A Primeira Lei)</h3>
@@ -717,8 +896,12 @@
     </article>
     <article class="relative flex flex-col bg-surface rounded-2xl border border-white/5 overflow-hidden hover:border-bardo-gold/40 transition-all duration-300 group shadow-lg">
         
-        <div class="relative h-64 w-full p-8 flex items-center justify-center bg-gradient-to-b from-white/[0.03] to-transparent border-b border-white/5">
-            <img src="https://m.media-amazon.com/images/I/71-BMB+blgL._SL1500_.jpg" alt="Capa de O Feiticeiro de Terramar" loading="lazy" class="h-full w-auto object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] group-hover:scale-[1.03] transition-all duration-500" />
+        <!-- Vitrine com Efeito Hover Swap -->
+        <div class="relative h-64 w-full bg-gradient-to-b from-white/[0.03] to-transparent border-b border-white/5 overflow-hidden">
+            <!-- Imagem 1: Capa (Soma ao Hover) -->
+            <img src="https://m.media-amazon.com/images/I/71-BMB+blgL._SL1500_.jpg" alt="Capa de O Feiticeiro de Terramar" loading="lazy" class="absolute inset-0 w-full h-full p-6 object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] transition-opacity duration-500 opacity-100 group-hover:opacity-0" />
+            <!-- Imagem 2: Gráfico (Aparece no Hover) -->
+            <img src="https://m.media-amazon.com/images/I/71-BMB+blgL._SL1500_.jpg" alt="Gráfico de O Feiticeiro de Terramar" loading="lazy" class="absolute inset-0 w-full h-full p-4 object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] transition-opacity duration-500 opacity-0 group-hover:opacity-100" />
         </div>
         <div class="p-5 flex flex-col flex-grow">
             <h3 class="text-base font-semibold text-gray-100 leading-snug line-clamp-2 mb-4 group-hover:text-bardo-gold transition-colors">O Feiticeiro de Terramar</h3>
@@ -733,8 +916,12 @@
     </article>
     <article class="relative flex flex-col bg-surface rounded-2xl border border-white/5 overflow-hidden hover:border-bardo-gold/40 transition-all duration-300 group shadow-lg">
         
-        <div class="relative h-64 w-full p-8 flex items-center justify-center bg-gradient-to-b from-white/[0.03] to-transparent border-b border-white/5">
-            <img src="https://m.media-amazon.com/images/I/81qMz8Yl2YL._SL1500_.jpg" alt="Capa de Circe" loading="lazy" class="h-full w-auto object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] group-hover:scale-[1.03] transition-all duration-500" />
+        <!-- Vitrine com Efeito Hover Swap -->
+        <div class="relative h-64 w-full bg-gradient-to-b from-white/[0.03] to-transparent border-b border-white/5 overflow-hidden">
+            <!-- Imagem 1: Capa (Soma ao Hover) -->
+            <img src="https://m.media-amazon.com/images/I/81qMz8Yl2YL._SL1500_.jpg" alt="Capa de Circe" loading="lazy" class="absolute inset-0 w-full h-full p-6 object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] transition-opacity duration-500 opacity-100 group-hover:opacity-0" />
+            <!-- Imagem 2: Gráfico (Aparece no Hover) -->
+            <img src="https://m.media-amazon.com/images/I/81qMz8Yl2YL._SL1500_.jpg" alt="Gráfico de Circe" loading="lazy" class="absolute inset-0 w-full h-full p-4 object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] transition-opacity duration-500 opacity-0 group-hover:opacity-100" />
         </div>
         <div class="p-5 flex flex-col flex-grow">
             <h3 class="text-base font-semibold text-gray-100 leading-snug line-clamp-2 mb-4 group-hover:text-bardo-gold transition-colors">Circe</h3>
@@ -749,8 +936,12 @@
     </article>
     <article class="relative flex flex-col bg-surface rounded-2xl border border-white/5 overflow-hidden hover:border-bardo-gold/40 transition-all duration-300 group shadow-lg">
         
-        <div class="relative h-64 w-full p-8 flex items-center justify-center bg-gradient-to-b from-white/[0.03] to-transparent border-b border-white/5">
-            <img src="https://m.media-amazon.com/images/I/81HsLWLrCzL._SL1500_.jpg" alt="Capa de As Crônicas de Nárnia (Volume Único)" loading="lazy" class="h-full w-auto object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] group-hover:scale-[1.03] transition-all duration-500" />
+        <!-- Vitrine com Efeito Hover Swap -->
+        <div class="relative h-64 w-full bg-gradient-to-b from-white/[0.03] to-transparent border-b border-white/5 overflow-hidden">
+            <!-- Imagem 1: Capa (Soma ao Hover) -->
+            <img src="https://m.media-amazon.com/images/I/81HsLWLrCzL._SL1500_.jpg" alt="Capa de As Crônicas de Nárnia (Volume Único)" loading="lazy" class="absolute inset-0 w-full h-full p-6 object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] transition-opacity duration-500 opacity-100 group-hover:opacity-0" />
+            <!-- Imagem 2: Gráfico (Aparece no Hover) -->
+            <img src="https://m.media-amazon.com/images/I/81HsLWLrCzL._SL1500_.jpg" alt="Gráfico de As Crônicas de Nárnia (Volume Único)" loading="lazy" class="absolute inset-0 w-full h-full p-4 object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] transition-opacity duration-500 opacity-0 group-hover:opacity-100" />
         </div>
         <div class="p-5 flex flex-col flex-grow">
             <h3 class="text-base font-semibold text-gray-100 leading-snug line-clamp-2 mb-4 group-hover:text-bardo-gold transition-colors">As Crônicas de Nárnia (Volume Único)</h3>
@@ -765,15 +956,19 @@
     </article>
     <article class="relative flex flex-col bg-surface rounded-2xl border border-white/5 overflow-hidden hover:border-bardo-gold/40 transition-all duration-300 group shadow-lg">
         <div class="absolute top-3 left-3 z-10"><span class="px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 rounded-full backdrop-blur-md shadow-lg">Abaixo da Média</span></div>
-        <div class="relative h-64 w-full p-8 flex items-center justify-center bg-gradient-to-b from-white/[0.03] to-transparent border-b border-white/5">
-            <img src="https://m.media-amazon.com/images/I/91sjnBZTDKL._SL1500_.jpg" alt="Capa de Duna" loading="lazy" class="h-full w-auto object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] group-hover:scale-[1.03] transition-all duration-500" />
+        <!-- Vitrine com Efeito Hover Swap -->
+        <div class="relative h-64 w-full bg-gradient-to-b from-white/[0.03] to-transparent border-b border-white/5 overflow-hidden">
+            <!-- Imagem 1: Capa (Soma ao Hover) -->
+            <img src="https://m.media-amazon.com/images/I/91sjnBZTDKL._SL1500_.jpg" alt="Capa de Duna" loading="lazy" class="absolute inset-0 w-full h-full p-6 object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] transition-opacity duration-500 opacity-100 group-hover:opacity-0" />
+            <!-- Imagem 2: Gráfico (Aparece no Hover) -->
+            <img src="https://m.media-amazon.com/images/I/91sjnBZTDKL._SL1500_.jpg" alt="Gráfico de Duna" loading="lazy" class="absolute inset-0 w-full h-full p-4 object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] transition-opacity duration-500 opacity-0 group-hover:opacity-100" />
         </div>
         <div class="p-5 flex flex-col flex-grow">
             <h3 class="text-base font-semibold text-gray-100 leading-snug line-clamp-2 mb-4 group-hover:text-bardo-gold transition-colors">Duna</h3>
             <div class="flex flex-col mt-auto mb-5">
                 <div class="flex items-baseline gap-2">
                     <span class="text-2xl font-bold text-white tracking-tight">R$ 212,70</span>
-                    <span class="text-sm text-gray-500 line-through">R$ 214,33</span>
+                    <span class="text-sm text-gray-500 line-through">R$ 214,06</span>
                 </div>
             </div>
             <a href="https://link.amazon/B00nzuqe1" target="_blank" rel="nofollow noopener" class="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-white/5 hover:bg-bardo-gold hover:text-bardo-dark text-sm font-bold text-gray-200 transition-all">Comprar na Amazon</a>
@@ -781,8 +976,12 @@
     </article>
     <article class="relative flex flex-col bg-surface rounded-2xl border border-white/5 overflow-hidden hover:border-bardo-gold/40 transition-all duration-300 group shadow-lg">
         
-        <div class="relative h-64 w-full p-8 flex items-center justify-center bg-gradient-to-b from-white/[0.03] to-transparent border-b border-white/5">
-            <img src="https://m.media-amazon.com/images/I/716xVuEyg4L._SL1200_.jpg" alt="Capa de Box Harry Potter - Edição Comemorativa" loading="lazy" class="h-full w-auto object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] group-hover:scale-[1.03] transition-all duration-500" />
+        <!-- Vitrine com Efeito Hover Swap -->
+        <div class="relative h-64 w-full bg-gradient-to-b from-white/[0.03] to-transparent border-b border-white/5 overflow-hidden">
+            <!-- Imagem 1: Capa (Soma ao Hover) -->
+            <img src="https://m.media-amazon.com/images/I/716xVuEyg4L._SL1200_.jpg" alt="Capa de Box Harry Potter - Edição Comemorativa" loading="lazy" class="absolute inset-0 w-full h-full p-6 object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] transition-opacity duration-500 opacity-100 group-hover:opacity-0" />
+            <!-- Imagem 2: Gráfico (Aparece no Hover) -->
+            <img src="https://m.media-amazon.com/images/I/716xVuEyg4L._SL1200_.jpg" alt="Gráfico de Box Harry Potter - Edição Comemorativa" loading="lazy" class="absolute inset-0 w-full h-full p-4 object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] transition-opacity duration-500 opacity-0 group-hover:opacity-100" />
         </div>
         <div class="p-5 flex flex-col flex-grow">
             <h3 class="text-base font-semibold text-gray-100 leading-snug line-clamp-2 mb-4 group-hover:text-bardo-gold transition-colors">Box Harry Potter - Edição Comemorativa</h3>
@@ -797,8 +996,12 @@
     </article>
     <article class="relative flex flex-col bg-surface rounded-2xl border border-white/5 overflow-hidden hover:border-bardo-gold/40 transition-all duration-300 group shadow-lg">
         
-        <div class="relative h-64 w-full p-8 flex items-center justify-center bg-gradient-to-b from-white/[0.03] to-transparent border-b border-white/5">
-            <img src="https://m.media-amazon.com/images/I/615vvnBzePL.jpg" alt="Capa de Percy Jackson e os Olimpianos (Box)" loading="lazy" class="h-full w-auto object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] group-hover:scale-[1.03] transition-all duration-500" />
+        <!-- Vitrine com Efeito Hover Swap -->
+        <div class="relative h-64 w-full bg-gradient-to-b from-white/[0.03] to-transparent border-b border-white/5 overflow-hidden">
+            <!-- Imagem 1: Capa (Soma ao Hover) -->
+            <img src="https://m.media-amazon.com/images/I/615vvnBzePL.jpg" alt="Capa de Percy Jackson e os Olimpianos (Box)" loading="lazy" class="absolute inset-0 w-full h-full p-6 object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] transition-opacity duration-500 opacity-100 group-hover:opacity-0" />
+            <!-- Imagem 2: Gráfico (Aparece no Hover) -->
+            <img src="https://m.media-amazon.com/images/I/615vvnBzePL.jpg" alt="Gráfico de Percy Jackson e os Olimpianos (Box)" loading="lazy" class="absolute inset-0 w-full h-full p-4 object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] transition-opacity duration-500 opacity-0 group-hover:opacity-100" />
         </div>
         <div class="p-5 flex flex-col flex-grow">
             <h3 class="text-base font-semibold text-gray-100 leading-snug line-clamp-2 mb-4 group-hover:text-bardo-gold transition-colors">Percy Jackson e os Olimpianos (Box)</h3>
