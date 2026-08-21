@@ -402,8 +402,11 @@ async def processar_ofertas():
 
         time.sleep(random.uniform(2.0, 4.0))
 
+        livro_novo = False
         if item_id not in historico:
-            historico[item_id] = {"menor_preco_historico": preco_atual, "ultimo_preco_divulgado": None, "valores_30_dias": []}
+            # Salva o preço atual como 'ultimo_divulgado' para criar a base, mas sinaliza que é novo
+            historico[item_id] = {"menor_preco_historico": preco_atual, "ultimo_preco_divulgado": preco_atual, "valores_30_dias": []}
+            livro_novo = True
         
         dados_item = historico[item_id]
         dados_item["valores_30_dias"].append({"data": data_hoje, "preco": preco_atual})
@@ -419,7 +422,9 @@ async def processar_ofertas():
         condicao_2 = (preco_atual < media_preco) and (preco_atual < ultimo_divulgado) if ultimo_divulgado is not None else False
         condicao_forcada = ultimo_divulgado is None
 
-        if condicao_1 or condicao_2 or condicao_forcada:
+        if livro_novo:
+            print(f"   🆕 Primeira vez rastreando. Preço base salvo no histórico, não será postado hoje.")
+        elif condicao_1 or condicao_2 or condicao_forcada:
             print(f"🔥 Aprovado para postagem: {item['titulo']}")
             mensagem = f"🚨 PROMOÇÃO!\n\n📚 *{item['titulo']}*\n💰 R$ {formatar_real(preco_atual)}\n\n🔗 {item['url']}"
             
