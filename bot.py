@@ -57,16 +57,14 @@ def formatar_real(valor):
     return f"{valor:,.2f}".replace(",", "v").replace(".", ",").replace("v", ".")
 
 def remover_emojis(texto):
-    """Remove caracteres emoji para evitar blocos brancos em fontes ttf comuns."""
     if not texto:
         return ""
     return re.sub(r'[^\x00-\x7F\x80-\xFF\u0100-\u017F\u0180-\u024F\u1E00-\u1EFF]', '', texto).strip()
 
 # ==========================================================
-# CÉREBRO DE RASPAGEM NATIVA (ZERO CUSTO E ANTI-BLOQUEIO)
+# CÉREBRO DE RASPAGEM NATIVA
 # ==========================================================
 def obter_asin_do_link(url_curta):
-    """Segue o redirecionamento disfarçado de Chrome para capturar o ASIN oficial."""
     try:
         res = requests.get(url_curta, impersonate="chrome", timeout=15, allow_redirects=True)
         url_final = res.url
@@ -84,9 +82,7 @@ def obter_asin_do_link(url_curta):
     return None
 
 def raspar_preco_amazon_direto(url_original):
-    """Raspa o preço nativamente burlando o TLS Fingerprint da Amazon via página de busca."""
     asin = obter_asin_do_link(url_original)
-    
     if not asin:
         print("  ❌ ASIN não encontrado na URL final.")
         return None
@@ -96,53 +92,48 @@ def raspar_preco_amazon_direto(url_original):
     for tentativa in range(3):
         try:
             res = requests.get(url_busca, impersonate="chrome", timeout=15)
-            
             if res.status_code == 200:
                 soup = BeautifulSoup(res.content, "html.parser")
-                
-                # Procura a div de preço no primeiro cartão de resultado da pesquisa
                 preco_elemento = soup.select_one(f'div[data-asin="{asin}"] .a-price .a-offscreen')
-                
-                # Fallback se a classe data-asin não estiver disponível
                 if not preco_elemento:
                     preco_elemento = soup.select_one('.s-result-item .a-price .a-offscreen')
                 
                 if preco_elemento:
                     texto_preco = preco_elemento.get_text().strip()
                     texto_limpo = texto_preco.replace("R$", "").replace("\xa0", "").replace(" ", "").replace(".", "").replace(",", ".").strip()
-                    
                     match_preco = re.search(r"(\d+\.\d{2})", texto_limpo)
                     if match_preco:
                         return float(match_preco.group(1))
                 else:
-                    print(f"  ⚠️ [Tentativa {tentativa+1}/3] Página carregou sem o preço (Fora de estoque).")
+                    print(f"  ⚠️ [Tentativa {tentativa+1}/3] Fora de estoque ou layout dinâmico.")
             else:
                 print(f"  ⚠️ [Tentativa {tentativa+1}/3] Erro HTTP: {res.status_code}")
                 
         except Exception as e:
-            print(f"  ❌ Erro de conexão com a Amazon: {e}")
+            print(f"  ❌ Erro de conexão: {e}")
             
         time.sleep(random.uniform(2.0, 5.0))
-        
     return None
 
 # ==========================================================
-# INTEGRAÇÃO GEMINI: GERAÇÃO DE LEGENDA PARA TIKTOK
+# INTEGRAÇÃO GEMINI: GROWTH HACKING PROMPT
 # ==========================================================
 def gerar_legenda_ia(titulo, preco_atual, media_preco):
     api_key = os.getenv("GEMINI_API_KEY")
     
     legenda_padrao = (
-        f"🔥 *QUEDA DE PREÇO!* {titulo}\n\n"
-        f"💰 *Preço Atual:* R$ {formatar_real(preco_atual)}\n"
-        f"📊 *Média de 30 dias:* R$ {formatar_real(media_preco)}\n\n"
-        f"🔗 *Link de compra com desconto no nosso canal do Telegram (link na bio)!*\n\n"
-        f"#booktokbrasil #booktok #livros #promocaodelivros"
+        f"🔥 URGENTE: SURTO NA AMAZON!\n\n"
+        f"📚 {titulo}\n"
+        f"💰 Caiu para: R$ {formatar_real(preco_atual)}\n"
+        f"📉 Média normal: R$ {formatar_real(media_preco)}\n\n"
+        f"🔗 Corre nos comentários antes que o estoque zere!\n\n"
+        f"#booktokbrasil #promocaodelivros #fantasia #livros"
     )
     
     resultado_padrao = {
-        "gancho": "Você já conhecia essa história?",
-        "legenda": legenda_padrao
+        "gancho": "VOCÊ NÃO VAI ACREDITAR NISSO...",
+        "legenda": legenda_padrao,
+        "comentario_estrategico": "🚨 O LINK TÁ LÁ NO NOSSO CANAL DO TELEGRAM! (Link da bio). Quem aqui já leu essa obra de arte? 👇 Me contem sem spoilers!"
     }
 
     if not api_key:
@@ -151,13 +142,16 @@ def gerar_legenda_ia(titulo, preco_atual, media_preco):
     try:
         client = genai.Client(api_key=api_key)
         prompt = f"""
-        Aja como um criador de conteúdo do BookTok/Cultura Geek no TikTok. 
-        O livro '{titulo}' entrou em promoção na Amazon: de R$ {formatar_real(media_preco)} por R$ {formatar_real(preco_atual)}.
+        Atue como um Growth Hacker Sênior e Especialista no algoritmo do TikTok/Reels em 2026.
+        O livro '{titulo}' entrou em promoção pesada na Amazon: de R$ {formatar_real(media_preco)} por apenas R$ {formatar_real(preco_atual)}.
 
-        Forneça a resposta estritamente no seguinte formato JSON (apenas o JSON puro):
+        A plataforma diminui o alcance de vídeos que dizem "Link na bio". Nossa estratégia é mandar a pessoa para os COMENTÁRIOS, onde o link real estará fixado.
+
+        Retorne EXATAMENTE UM JSON com as seguintes chaves:
         {{
-            "gancho": "Uma frase de impacto curta e intrigante de até 10 palavras sobre o lore/autor do livro",
-            "legenda": "A legenda completa do TikTok seguindo as regras..."
+            "gancho": "Frase de impacto curta e explosiva (máx 7 palavras) que prenda a atenção nos 2 primeiros segundos.",
+            "legenda": "Legenda magnética otimizada para SEO. NÃO use as palavras 'link' ou 'bio'. Diga para a pessoa checar o comentário fixado. Inclua hashtags em alta focadas no gênero de fantasia/livros.",
+            "comentario_estrategico": "Crie o comentário EXATO que eu vou fixar. Ele DEVE conter a chamada 'O link do desconto tá lá no nosso canal do Telegram (link na minha Bio)!' e finalizar com uma pergunta super polêmica ou instigante sobre o universo/personagens desse livro específico para forçar os usuários a responderem."
         }}
         """
         response = client.models.generate_content(model='gemini-3.5-flash', contents=prompt)
@@ -165,16 +159,17 @@ def gerar_legenda_ia(titulo, preco_atual, media_preco):
             texto_limpo = response.text.replace("```json", "").replace("```", "").strip()
             dados = json.loads(texto_limpo)
             return {
-                "gancho": dados.get("gancho", "Sua próxima grande leitura!"),
-                "legenda": dados.get("legenda", legenda_padrao)
+                "gancho": dados.get("gancho", resultado_padrao["gancho"]),
+                "legenda": dados.get("legenda", legenda_padrao),
+                "comentario_estrategico": dados.get("comentario_estrategico", resultado_padrao["comentario_estrategico"])
             }
         return resultado_padrao
     except Exception as e:
-        print(f"❌ Erro ao gerar legenda/gancho com Gemini: {e}")
+        print(f"❌ Erro na IA: {e}")
         return resultado_padrao
 
 # ==========================================================
-# DESIGNER DE VÍDEO (TIKTOK V3 PREMIUM)
+# DESIGNER DE VÍDEO (LOOPING E RETENÇÃO)
 # ==========================================================
 def obter_fonte(tamanho):
     caminho_fonte = os.path.join(ASSETS_DIR, "Montserrat-Bold.ttf")
@@ -182,7 +177,6 @@ def obter_fonte(tamanho):
         url = "https://github.com/JulietaUla/Montserrat/raw/master/fonts/ttf/Montserrat-Bold.ttf"
         try:
             res = requests.get(url, impersonate="chrome", timeout=15)
-            res.raise_for_status()
             with open(caminho_fonte, 'wb') as f:
                 f.write(res.content)
         except Exception:
@@ -204,13 +198,13 @@ def criar_gradiente_vertical(largura, altura, cor_topo, cor_base):
 def gerar_video_tiktok(item, media_preco, caminho_capa, caminho_grafico, caminho_saida_video, gancho_ia=""):
     largura, altura = 1080, 1920
     fps = 24
-    duracao = 6
-    total_frames = fps * duracao
+    duracao = 5.5
+    total_frames = int(fps * duracao)
 
     fonte_h = obter_fonte(45)
-    fonte_gancho = obter_fonte(55) 
+    fonte_gancho = obter_fonte(65)
     fonte_t = obter_fonte(50) 
-    fonte_p = obter_fonte(140)
+    fonte_p = obter_fonte(145)
     fonte_m = obter_fonte(40)
     fonte_c = obter_fonte(35)
 
@@ -228,50 +222,54 @@ def gerar_video_tiktok(item, media_preco, caminho_capa, caminho_grafico, caminho
     fundo_contraste = criar_gradiente_vertical(largura, altura, (40, 15, 55, 255), (15, 5, 25, 255))
     fundo_alerta = criar_gradiente_vertical(largura, altura, (25, 20, 30, 255), (5, 5, 10, 255))
 
-    gancho_tela = remover_emojis(gancho_ia) if gancho_ia else "Você já leu essa história?"
+    gancho_tela = remover_emojis(gancho_ia).upper() if gancho_ia else "ALERTA DE DESCONTO!"
     frames = []
     pos_y_card = 840 if capa else 600
     altura_card = 380 if capa else 500
 
     for f_idx in range(total_frames):
         t = f_idx / fps
+        
         if t < 1.5:
             img = fundo_escuro.copy()
             draw = ImageDraw.Draw(img)
-            linhas_gancho = textwrap.wrap(gancho_tela, width=25)
-            y_g = 850
+            linhas_gancho = textwrap.wrap(gancho_tela, width=20)
+            y_g = 800
+            cor_gancho = (255, 179, 0, 255) if f_idx % 6 < 3 else (255, 255, 255, 255)
             for lg in linhas_gancho[:3]:
-                draw.text((540, y_g), lg.upper(), font=fonte_gancho, fill=(255, 179, 0, 255), anchor="mm")
-                y_g += 70
-        elif 1.5 <= t < 3.0:
+                draw.text((540, y_g), lg, font=fonte_gancho, fill=cor_gancho, anchor="mm")
+                y_g += 80
+                
+        elif 1.5 <= t < 3.5:
             img = fundo_contraste.copy()
             draw = ImageDraw.Draw(img)
             if capa:
                 img.paste(capa, ((largura - capa.width)//2, 280), capa)
             draw.rounded_rectangle([70, pos_y_card, 1010, pos_y_card + altura_card], radius=30, fill=(25, 25, 35, 240), outline=(255, 179, 0, 255), width=4)
-            draw.text((540, pos_y_card + 50), "DESCONTO DETECTADO!", font=fonte_h, fill=(255, 179, 0, 255), anchor="mm")
+            draw.text((540, pos_y_card + 50), "MENOR PREÇO DO MÊS!", font=fonte_h, fill=(255, 179, 0, 255), anchor="mm")
             linhas_titulo = textwrap.wrap(item["titulo"], width=28)
             y_titulo = pos_y_card + 130
             for linha in linhas_titulo[:2]: 
                 draw.text((540, y_titulo), linha, font=fonte_t, fill=(255, 255, 255, 255), anchor="mm")
                 y_titulo += 60
             draw.text((540, pos_y_card + 280), f"R$ {formatar_real(item['preco_atual'])}", font=fonte_p, fill=(16, 185, 129, 255), anchor="mm")
-            draw.text((540, pos_y_card + 370), f"Média 30 dias: R$ {formatar_real(media_preco)}", font=fonte_m, fill=(160, 160, 180, 255), anchor="mm")
-        elif 3.0 <= t < 4.8:
+            
+        elif 3.5 <= t < 4.8:
             img = fundo_alerta.copy()
             draw = ImageDraw.Draw(img)
-            draw.text((540, 200), "HISTÓRICO DE PREÇOS", font=fonte_h, fill=(255, 179, 0, 255), anchor="mm")
+            draw.text((540, 200), "PROVA DO DESCONTO", font=fonte_h, fill=(255, 179, 0, 255), anchor="mm")
             linhas_titulo = textwrap.wrap(item["titulo"], width=35)
             draw.text((540, 270), linhas_titulo[0], font=fonte_m, fill=(220, 220, 230, 255), anchor="mm")
             if grafico:
                 img.paste(grafico, ((largura - grafico.width)//2, 450), grafico)
+                
         else:
             img = fundo_escuro.copy()
             draw = ImageDraw.Draw(img)
-            draw.text((540, 800), "O LINK COPIÁVEL ESTÁ", font=fonte_gancho, fill=(255, 255, 255, 255), anchor="mm")
-            draw.text((540, 900), "NO CANAL DA BIO!", font=fonte_gancho, fill=(255, 179, 0, 255), anchor="mm")
+            draw.text((540, 800), "VERIFIQUE AGORA", font=fonte_gancho, fill=(255, 255, 255, 255), anchor="mm")
+            draw.text((540, 900), "OS COMENTÁRIOS!", font=fonte_gancho, fill=(255, 179, 0, 255), anchor="mm")
             draw.rounded_rectangle([150, 1350, 930, 1450], radius=40, fill=(255, 179, 0, 255))
-            draw.text((540, 1400), "CORRA PARA APROVEITAR", font=fonte_c, fill=(15, 15, 20, 255), anchor="mm")
+            draw.text((540, 1400), "ANTES QUE ZERE", font=fonte_c, fill=(15, 15, 20, 255), anchor="mm")
 
         if 1.5 <= t < 4.8:
             draw.rounded_rectangle([140, 50, 940, 130], radius=25, fill=(74, 20, 140, 220), outline=(255, 179, 0, 255), width=3)
@@ -284,7 +282,7 @@ def gerar_video_tiktok(item, media_preco, caminho_capa, caminho_grafico, caminho
     clip.write_videofile(caminho_saida_video, codec="libx264", audio=False, logger=None)
 
 # ==========================================================
-# GOOGLE SHEETS E PORTAL
+# GOOGLE SHEETS E PORTAL (HTML CORRIGIDO COM TAILWIND)
 # ==========================================================
 def buscar_ofertas_csv():
     url_csv = os.getenv("GOOGLE_SHEETS_CSV_URL")
@@ -319,7 +317,7 @@ def buscar_ofertas_csv():
                     pass
         return ofertas
     except Exception as e:
-        print(f"-> Erro ao sincronizar produtos do CSV: {e}")
+        print(f"-> Erro ao sincronizar CSV: {e}")
         return []
 
 def gerar_sitemap():
@@ -344,7 +342,7 @@ def _gerar_card_produto(item, preco_atual, media, menor):
     src_imagem = f"assets/banner_{item_id}.png" if os.path.exists(os.path.join(ASSETS_DIR, f"banner_{item_id}.png")) else (item.get("imagem_url") or "bau.png")
     
     return f"""
-    <article class="relative flex flex-col bg-surface rounded-2xl border border-white/5 overflow-hidden hover:border-bardo-gold/40 transition-all duration-300 group">
+    <article class="relative flex flex-col bg-surface rounded-2xl border border-white/5 overflow-hidden hover:border-bardo-gold/40 transition-all duration-300 group shadow-lg">
         {badge_html}
         <div class="relative h-64 w-full p-8 flex items-center justify-center bg-gradient-to-b from-white/[0.03] to-transparent border-b border-white/5">
             <img src="{src_imagem}" alt="Capa de {titulo}" loading="lazy" class="h-full w-auto object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] group-hover:scale-[1.03] transition-all duration-500" />
@@ -363,7 +361,38 @@ def _gerar_card_produto(item, preco_atual, media, menor):
 
 def gerar_site_estatico(ofertas, historico):
     cards_html_list = [_gerar_card_produto(item, item["preco_atual"], item["preco_atual"], item["preco_atual"]) for item in ofertas]
-    html_template = f"""<!DOCTYPE html><html lang="pt-BR"><body class="bg-background text-gray-300"><main class="grid grid-cols-1 md:grid-cols-3 gap-6">{''.join(cards_html_list)}</main></body></html>"""
+    html_template = f"""<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bardo das Promoções | Ofertas de Fantasia e Sci-Fi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {{
+            theme: {{
+                extend: {{
+                    colors: {{
+                        background: '#09090b',
+                        surface: '#121214',
+                        'bardo-gold': '#FFB300',
+                        'bardo-dark': '#202024'
+                    }}
+                }}
+            }}
+        }}
+    </script>
+</head>
+<body class="bg-background text-gray-300 min-h-screen p-4 md:p-8">
+    <header class="max-w-7xl mx-auto mb-10 text-center">
+        <h1 class="text-3xl md:text-5xl font-bold text-white mb-3">Bardo das Promoções</h1>
+        <p class="text-bardo-gold font-semibold tracking-wide uppercase text-sm md:text-base">Monitoramento 24h de Fantasia & Sci-Fi</p>
+    </header>
+    <main class="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        {''.join(cards_html_list)}
+    </main>
+</body>
+</html>"""
     with open("index.html", "w", encoding="utf-8") as f:
         f.write(html_template)
     gerar_sitemap()
@@ -385,7 +414,6 @@ async def processar_ofertas():
         item_id = item["id"]
         print(f"\n🔍 Raspando a Amazon nativamente: {item['titulo'][:30]}...")
         
-        # Uso direto do nosso motor com falsificação de TLS no IP residencial local
         preco_raspado = raspar_preco_amazon_direto(item["url"])
         
         if preco_raspado:
@@ -404,7 +432,6 @@ async def processar_ofertas():
 
         livro_novo = False
         if item_id not in historico:
-            # Salva o preço atual como 'ultimo_divulgado' para criar a base, mas sinaliza que é novo
             historico[item_id] = {"menor_preco_historico": preco_atual, "ultimo_preco_divulgado": preco_atual, "valores_30_dias": []}
             livro_novo = True
         
@@ -462,10 +489,19 @@ async def processar_ofertas():
                 caminho_video = None
 
             try:
+                # 1. Envia Imagem + Promoção (O seu telegram.py já sabe que vai pro Canal)
                 await enviar_mensagem_telegram(mensagem, caminho_foto=caminho_grafico)
+                
+                # 2. Envia Vídeo + Estratégia SEO (O seu telegram.py já sabe que vai pro Privado)
                 if caminho_video and os.path.exists(caminho_video):
-                    await enviar_video_telegram(conteudo_ia["legenda"], caminho_video)
+                    legenda_privada = (
+                        f"📱 *VÍDEO PRONTO PARA POSTAR*\n\n"
+                        f"📝 *LEGENDA (Focada em reter e sem 'link na bio'):*\n{conteudo_ia['legenda']}\n\n"
+                        f"💬 *COMENTÁRIO PARA FIXAR (Link + Polêmica):*\n{conteudo_ia['comentario_estrategico']}"
+                    )
+                    await enviar_video_telegram(legenda_privada, caminho_video)
                     os.remove(caminho_video)
+                
                 dados_item["ultimo_preco_divulgado"] = preco_atual
             except Exception as e:
                 print(f"Erro ao enviar: {e}")
