@@ -87,7 +87,6 @@ def raspar_preco_amazon_direto(url_original):
         print("  ❌ ASIN não encontrado na URL final.")
         return None
         
-    # O parâmetro rh=p_6%3AA1ZZFT5FULY4LN filtra estritamente para "Vendido por Amazon.com.br"
     url_busca = f"https://www.amazon.com.br/s?k={asin}&rh=p_6%3AA1ZZFT5FULY4LN"
 
     for tentativa in range(3):
@@ -106,7 +105,7 @@ def raspar_preco_amazon_direto(url_original):
                     if match_preco:
                         return float(match_preco.group(1))
                 else:
-                    print(f"  ⚠️ [Tentativa {tentativa+1}/3] Fora de estoque pela Amazon oficial.")
+                    print(f"  ⚠️ [Tentativa {tentativa+1}/3] Fora de estoque ou layout dinâmico.")
             else:
                 print(f"  ⚠️ [Tentativa {tentativa+1}/3] Erro HTTP: {res.status_code}")
                 
@@ -283,7 +282,7 @@ def gerar_video_tiktok(item, media_preco, caminho_capa, caminho_grafico, caminho
     clip.write_videofile(caminho_saida_video, codec="libx264", audio=False, logger=None)
 
 # ==========================================================
-# GOOGLE SHEETS E PORTAL
+# GOOGLE SHEETS E PORTAL COM HOVER SWAP
 # ==========================================================
 def buscar_ofertas_csv():
     url_csv = os.getenv("GOOGLE_SHEETS_CSV_URL")
@@ -340,13 +339,24 @@ def _gerar_card_produto(item, preco_atual, media, menor):
     elif preco_atual < media:
         badge_html = '<div class="absolute top-3 left-3 z-10"><span class="px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 rounded-full backdrop-blur-md shadow-lg">Abaixo da Média</span></div>'
     
-    src_imagem = f"assets/banner_{item_id}.png" if os.path.exists(os.path.join(ASSETS_DIR, f"banner_{item_id}.png")) else (item.get("imagem_url") or "bau.png")
+    # Busca a imagem da Capa e do Gráfico salvos localmente
+    caminho_capa = f"assets/capa_{item_id}.jpg"
+    caminho_grafico = f"assets/grafico_{item_id}.png"
+    
+    # Define as imagens do hover (Usa URL do item caso a capa local não exista ainda)
+    img_capa = caminho_capa if os.path.exists(caminho_capa) else (item.get("imagem_url") or "bau.png")
+    # Se o gráfico não existir (ainda não foi gerado), exibe a capa nas duas fases do hover
+    img_grafico = caminho_grafico if os.path.exists(caminho_grafico) else img_capa
     
     return f"""
     <article class="relative flex flex-col bg-surface rounded-2xl border border-white/5 overflow-hidden hover:border-bardo-gold/40 transition-all duration-300 group shadow-lg">
         {badge_html}
-        <div class="relative h-64 w-full p-8 flex items-center justify-center bg-gradient-to-b from-white/[0.03] to-transparent border-b border-white/5">
-            <img src="{src_imagem}" alt="Capa de {titulo}" loading="lazy" class="h-full w-auto object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] group-hover:scale-[1.03] transition-all duration-500" />
+        <!-- Vitrine com Efeito Hover Swap -->
+        <div class="relative h-64 w-full bg-gradient-to-b from-white/[0.03] to-transparent border-b border-white/5 overflow-hidden">
+            <!-- Imagem 1: Capa (Soma ao Hover) -->
+            <img src="{img_capa}" alt="Capa de {titulo}" loading="lazy" class="absolute inset-0 w-full h-full p-6 object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] transition-opacity duration-500 opacity-100 group-hover:opacity-0" />
+            <!-- Imagem 2: Gráfico (Aparece no Hover) -->
+            <img src="{img_grafico}" alt="Gráfico de {titulo}" loading="lazy" class="absolute inset-0 w-full h-full p-4 object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] transition-opacity duration-500 opacity-0 group-hover:opacity-100" />
         </div>
         <div class="p-5 flex flex-col flex-grow">
             <h3 class="text-base font-semibold text-gray-100 leading-snug line-clamp-2 mb-4 group-hover:text-bardo-gold transition-colors">{titulo}</h3>
@@ -365,7 +375,6 @@ def gerar_site_estatico(ofertas, historico):
     for item in ofertas:
         item_id = item["id"]
         preco_atual = item["preco_atual"]
-        # Usa os dados reais do histórico para não repetir o preço atual nos cards
         if item_id in historico and historico[item_id]["valores_30_dias"]:
             precos = [v["preco"] for v in historico[item_id]["valores_30_dias"]]
             media = sum(precos)/len(precos)
@@ -397,10 +406,17 @@ def gerar_site_estatico(ofertas, historico):
     </script>
 </head>
 <body class="bg-background text-gray-300 min-h-screen p-4 md:p-8">
-    <header class="max-w-7xl mx-auto mb-10 text-center">
+    <header class="max-w-7xl mx-auto mb-12 text-center">
         <h1 class="text-3xl md:text-5xl font-bold text-white mb-3">Bardo das Promoções</h1>
-        <p class="text-bardo-gold font-semibold tracking-wide uppercase text-sm md:text-base">Monitoramento 24h de Fantasia & Sci-Fi</p>
+        <p class="text-bardo-gold font-semibold tracking-wide uppercase text-sm md:text-base mb-6">Monitoramento 24h de Fantasia & Sci-Fi</p>
+        
+        <!-- BOTÃO DO TELEGRAM AQUI -->
+        <a href="https://t.me/bardodaspromos" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 px-8 py-3.5 text-sm md:text-base font-bold text-bardo-dark bg-bardo-gold rounded-full hover:bg-yellow-400 hover:-translate-y-1 transition-all duration-300 shadow-[0_0_20px_rgba(255,179,0,0.3)] hover:shadow-[0_0_30px_rgba(255,179,0,0.6)]">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.446 1.394c-.14.18-.357.295-.6.295-.002 0-.003 0-.005 0l.213-3.054 5.56-5.022c.24-.213-.054-.334-.373-.121l-6.869 4.326-2.96-.924c-.64-.203-.658-.64.135-.954l11.566-4.458c.538-.196 1.006.128.832.941z"/></svg>
+            Entrar no Canal do Telegram
+        </a>
     </header>
+    
     <main class="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         {''.join(cards_html_list)}
     </main>
@@ -434,18 +450,15 @@ async def processar_ofertas():
             item["preco_atual"] = preco_atual 
             print(f"   ✅ Preço capturado com sucesso: R$ {preco_atual:.2f}")
         else:
-            # NOVO FALLBACK: Pega o último preço real salvo no JSON em vez da planilha
             if item_id in historico and len(historico[item_id].get("valores_30_dias", [])) > 0:
                 preco_atual = historico[item_id]["valores_30_dias"][-1]["preco"]
                 item["preco_atual"] = preco_atual
                 print(f"   ⚠️ Falha na raspagem. Usando último preço do histórico: R$ {preco_atual:.2f}")
             else:
-                # Se é um livro novo e a raspagem falhou, ele pula para não registrar lixo
                 print(f"   ⏭️ Pulando: Sem preço na Amazon e sem histórico local.")
                 continue
 
         time.sleep(random.uniform(2.0, 4.0))
-        
 
         livro_novo = False
         if item_id not in historico:
@@ -512,12 +525,10 @@ async def processar_ofertas():
                 try:
                     img_grafico = Image.open(caminho_grafico)
                     img_capa = Image.open(caminho_capa)
-                    # Redimensiona a capa para ter a mesma altura do gráfico
                     altura_alvo = img_grafico.height
                     largura_capa = int(altura_alvo * (img_capa.width / img_capa.height))
                     img_capa_resized = img_capa.resize((largura_capa, altura_alvo), Image.Resampling.LANCZOS)
                     
-                    # Cola as duas imagens em um fundo escuro
                     largura_total = img_grafico.width + largura_capa
                     img_combo = Image.new('RGB', (largura_total, altura_alvo), (29, 29, 29))
                     img_combo.paste(img_capa_resized, (0, 0))
@@ -525,15 +536,15 @@ async def processar_ofertas():
                     img_combo.save(caminho_combo)
                 except Exception as e:
                     print(f"Erro ao combinar imagens: {e}")
-                    caminho_combo = caminho_grafico # Fallback de segurança
+                    caminho_combo = caminho_grafico 
             else:
                 caminho_combo = caminho_grafico
 
             try:
-                # 1. Envia Imagem Combinada (Capa + Gráfico) + Promoção pro Canal
+                # 1. Envia Imagem Combinada + Promoção (O seu telegram.py já sabe que vai pro Canal)
                 await enviar_mensagem_telegram(mensagem, caminho_foto=caminho_combo)
                 
-                # 2. Envia Vídeo + Estratégia SEO pro seu Privado
+                # 2. Envia Vídeo + Estratégia SEO (O seu telegram.py já sabe que vai pro Privado)
                 if caminho_video and os.path.exists(caminho_video):
                     legenda_privada = (
                         f"📱 *VÍDEO PRONTO PARA POSTAR*\n\n"
