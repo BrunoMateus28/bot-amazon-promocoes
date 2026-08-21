@@ -434,14 +434,18 @@ async def processar_ofertas():
             item["preco_atual"] = preco_atual 
             print(f"   ✅ Preço capturado com sucesso: R$ {preco_atual:.2f}")
         else:
-            preco_atual = item.get("preco_atual", 0)
-            if preco_atual <= 0:
-                print(f"   ⏭️ Pulando: Sem preço disponível na Amazon Oficial.")
-                continue
+            # NOVO FALLBACK: Pega o último preço real salvo no JSON em vez da planilha
+            if item_id in historico and len(historico[item_id].get("valores_30_dias", [])) > 0:
+                preco_atual = historico[item_id]["valores_30_dias"][-1]["preco"]
+                item["preco_atual"] = preco_atual
+                print(f"   ⚠️ Falha na raspagem. Usando último preço do histórico: R$ {preco_atual:.2f}")
             else:
-                print(f"   ⚠️ Usando preço de backup: R$ {preco_atual:.2f}")
+                # Se é um livro novo e a raspagem falhou, ele pula para não registrar lixo
+                print(f"   ⏭️ Pulando: Sem preço na Amazon e sem histórico local.")
+                continue
 
         time.sleep(random.uniform(2.0, 4.0))
+        
 
         livro_novo = False
         if item_id not in historico:
