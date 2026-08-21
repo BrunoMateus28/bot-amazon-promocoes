@@ -87,7 +87,8 @@ def raspar_preco_amazon_direto(url_original):
         print("  ❌ ASIN não encontrado na URL final.")
         return None
         
-    url_busca = f"https://www.amazon.com.br/s?k={asin}"
+    # O parâmetro rh=p_6%3AA1ZZFT5FULY4LN filtra estritamente para "Vendido por Amazon.com.br"
+    url_busca = f"https://www.amazon.com.br/s?k={asin}&rh=p_6%3AA1ZZFT5FULY4LN"
 
     for tentativa in range(3):
         try:
@@ -105,7 +106,7 @@ def raspar_preco_amazon_direto(url_original):
                     if match_preco:
                         return float(match_preco.group(1))
                 else:
-                    print(f"  ⚠️ [Tentativa {tentativa+1}/3] Fora de estoque ou layout dinâmico.")
+                    print(f"  ⚠️ [Tentativa {tentativa+1}/3] Fora de estoque pela Amazon oficial.")
             else:
                 print(f"  ⚠️ [Tentativa {tentativa+1}/3] Erro HTTP: {res.status_code}")
                 
@@ -282,7 +283,7 @@ def gerar_video_tiktok(item, media_preco, caminho_capa, caminho_grafico, caminho
     clip.write_videofile(caminho_saida_video, codec="libx264", audio=False, logger=None)
 
 # ==========================================================
-# GOOGLE SHEETS E PORTAL (HTML CORRIGIDO COM TAILWIND)
+# GOOGLE SHEETS E PORTAL
 # ==========================================================
 def buscar_ofertas_csv():
     url_csv = os.getenv("GOOGLE_SHEETS_CSV_URL")
@@ -360,7 +361,19 @@ def _gerar_card_produto(item, preco_atual, media, menor):
     </article>"""
 
 def gerar_site_estatico(ofertas, historico):
-    cards_html_list = [_gerar_card_produto(item, item["preco_atual"], item["preco_atual"], item["preco_atual"]) for item in ofertas]
+    cards_html_list = []
+    for item in ofertas:
+        item_id = item["id"]
+        preco_atual = item["preco_atual"]
+        # Usa os dados reais do histórico para não repetir o preço atual nos cards
+        if item_id in historico and historico[item_id]["valores_30_dias"]:
+            precos = [v["preco"] for v in historico[item_id]["valores_30_dias"]]
+            media = sum(precos)/len(precos)
+            menor = historico[item_id]["menor_preco_historico"]
+        else:
+            media, menor = preco_atual, preco_atual
+        cards_html_list.append(_gerar_card_produto(item, preco_atual, media, menor))
+
     html_template = f"""<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -423,7 +436,7 @@ async def processar_ofertas():
         else:
             preco_atual = item.get("preco_atual", 0)
             if preco_atual <= 0:
-                print(f"   ⏭️ Pulando: Sem preço disponível.")
+                print(f"   ⏭️ Pulando: Sem preço disponível na Amazon Oficial.")
                 continue
             else:
                 print(f"   ⚠️ Usando preço de backup: R$ {preco_atual:.2f}")
@@ -488,11 +501,35 @@ async def processar_ofertas():
             except Exception:
                 caminho_video = None
 
+            # CRIANDO O BANNER FUNDIDO PARA O TELEGRAM (CAPA + GRÁFICO LADO A LADO)
+            caminho_combo = None
+            if caminho_grafico and os.path.exists(caminho_grafico) and caminho_capa and os.path.exists(caminho_capa):
+                caminho_combo = os.path.join(ASSETS_DIR, f"combo_{item_id}.png")
+                try:
+                    img_grafico = Image.open(caminho_grafico)
+                    img_capa = Image.open(caminho_capa)
+                    # Redimensiona a capa para ter a mesma altura do gráfico
+                    altura_alvo = img_grafico.height
+                    largura_capa = int(altura_alvo * (img_capa.width / img_capa.height))
+                    img_capa_resized = img_capa.resize((largura_capa, altura_alvo), Image.Resampling.LANCZOS)
+                    
+                    # Cola as duas imagens em um fundo escuro
+                    largura_total = img_grafico.width + largura_capa
+                    img_combo = Image.new('RGB', (largura_total, altura_alvo), (29, 29, 29))
+                    img_combo.paste(img_capa_resized, (0, 0))
+                    img_combo.paste(img_grafico, (largura_capa, 0))
+                    img_combo.save(caminho_combo)
+                except Exception as e:
+                    print(f"Erro ao combinar imagens: {e}")
+                    caminho_combo = caminho_grafico # Fallback de segurança
+            else:
+                caminho_combo = caminho_grafico
+
             try:
-                # 1. Envia Imagem + Promoção (O seu telegram.py já sabe que vai pro Canal)
-                await enviar_mensagem_telegram(mensagem, caminho_foto=caminho_grafico)
+                # 1. Envia Imagem Combinada (Capa + Gráfico) + Promoção pro Canal
+                await enviar_mensagem_telegram(mensagem, caminho_foto=caminho_combo)
                 
-                # 2. Envia Vídeo + Estratégia SEO (O seu telegram.py já sabe que vai pro Privado)
+                # 2. Envia Vídeo + Estratégia SEO pro seu Privado
                 if caminho_video and os.path.exists(caminho_video):
                     legenda_privada = (
                         f"📱 *VÍDEO PRONTO PARA POSTAR*\n\n"
