@@ -116,24 +116,30 @@ def raspar_preco_amazon_direto(url_original):
     return None
 
 # ==========================================================
-# INTEGRAÇÃO GEMINI: GROWTH HACKING PROMPT
+# INTEGRAÇÃO GEMINI: CONTEÚDO DO TELEGRAM + TIKTOK
 # ==========================================================
 def gerar_legenda_ia(titulo, preco_atual, media_preco):
     api_key = os.getenv("GEMINI_API_KEY")
-    
-    legenda_padrao = (
-        f"🔥 URGENTE: SURTO NA AMAZON!\n\n"
-        f"📚 {titulo}\n"
-        f"💰 Caiu para: R$ {formatar_real(preco_atual)}\n"
-        f"📉 Média normal: R$ {formatar_real(media_preco)}\n\n"
-        f"🔗 Corre nos comentários antes que o estoque zere!\n\n"
-        f"#booktokbrasil #promocaodelivros #fantasia #livros"
-    )
-    
+
+    # Fallbacks para o caso da API do Gemini estar indisponível.
     resultado_padrao = {
         "gancho": "VOCÊ NÃO VAI ACREDITAR NISSO...",
-        "legenda": legenda_padrao,
-        "comentario_estrategico": "🚨 O LINK TÁ LÁ NO NOSSO CANAL DO TELEGRAM! (Link da bio). Quem aqui já leu essa obra de arte? 👇 Me contem sem spoilers!"
+        "legenda": (
+            f"📖 {titulo}\n\n"
+            "Uma fantasia cheia de personagens marcantes, conflitos de poder "
+            "e escolhas que podem mudar completamente o rumo da história. "
+            "Se você gosta de histórias que prendem do começo ao fim, "
+            "essa pode ser uma ótima leitura."
+        ),
+        "descricao_telegram": (
+            f"{titulo} é uma história de fantasia cheia de conflitos, "
+            "personagens marcantes e reviravoltas. Uma ótima pedida para "
+            "quem gosta de mundos envolventes e histórias difíceis de largar."
+        ),
+        "comentario_estrategico": (
+            "🚨 O LINK TÁ LÁ NO NOSSO CANAL! "
+            "(Olhem da bio). Quem aqui já leu essa obra de arte? 👇"
+        )
     }
 
     if not api_key:
@@ -141,32 +147,111 @@ def gerar_legenda_ia(titulo, preco_atual, media_preco):
 
     try:
         client = genai.Client(api_key=api_key)
+
         prompt = f"""
-        Atue como um Growth Hacker Sênior e Especialista no algoritmo do TikTok/Reels em 2026.
-        O livro '{titulo}' entrou em promoção pesada na Amazon: de R$ {formatar_real(media_preco)} por apenas R$ {formatar_real(preco_atual)}.
+        Você é um especialista em literatura de fantasia e copywriting para um
+        canal brasileiro de promoções de livros.
 
-        A plataforma diminui o alcance de vídeos que dizem "Link na bio". Nossa estratégia é mandar a pessoa para os COMENTÁRIOS, onde o link real estará fixado.
+        Livro: "{titulo}"
+        Preço atual: R$ {formatar_real(preco_atual)}
+        Média de preço: R$ {formatar_real(media_preco)}
 
-        Retorne EXATAMENTE UM JSON com as seguintes chaves:
+        Gere conteúdo para DOIS canais diferentes: Telegram e TikTok.
+
+        REGRAS DA DESCRIÇÃO DO TELEGRAM:
+        - Escreva uma descrição curta e envolvente do livro.
+        - Entre 60 e 100 palavras.
+        - NÃO revele spoilers.
+        - Não conte o final, mortes, grandes reviravoltas ou revelações.
+        - Apresente a premissa, o tipo de mundo/conflito e o que torna a leitura interessante.
+        - Pode citar personagens principais SOMENTE se isso ajudar a despertar interesse.
+        - O texto deve provocar vontade de ler, mas sem parecer propaganda exagerada.
+        - Não mencione preço, promoção, Amazon ou link.
+        - Não use hashtags.
+        - Escreva em português brasileiro natural.
+
+        REGRAS DO TIKTOK:
+        - Gere um gancho curto, com no máximo 7 palavras.
+        - Gere uma legenda otimizada para descoberta de livros.
+        - Gere um comentário estratégico para engajamento.
+        - A legenda não deve usar "link na bio".
+
+        Retorne EXATAMENTE UM JSON válido com estas chaves:
         {{
-            "gancho": "Frase de impacto curta e explosiva (máx 7 palavras) que prenda a atenção nos 2 primeiros segundos.",
-            "legenda": "Legenda magnética otimizada para SEO. NÃO use as palavras 'link' ou 'bio'. Diga para a pessoa checar o comentário fixado. Inclua hashtags em alta focadas no gênero de fantasia/livros.",
-            "comentario_estrategico": "Crie o comentário EXATO que eu vou fixar. Ele DEVE conter a chamada 'O link do desconto tá lá no nosso canal do Telegram (link na minha Bio)!' e finalizar com uma pergunta super polêmica ou instigante sobre o universo/personagens desse livro específico para forçar os usuários a responderem."
+            "gancho": "gancho do TikTok",
+            "legenda": "legenda do TikTok",
+            "descricao_telegram": "descrição do livro para o canal do Telegram",
+            "comentario_estrategico": "comentário para fixar no TikTok"
         }}
+
+        Não coloque markdown, ``` ou qualquer texto fora do JSON.
         """
-        response = client.models.generate_content(model='gemini-3.5-flash', contents=prompt)
+
+        response = client.models.generate_content(
+            model='gemini-3.5-flash',
+            contents=prompt
+        )
+
         if response.text:
-            texto_limpo = response.text.replace("```json", "").replace("```", "").strip()
+            texto_limpo = (
+                response.text
+                .replace("```json", "")
+                .replace("```", "")
+                .strip()
+            )
             dados = json.loads(texto_limpo)
+
             return {
                 "gancho": dados.get("gancho", resultado_padrao["gancho"]),
-                "legenda": dados.get("legenda", legenda_padrao),
-                "comentario_estrategico": dados.get("comentario_estrategico", resultado_padrao["comentario_estrategico"])
+                "legenda": dados.get("legenda", resultado_padrao["legenda"]),
+                "descricao_telegram": dados.get(
+                    "descricao_telegram",
+                    resultado_padrao["descricao_telegram"]
+                ),
+                "comentario_estrategico": dados.get(
+                    "comentario_estrategico",
+                    resultado_padrao["comentario_estrategico"]
+                )
             }
+
         return resultado_padrao
+
     except Exception as e:
         print(f"❌ Erro na IA: {e}")
         return resultado_padrao
+
+
+def montar_mensagem_telegram(
+    titulo,
+    preco_atual,
+    media_preco,
+    menor_historico,
+    url,
+    descricao_ia
+):
+    """
+    Monta exclusivamente a mensagem da promoção do Telegram.
+
+    A IA fornece apenas a descrição literária.
+    A estrutura comercial é controlada pelo código para garantir
+    que preço, média e link sempre apareçam corretamente.
+    """
+
+    if preco_atual < menor_historico:
+        header = "🔥 MENOR PREÇO HISTÓRICO!"
+    else:
+        header = "📉 ABAIXO DA MÉDIA!"
+
+    return (
+        f"{header}\n\n"
+        f"📖 *{titulo}*\n\n"
+        f"{descricao_ia.strip()}\n\n"
+        f"💰 *Agora:* R$ {formatar_real(preco_atual)}\n"
+        f"📊 *Média:* R$ {formatar_real(media_preco)}\n\n"
+        f"🛒 *Comprar:*\n"
+        f"{url}"
+    )
+
 
 # ==========================================================
 # DESIGNER DE VÍDEO (LOOPING E RETENÇÃO)
@@ -511,7 +596,22 @@ async def processar_ofertas():
                 plt.close()
                 caminho_grafico = None
 
-            conteudo_ia = gerar_legenda_ia(item['titulo'], preco_atual, media_preco)
+            conteudo_ia = gerar_legenda_ia(
+                item['titulo'],
+                preco_atual,
+                media_preco
+            )
+
+            # Mensagem específica do canal:
+            # header dinâmico + descrição sem spoiler + preço + média + link.
+            mensagem = montar_mensagem_telegram(
+                titulo=item['titulo'],
+                preco_atual=preco_atual,
+                media_preco=media_preco,
+                menor_historico=menor_historico,
+                url=item['url'],
+                descricao_ia=conteudo_ia["descricao_telegram"]
+            )
             
             try:
                 gerar_video_tiktok(item, media_preco, caminho_capa if os.path.exists(caminho_capa) else None, caminho_grafico, caminho_video, gancho_ia=conteudo_ia["gancho"])
