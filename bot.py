@@ -123,13 +123,13 @@ def gerar_legenda_ia(titulo, preco_atual, media_preco):
 
     # Fallbacks para o caso da API do Gemini estar indisponível.
     resultado_padrao = {
-        "gancho": "VOCÊ NÃO VAI ACREDITAR NISSO...",
+        "gancho": "VOCÊ NÃO VAI ACREDITAR...",
         "legenda": (
             f"📖 {titulo}\n\n"
             "Uma fantasia cheia de personagens marcantes, conflitos de poder "
             "e escolhas que podem mudar completamente o rumo da história. "
             "Se você gosta de histórias que prendem do começo ao fim, "
-            "essa pode ser uma ótima leitura."
+            "essa pode ser uma ótima leitura. #BookTokBrasil #LivrosDeFantasia"
         ),
         "descricao_telegram": (
             f"{titulo} é uma história de fantasia cheia de conflitos, "
@@ -137,8 +137,7 @@ def gerar_legenda_ia(titulo, preco_atual, media_preco):
             "quem gosta de mundos envolventes e histórias difíceis de largar."
         ),
         "comentario_estrategico": (
-            "🚨 O LINK TÁ LÁ NO NOSSO CANAL! "
-            "(Olhem da bio). Quem aqui já leu essa obra de arte? 👇"
+            "Qual o seu personagem favorito dessa história? 👇"
         )
     }
 
@@ -149,12 +148,12 @@ def gerar_legenda_ia(titulo, preco_atual, media_preco):
         client = genai.Client(api_key=api_key)
 
         prompt = f"""
-        Você é um especialista em literatura de fantasia e copywriting para um
-        canal brasileiro de promoções de livros.
+        Você é um especialista em literatura de fantasia. Seu objetivo é criar 
+        conteúdo para a comunidade leitora (BookTok) e para um canal do Telegram.
 
         Livro: "{titulo}"
-        Preço atual: R$ {formatar_real(preco_atual)}
-        Média de preço: R$ {formatar_real(media_preco)}
+        Preço atual: R$ {preco_atual}
+        Média de preço: R$ {media_preco}
 
         Gere conteúdo para DOIS canais diferentes: Telegram e TikTok.
 
@@ -164,17 +163,19 @@ def gerar_legenda_ia(titulo, preco_atual, media_preco):
         - NÃO revele spoilers.
         - Não conte o final, mortes, grandes reviravoltas ou revelações.
         - Apresente a premissa, o tipo de mundo/conflito e o que torna a leitura interessante.
-        - Pode citar personagens principais SOMENTE se isso ajudar a despertar interesse.
-        - O texto deve provocar vontade de ler, mas sem parecer propaganda exagerada.
-        - Não mencione preço, promoção, Amazon ou link.
+        - O texto deve provocar vontade de ler.
+        - Não mencione preço, promoção, Amazon ou link (isso é adicionado depois).
         - Não use hashtags.
         - Escreva em português brasileiro natural.
 
-        REGRAS DO TIKTOK:
+        REGRAS DO TIKTOK (ATENÇÃO MÁXIMA - RISCO DE BANIMENTO):
         - Gere um gancho curto, com no máximo 7 palavras.
-        - Gere uma legenda otimizada para descoberta de livros.
-        - Gere um comentário estratégico para engajamento.
-        - A legenda não deve usar "link na bio".
+        - Gere uma legenda otimizada para descoberta de livros (BookTok).
+        - A legenda DEVE focar APENAS na história, universo, romance, dragões ou conflitos.
+        - É ESTRITAMENTE PROIBIDO usar as palavras: preço, desconto, promoção, comprar, garanta, estoque, corra, link, bio, comentário fixado, oferta.
+        - É ESTRITAMENTE PROIBIDO criar senso de urgência ou tentar vender o livro.
+        - Gere um comentário estratégico focado APENAS em puxar assunto com a comunidade (Ex: "Quem aqui já leu essa obra?", "Qual sua parte favorita?"). NUNCA direcione para links ou vendas no comentário.
+        - Inclua hashtags focadas na história (ex: #booktokbrasil #livrosdefantasia).
 
         Retorne EXATAMENTE UM JSON válido com estas chaves:
         {{
@@ -219,7 +220,6 @@ def gerar_legenda_ia(titulo, preco_atual, media_preco):
     except Exception as e:
         print(f"❌ Erro na IA: {e}")
         return resultado_padrao
-
 
 def montar_mensagem_telegram(
     titulo,
