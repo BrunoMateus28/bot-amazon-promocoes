@@ -123,7 +123,7 @@ def gerar_legenda_ia(titulo, preco_atual, media_preco):
 
     # Fallbacks para o caso da API do Gemini estar indisponível.
     resultado_padrao = {
-        "gancho": "VOCÊ NÃO VAI ACREDITAR...",
+        "gancho": "UMA LEITURA QUE MARCA",
         "legenda": (
             f"📖 {titulo}\n\n"
             "Uma fantasia cheia de personagens marcantes, conflitos de poder "
@@ -168,14 +168,27 @@ def gerar_legenda_ia(titulo, preco_atual, media_preco):
         - Não use hashtags.
         - Escreva em português brasileiro natural.
 
-        REGRAS DO TIKTOK (ATENÇÃO MÁXIMA - RISCO DE BANIMENTO):
-        - Gere um gancho curto, com no máximo 7 palavras.
-        - Gere uma legenda otimizada para descoberta de livros (BookTok).
-        - A legenda DEVE focar APENAS na história, universo, romance, dragões ou conflitos.
-        - É ESTRITAMENTE PROIBIDO usar as palavras: preço, desconto, promoção, comprar, garanta, estoque, corra, link, bio, comentário fixado, oferta.
-        - É ESTRITAMENTE PROIBIDO criar senso de urgência ou tentar vender o livro.
-        - Gere um comentário estratégico focado APENAS em puxar assunto com a comunidade (Ex: "Quem aqui já leu essa obra?", "Qual sua parte favorita?"). NUNCA direcione para links ou vendas no comentário.
-        - Inclua hashtags focadas na história (ex: #booktokbrasil #livrosdefantasia).
+        REGRAS DO TIKTOK:
+
+        - O conteúdo deve parecer uma recomendação literária/editorial, não um anúncio agressivo.
+        - O gancho deve ter no máximo 8 palavras.
+        - O gancho deve gerar curiosidade sobre a história.
+        - O gancho NÃO deve mencionar preço, desconto ou promoção.
+        - NÃO use chamadas para compra.
+        - NÃO peça para clicar em links.
+        - NÃO mencione bio.
+        - NÃO peça para acessar comentários.
+        - NÃO mencione comentário fixado.
+        - NÃO use urgência.
+        - NÃO use escassez.
+        - NÃO diga "antes que acabe", "antes que zere", "última chance" ou similares.
+        - NÃO faça alegações como "menor preço", "menor preço do mês", "melhor preço" ou "imperdível".
+        - NÃO invente informações sobre preço, estoque ou disponibilidade.
+        - A legenda deve falar principalmente sobre a história, personagens, universo, atmosfera ou conflito.
+        - Não transforme a legenda em texto de venda.
+        - O comentário estratégico deve ser exclusivamente uma pergunta genuína sobre literatura.
+        - Não direcione o usuário para compra, links, bio ou outras plataformas.
+        - Use hashtags relacionadas ao livro e à comunidade literária.
 
         Retorne EXATAMENTE UM JSON válido com estas chaves:
         {{
@@ -280,92 +293,579 @@ def criar_gradiente_vertical(largura, altura, cor_topo, cor_base):
         ImageDraw.Draw(mask).line([(0, y), (largura, y)], fill=val)
     return Image.composite(base, topo, mask)
 
-def gerar_video_tiktok(item, media_preco, caminho_capa, caminho_grafico, caminho_saida_video, gancho_ia=""):
+def gerar_video_tiktok(
+    item,
+    media_preco,
+    caminho_capa,
+    caminho_grafico,
+    caminho_saida_video,
+    gancho_ia=""
+):
+    """
+    Gera vídeo vertical para TikTok com aparência editorial.
+
+    Objetivos:
+    - Priorizar retenção e interesse literário.
+    - Evitar aparência de anúncio agressivo.
+    - Não usar CTA para comentários, links ou compra.
+    - Não usar urgência ou escassez.
+    - Mostrar preço de forma informativa.
+    - Mostrar histórico como dado, e não como "prova".
+    - Criar movimento visual contínuo.
+    """
+
     largura, altura = 1080, 1920
     fps = 24
-    duracao = 5.5
+    duracao = 7.0
     total_frames = int(fps * duracao)
 
-    fonte_h = obter_fonte(45)
-    fonte_gancho = obter_fonte(65)
-    fonte_t = obter_fonte(50) 
-    fonte_p = obter_fonte(145)
-    fonte_m = obter_fonte(40)
-    fonte_c = obter_fonte(35)
+    # ==========================================================
+    # FONTES
+    # ==========================================================
 
-    capa = Image.open(caminho_capa).convert("RGBA") if caminho_capa and os.path.exists(caminho_capa) else None
-    grafico = Image.open(caminho_grafico).convert("RGBA") if caminho_grafico and os.path.exists(caminho_grafico) else None
+    fonte_marca = obter_fonte(32)
+    fonte_hook = obter_fonte(68)
+    fonte_titulo = obter_fonte(48)
+    fonte_preco = obter_fonte(82)
+    fonte_info = obter_fonte(34)
+    fonte_small = obter_fonte(27)
 
+    # ==========================================================
+    # DADOS
+    # ==========================================================
+
+    titulo = str(item.get("titulo", "Livro"))
+    preco_atual = float(item.get("preco_atual", 0) or 0)
+    media_preco = float(media_preco or 0)
+
+    # Economia somente como informação objetiva.
+    economia_pct = 0
+
+    if media_preco > 0 and preco_atual < media_preco:
+        economia_pct = ((media_preco - preco_atual) / media_preco) * 100
+
+    # ==========================================================
+    # TEXTO DO HOOK
+    # ==========================================================
+
+    hooks_bloqueados = [
+        "comentário",
+        "comentarios",
+        "compre",
+        "comprar",
+        "compra",
+        "link",
+        "bio",
+        "corra",
+        "garanta",
+        "estoque",
+        "zere",
+        "zerar",
+        "oferta",
+        "promoção",
+        "promocao",
+        "desconto",
+        "menor preço",
+        "menor preco",
+        "última chance",
+        "ultima chance",
+        "imperdível",
+        "imperdivel",
+        "clique",
+    ]
+
+    gancho_tela = remover_emojis(gancho_ia or "").strip()
+
+    if not gancho_tela:
+        gancho_tela = "UMA LEITURA QUE MARCA"
+
+    gancho_lower = gancho_tela.lower()
+
+    if (
+        len(gancho_tela.split()) > 9
+        or any(palavra in gancho_lower for palavra in hooks_bloqueados)
+    ):
+        gancho_tela = "UMA LEITURA QUE MARCA"
+
+    gancho_tela = gancho_tela.upper()
+
+    # ==========================================================
+    # IMAGENS
+    # ==========================================================
+
+    capa = None
+    grafico = None
+
+    if caminho_capa and os.path.exists(caminho_capa):
+        try:
+            capa = Image.open(caminho_capa).convert("RGBA")
+        except Exception:
+            capa = None
+
+    if caminho_grafico and os.path.exists(caminho_grafico):
+        try:
+            grafico = Image.open(caminho_grafico).convert("RGBA")
+        except Exception:
+            grafico = None
+
+    # Capa
     if capa:
-        nova_alt = 500
-        capa = capa.resize((int(nova_alt * (capa.width/capa.height)), nova_alt), Image.Resampling.LANCZOS)
+        altura_capa = 620
+        proporcao = capa.width / capa.height
+        largura_capa = int(altura_capa * proporcao)
+
+        capa = capa.resize(
+            (largura_capa, altura_capa),
+            Image.Resampling.LANCZOS
+        )
+
+    # Gráfico
     if grafico:
-        nova_larg = 960
-        grafico = grafico.resize((nova_larg, int(nova_larg / (grafico.width/grafico.height))), Image.Resampling.LANCZOS)
+        largura_grafico = 900
+        proporcao = grafico.width / grafico.height
+        altura_grafico = int(largura_grafico / proporcao)
 
-    fundo_escuro = criar_gradiente_vertical(largura, altura, (20, 15, 40, 255), (10, 5, 20, 255))
-    fundo_contraste = criar_gradiente_vertical(largura, altura, (40, 15, 55, 255), (15, 5, 25, 255))
-    fundo_alerta = criar_gradiente_vertical(largura, altura, (25, 20, 30, 255), (5, 5, 10, 255))
+        grafico = grafico.resize(
+            (largura_grafico, altura_grafico),
+            Image.Resampling.LANCZOS
+        )
 
-    gancho_tela = remover_emojis(gancho_ia).upper() if gancho_ia else "ALERTA DE DESCONTO!"
+    # ==========================================================
+    # FUNDOS
+    # ==========================================================
+
+    fundo_1 = criar_gradiente_vertical(
+        largura,
+        altura,
+        (18, 12, 35, 255),
+        (7, 5, 16, 255)
+    )
+
+    fundo_2 = criar_gradiente_vertical(
+        largura,
+        altura,
+        (28, 15, 48, 255),
+        (8, 5, 18, 255)
+    )
+
+    fundo_3 = criar_gradiente_vertical(
+        largura,
+        altura,
+        (15, 18, 32, 255),
+        (6, 7, 14, 255)
+    )
+
+    # ==========================================================
+    # FUNÇÕES AUXILIARES
+    # ==========================================================
+
+    def desenhar_marca(draw):
+        """
+        Marca pequena e discreta.
+        Não domina o vídeo.
+        """
+
+        draw.rounded_rectangle(
+            [55, 55, 390, 115],
+            radius=18,
+            fill=(20, 15, 35, 220)
+        )
+
+        draw.text(
+            (75, 85),
+            "BARDO DAS PROMOÇÕES",
+            font=fonte_marca,
+            fill=(235, 235, 245, 255),
+            anchor="lm"
+        )
+
+    def desenhar_progress(draw, progresso):
+        """
+        Barra fina de progresso.
+        Mantém movimento visual constante.
+        """
+
+        largura_progress = int((largura - 80) * progresso)
+
+        draw.rounded_rectangle(
+            [40, altura - 35, largura - 40, altura - 25],
+            radius=5,
+            fill=(60, 55, 75, 180)
+        )
+
+        draw.rounded_rectangle(
+            [40, altura - 35, 40 + largura_progress, altura - 25],
+            radius=5,
+            fill=(230, 190, 90, 255)
+        )
+
+    def desenhar_card(draw, box):
+        draw.rounded_rectangle(
+            box,
+            radius=35,
+            fill=(15, 14, 25, 235),
+            outline=(90, 75, 115, 180),
+            width=2
+        )
+
+    def centralizar_texto_multilinha(
+        draw,
+        texto,
+        fonte,
+        y,
+        largura_max=30,
+        espacamento=58,
+        max_linhas=3,
+        fill=(245, 245, 250, 255)
+    ):
+        linhas = textwrap.wrap(
+            texto,
+            width=largura_max
+        )[:max_linhas]
+
+        altura_total = len(linhas) * espacamento
+        y_atual = y - altura_total / 2
+
+        for linha in linhas:
+            draw.text(
+                (540, y_atual),
+                linha,
+                font=fonte,
+                fill=fill,
+                anchor="mm"
+            )
+            y_atual += espacamento
+
+    # ==========================================================
+    # RENDER
+    # ==========================================================
+
     frames = []
-    pos_y_card = 840 if capa else 600
-    altura_card = 380 if capa else 500
 
     for f_idx in range(total_frames):
+
         t = f_idx / fps
-        
-        if t < 1.5:
-            img = fundo_escuro.copy()
+
+        # ======================================================
+        # CENA 1 — HOOK
+        # 0.0s -> 1.7s
+        # ======================================================
+
+        if t < 1.7:
+
+            img = fundo_1.copy()
             draw = ImageDraw.Draw(img)
-            linhas_gancho = textwrap.wrap(gancho_tela, width=20)
-            y_g = 800
-            cor_gancho = (255, 179, 0, 255) if f_idx % 6 < 3 else (255, 255, 255, 255)
-            for lg in linhas_gancho[:3]:
-                draw.text((540, y_g), lg, font=fonte_gancho, fill=cor_gancho, anchor="mm")
-                y_g += 80
-                
-        elif 1.5 <= t < 3.5:
-            img = fundo_contraste.copy()
+
+            desenhar_marca(draw)
+
+            # Pequeno movimento de escala visual no fundo.
+            progresso = min(t / 1.7, 1.0)
+
+            y_hook = 850 - int(25 * progresso)
+
+            linhas = textwrap.wrap(
+                gancho_tela,
+                width=18
+            )[:3]
+
+            espacamento = 90
+
+            for i, linha in enumerate(linhas):
+
+                # Entrada suave.
+                alpha = int(
+                    min(255, max(0, (t / 0.5) * 255))
+                )
+
+                draw.text(
+                    (540, y_hook + i * espacamento),
+                    linha,
+                    font=fonte_hook,
+                    fill=(245, 235, 215, alpha),
+                    anchor="mm"
+                )
+
+            # Pequena indicação editorial.
+            draw.text(
+                (540, 1120),
+                "uma história para descobrir",
+                font=fonte_info,
+                fill=(175, 165, 190, 255),
+                anchor="mm"
+            )
+
+        # ======================================================
+        # CENA 2 — CAPA + TÍTULO
+        # 1.7s -> 4.0s
+        # ======================================================
+
+        elif t < 4.0:
+
+            img = fundo_2.copy()
             draw = ImageDraw.Draw(img)
+
+            desenhar_marca(draw)
+
+            # Animação vertical suave da capa.
+            progresso = min((t - 1.7) / 0.8, 1.0)
+
             if capa:
-                img.paste(capa, ((largura - capa.width)//2, 280), capa)
-            draw.rounded_rectangle([70, pos_y_card, 1010, pos_y_card + altura_card], radius=30, fill=(25, 25, 35, 240), outline=(255, 179, 0, 255), width=4)
-            draw.text((540, pos_y_card + 50), "MENOR PREÇO DO MÊS!", font=fonte_h, fill=(255, 179, 0, 255), anchor="mm")
-            linhas_titulo = textwrap.wrap(item["titulo"], width=28)
-            y_titulo = pos_y_card + 130
-            for linha in linhas_titulo[:2]: 
-                draw.text((540, y_titulo), linha, font=fonte_t, fill=(255, 255, 255, 255), anchor="mm")
-                y_titulo += 60
-            draw.text((540, pos_y_card + 280), f"R$ {formatar_real(item['preco_atual'])}", font=fonte_p, fill=(16, 185, 129, 255), anchor="mm")
-            
-        elif 3.5 <= t < 4.8:
-            img = fundo_alerta.copy()
+
+                y_capa = 210 - int(30 * progresso)
+
+                img.paste(
+                    capa,
+                    (
+                        (largura - capa.width) // 2,
+                        y_capa
+                    ),
+                    capa
+                )
+
+            # Card inferior.
+            box_top = 880
+            box_bottom = 1480
+
+            desenhar_card(
+                draw,
+                [55, box_top, 1025, box_bottom]
+            )
+
+            # Título.
+            centralizar_texto_multilinha(
+                draw,
+                titulo,
+                fonte_titulo,
+                990,
+                largura_max=31,
+                espacamento=58,
+                max_linhas=3
+            )
+
+            # Linha divisória.
+            draw.line(
+                [180, 1190, 900, 1190],
+                fill=(100, 90, 120, 180),
+                width=2
+            )
+
+            # Preço.
+            draw.text(
+                (540, 1295),
+                f"R$ {formatar_real(preco_atual)}",
+                font=fonte_preco,
+                fill=(240, 235, 225, 255),
+                anchor="mm"
+            )
+
+            draw.text(
+                (540, 1390),
+                "preço registrado agora",
+                font=fonte_small,
+                fill=(170, 165, 180, 255),
+                anchor="mm"
+            )
+
+        # ======================================================
+        # CENA 3 — CONTEXTO DO PREÇO
+        # 4.0s -> 5.8s
+        # ======================================================
+
+        elif t < 5.8:
+
+            img = fundo_3.copy()
             draw = ImageDraw.Draw(img)
-            draw.text((540, 200), "PROVA DO DESCONTO", font=fonte_h, fill=(255, 179, 0, 255), anchor="mm")
-            linhas_titulo = textwrap.wrap(item["titulo"], width=35)
-            draw.text((540, 270), linhas_titulo[0], font=fonte_m, fill=(220, 220, 230, 255), anchor="mm")
+
+            desenhar_marca(draw)
+
+            draw.text(
+                (540, 215),
+                "HISTÓRICO DE PREÇOS",
+                font=fonte_titulo,
+                fill=(240, 235, 225, 255),
+                anchor="mm"
+            )
+
+            draw.text(
+                (540, 280),
+                "dados registrados pelo monitoramento",
+                font=fonte_small,
+                fill=(165, 160, 175, 255),
+                anchor="mm"
+            )
+
             if grafico:
-                img.paste(grafico, ((largura - grafico.width)//2, 450), grafico)
-                
+
+                # Leve zoom progressivo.
+                progresso = min((t - 4.0) / 1.0, 1.0)
+
+                escala = 1.0 + (0.015 * progresso)
+
+                nova_largura = int(grafico.width * escala)
+                nova_altura = int(grafico.height * escala)
+
+                grafico_animado = grafico.resize(
+                    (nova_largura, nova_altura),
+                    Image.Resampling.LANCZOS
+                )
+
+                img.paste(
+                    grafico_animado,
+                    (
+                        (largura - nova_largura) // 2,
+                        430
+                    ),
+                    grafico_animado
+                )
+
+            # Informações objetivas.
+            if media_preco > 0:
+
+                draw.rounded_rectangle(
+                    [120, 1260, 960, 1450],
+                    radius=30,
+                    fill=(18, 17, 30, 235),
+                    outline=(75, 70, 95, 180),
+                    width=2
+                )
+
+                draw.text(
+                    (300, 1320),
+                    "MÉDIA",
+                    font=fonte_small,
+                    fill=(155, 150, 170, 255),
+                    anchor="mm"
+                )
+
+                draw.text(
+                    (300, 1380),
+                    f"R$ {formatar_real(media_preco)}",
+                    font=fonte_info,
+                    fill=(235, 230, 240, 255),
+                    anchor="mm"
+                )
+
+                if economia_pct > 0:
+
+                    draw.text(
+                        (750, 1320),
+                        f"{economia_pct:.0f}% abaixo",
+                        font=fonte_info,
+                        fill=(225, 215, 195, 255),
+                        anchor="mm"
+                    )
+
+                    draw.text(
+                        (750, 1380),
+                        "da média registrada",
+                        font=fonte_small,
+                        fill=(155, 150, 170, 255),
+                        anchor="mm"
+                    )
+
+        # ======================================================
+        # CENA 4 — FECHAMENTO EDITORIAL
+        # 5.8s -> 7.0s
+        # ======================================================
+
         else:
-            img = fundo_escuro.copy()
+
+            img = fundo_1.copy()
             draw = ImageDraw.Draw(img)
-            draw.text((540, 800), "VERIFIQUE AGORA", font=fonte_gancho, fill=(255, 255, 255, 255), anchor="mm")
-            draw.text((540, 900), "OS COMENTÁRIOS!", font=fonte_gancho, fill=(255, 179, 0, 255), anchor="mm")
-            draw.rounded_rectangle([150, 1350, 930, 1450], radius=40, fill=(255, 179, 0, 255))
-            draw.text((540, 1400), "ANTES QUE ZERE", font=fonte_c, fill=(15, 15, 20, 255), anchor="mm")
 
-        if 1.5 <= t < 4.8:
-            draw.rounded_rectangle([140, 50, 940, 130], radius=25, fill=(74, 20, 140, 220), outline=(255, 179, 0, 255), width=3)
-            draw.text((540, 90), "BARDO DAS PROMOÇÕES", font=fonte_h, fill=(255, 255, 255, 255), anchor="mm")
+            desenhar_marca(draw)
 
-        draw.rectangle([0, 0, int((f_idx/total_frames)*largura), 15], fill=(255, 179, 0, 255))
-        frames.append(np.array(img.convert("RGB")))
+            # Capa pequena ao fundo.
+            if capa:
 
-    clip = ImageSequenceClip(frames, fps=fps)
-    clip.write_videofile(caminho_saida_video, codec="libx264", audio=False, logger=None)
+                capa_final = capa.copy()
 
+                altura_final = 360
+                largura_final = int(
+                    altura_final *
+                    (capa_final.width / capa_final.height)
+                )
+
+                capa_final = capa_final.resize(
+                    (largura_final, altura_final),
+                    Image.Resampling.LANCZOS
+                )
+
+                # Transparência.
+                alpha = capa_final.getchannel("A")
+                alpha = alpha.point(lambda p: int(p * 0.55))
+                capa_final.putalpha(alpha)
+
+                img.paste(
+                    capa_final,
+                    (
+                        (largura - capa_final.width) // 2,
+                        420
+                    ),
+                    capa_final
+                )
+
+            draw.text(
+                (540, 980),
+                "VALE CONHECER",
+                font=fonte_hook,
+                fill=(240, 235, 225, 255),
+                anchor="mm"
+            )
+
+            draw.text(
+                (540, 1080),
+                "se você gosta de boas histórias",
+                font=fonte_info,
+                fill=(180, 175, 190, 255),
+                anchor="mm"
+            )
+
+            draw.text(
+                (540, 1280),
+                "BARDO DAS PROMOÇÕES",
+                font=fonte_marca,
+                fill=(210, 195, 160, 255),
+                anchor="mm"
+            )
+
+        # ======================================================
+        # ELEMENTO DE MOVIMENTO
+        # ======================================================
+
+        progresso_total = f_idx / max(total_frames - 1, 1)
+
+        desenhar_progress(
+            draw,
+            progresso_total
+        )
+
+        frames.append(
+            np.array(
+                img.convert("RGB")
+            )
+        )
+
+    # ==========================================================
+    # EXPORTAÇÃO
+    # ==========================================================
+
+    clip = ImageSequenceClip(
+        frames,
+        fps=fps
+    )
+
+    clip.write_videofile(
+        caminho_saida_video,
+        codec="libx264",
+        audio=False,
+        fps=fps,
+        logger=None,
+        preset="medium",
+        bitrate="5000k"
+    )
+
+    clip.close()
 # ==========================================================
 # GOOGLE SHEETS E PORTAL COM HOVER SWAP
 # ==========================================================
