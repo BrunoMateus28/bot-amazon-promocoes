@@ -1702,12 +1702,16 @@
       {
         "data": "2026-10-04",
         "preco": 279.9
+      },
+      {
+        "data": "2026-10-05",
+        "preco": 279.9
       }
     ]
   },
   "o_sacrificio": {
-    "menor_preco_historico": 60.57,
-    "ultimo_preco_divulgado": 60.57,
+    "menor_preco_historico": 57.53,
+    "ultimo_preco_divulgado": 57.53,
     "valores_30_dias": [
       {
         "data": "2026-09-10",
@@ -3408,6 +3412,10 @@
       {
         "data": "2026-10-04",
         "preco": 60.91
+      },
+      {
+        "data": "2026-10-05",
+        "preco": 57.53
       }
     ]
   },
@@ -5114,12 +5122,16 @@
       {
         "data": "2026-10-04",
         "preco": 49.47
+      },
+      {
+        "data": "2026-10-05",
+        "preco": 37.7
       }
     ]
   },
   "a_biblioteca_da_meia_noite": {
-    "menor_preco_historico": 34.07,
-    "ultimo_preco_divulgado": 34.07,
+    "menor_preco_historico": 32.99,
+    "ultimo_preco_divulgado": 32.99,
     "valores_30_dias": [
       {
         "data": "2026-09-10",
@@ -6820,6 +6832,10 @@
       {
         "data": "2026-10-04",
         "preco": 40.47
+      },
+      {
+        "data": "2026-10-05",
+        "preco": 32.99
       }
     ]
   },
@@ -8525,6 +8541,10 @@
       },
       {
         "data": "2026-10-04",
+        "preco": 46.06
+      },
+      {
+        "data": "2026-10-05",
         "preco": 46.06
       }
     ]
@@ -10232,12 +10252,16 @@
       {
         "data": "2026-10-04",
         "preco": 147.1
+      },
+      {
+        "data": "2026-10-05",
+        "preco": 128.14
       }
     ]
   },
   "o_mundo_de_gelo_e_fogo": {
-    "menor_preco_historico": 126.25,
-    "ultimo_preco_divulgado": 126.25,
+    "menor_preco_historico": 121.53,
+    "ultimo_preco_divulgado": 121.53,
     "valores_30_dias": [
       {
         "data": "2026-09-10",
@@ -11938,12 +11962,16 @@
       {
         "data": "2026-10-04",
         "preco": 126.25
+      },
+      {
+        "data": "2026-10-05",
+        "preco": 121.53
       }
     ]
   },
   "box_trilogia_o_senhor_dos_aneis": {
-    "menor_preco_historico": 199.4,
-    "ultimo_preco_divulgado": 199.4,
+    "menor_preco_historico": 191.93,
+    "ultimo_preco_divulgado": 191.93,
     "valores_30_dias": [
       {
         "data": "2026-09-10",
@@ -13644,6 +13672,10 @@
       {
         "data": "2026-10-04",
         "preco": 207.2
+      },
+      {
+        "data": "2026-10-05",
+        "preco": 191.93
       }
     ]
   },
@@ -15349,6 +15381,10 @@
       },
       {
         "data": "2026-10-04",
+        "preco": 59.36
+      },
+      {
+        "data": "2026-10-05",
         "preco": 59.36
       }
     ]
@@ -17056,12 +17092,16 @@
       {
         "data": "2026-10-04",
         "preco": 81.69
+      },
+      {
+        "data": "2026-10-05",
+        "preco": 74.46
       }
     ]
   },
   "box_torre_negra": {
-    "menor_preco_historico": 328.87,
-    "ultimo_preco_divulgado": 328.87,
+    "menor_preco_historico": 328.86,
+    "ultimo_preco_divulgado": 328.86,
     "valores_30_dias": [
       {
         "data": "2026-09-10",
@@ -18762,12 +18802,16 @@
       {
         "data": "2026-10-04",
         "preco": 414.48
+      },
+      {
+        "data": "2026-10-05",
+        "preco": 328.86
       }
     ]
   },
   "fragmentos_bovadium": {
-    "menor_preco_historico": 37.51,
-    "ultimo_preco_divulgado": 37.51,
+    "menor_preco_historico": 37.32,
+    "ultimo_preco_divulgado": 37.32,
     "valores_30_dias": [
       {
         "data": "2026-09-10",
@@ -20468,6 +20512,10 @@
       {
         "data": "2026-10-04",
         "preco": 39.8
+      },
+      {
+        "data": "2026-10-05",
+        "preco": 37.32
       }
     ]
   },
@@ -22173,6 +22221,10 @@
       },
       {
         "data": "2026-10-04",
+        "preco": 104.75
+      },
+      {
+        "data": "2026-10-05",
         "preco": 104.75
       }
     ]
@@ -23880,6 +23932,10 @@
       {
         "data": "2026-10-04",
         "preco": 55.07
+      },
+      {
+        "data": "2026-10-05",
+        "preco": 55.07
       }
     ]
   },
@@ -25586,12 +25642,16 @@
       {
         "data": "2026-10-04",
         "preco": 59.75
+      },
+      {
+        "data": "2026-10-05",
+        "preco": 59.75
       }
     ]
   },
   "guerra_papoula_3": {
-    "menor_preco_historico": 59.7,
-    "ultimo_preco_divulgado": 59.7,
+    "menor_preco_historico": 53.4,
+    "ultimo_preco_divulgado": 53.4,
     "valores_30_dias": [
       {
         "data": "2026-09-10",
@@ -27292,6 +27352,10 @@
       {
         "data": "2026-10-04",
         "preco": 59.7
+      },
+      {
+        "data": "2026-10-05",
+        "preco": 53.4
       }
     ]
   },
@@ -28998,12 +29062,16 @@
       {
         "data": "2026-10-04",
         "preco": 132.9
+      },
+      {
+        "data": "2026-10-05",
+        "preco": 132.9
       }
     ]
   },
   "palavras_de_radiancia": {
-    "menor_preco_historico": 149.89,
-    "ultimo_preco_divulgado": 149.89,
+    "menor_preco_historico": 147.13,
+    "ultimo_preco_divulgado": 147.13,
     "valores_30_dias": [
       {
         "data": "2026-09-10",
@@ -30704,6 +30772,10 @@
       {
         "data": "2026-10-04",
         "preco": 152.85
+      },
+      {
+        "data": "2026-10-05",
+        "preco": 147.13
       }
     ]
   },
@@ -32409,6 +32481,10 @@
       },
       {
         "data": "2026-10-04",
+        "preco": 126.58
+      },
+      {
+        "data": "2026-10-05",
         "preco": 126.58
       }
     ]
@@ -34116,6 +34192,10 @@
       {
         "data": "2026-10-04",
         "preco": 139.9
+      },
+      {
+        "data": "2026-10-05",
+        "preco": 139.9
       }
     ]
   },
@@ -35822,11 +35902,15 @@
       {
         "data": "2026-10-04",
         "preco": 44.76
+      },
+      {
+        "data": "2026-10-05",
+        "preco": 44.76
       }
     ]
   },
   "o_nome_do_vento": {
-    "menor_preco_historico": 51.2,
+    "menor_preco_historico": 51.19,
     "ultimo_preco_divulgado": 51.2,
     "valores_30_dias": [
       {
@@ -37528,6 +37612,10 @@
       {
         "data": "2026-10-04",
         "preco": 54.45
+      },
+      {
+        "data": "2026-10-05",
+        "preco": 51.19
       }
     ]
   },
@@ -39234,12 +39322,16 @@
       {
         "data": "2026-10-04",
         "preco": 37.27
+      },
+      {
+        "data": "2026-10-05",
+        "preco": 37.27
       }
     ]
   },
   "o_temor_do_sabio": {
-    "menor_preco_historico": 74.57,
-    "ultimo_preco_divulgado": 74.57,
+    "menor_preco_historico": 70.85,
+    "ultimo_preco_divulgado": 70.85,
     "valores_30_dias": [
       {
         "data": "2026-09-10",
@@ -40940,12 +41032,16 @@
       {
         "data": "2026-10-04",
         "preco": 75.23
+      },
+      {
+        "data": "2026-10-05",
+        "preco": 70.85
       }
     ]
   },
   "box_cronicas_de_artur": {
-    "menor_preco_historico": 165.9,
-    "ultimo_preco_divulgado": 165.9,
+    "menor_preco_historico": 157.6,
+    "ultimo_preco_divulgado": 157.6,
     "valores_30_dias": [
       {
         "data": "2026-09-10",
@@ -42646,12 +42742,16 @@
       {
         "data": "2026-10-04",
         "preco": 165.9
+      },
+      {
+        "data": "2026-10-05",
+        "preco": 157.6
       }
     ]
   },
   "mistborn_2": {
-    "menor_preco_historico": 76.63,
-    "ultimo_preco_divulgado": 76.63,
+    "menor_preco_historico": 73.0,
+    "ultimo_preco_divulgado": 73.0,
     "valores_30_dias": [
       {
         "data": "2026-09-10",
@@ -44352,6 +44452,10 @@
       {
         "data": "2026-10-04",
         "preco": 86.35
+      },
+      {
+        "data": "2026-10-05",
+        "preco": 73.0
       }
     ]
   },
@@ -46058,6 +46162,10 @@
       {
         "data": "2026-10-04",
         "preco": 76.38
+      },
+      {
+        "data": "2026-10-05",
+        "preco": 73.53
       }
     ]
   },
@@ -47764,12 +47872,16 @@
       {
         "data": "2026-10-04",
         "preco": 210.79
+      },
+      {
+        "data": "2026-10-05",
+        "preco": 210.79
       }
     ]
   },
   "box_corte_espinhos_rosas": {
-    "menor_preco_historico": 162.1,
-    "ultimo_preco_divulgado": 162.1,
+    "menor_preco_historico": 140.09,
+    "ultimo_preco_divulgado": 140.09,
     "valores_30_dias": [
       {
         "data": "2026-09-10",
@@ -49470,12 +49582,16 @@
       {
         "data": "2026-10-04",
         "preco": 192.75
+      },
+      {
+        "data": "2026-10-05",
+        "preco": 140.09
       }
     ]
   },
   "corte_espinhos_rosas": {
-    "menor_preco_historico": 32.41,
-    "ultimo_preco_divulgado": 32.41,
+    "menor_preco_historico": 32.4,
+    "ultimo_preco_divulgado": 32.4,
     "valores_30_dias": [
       {
         "data": "2026-09-10",
@@ -51176,6 +51292,10 @@
       {
         "data": "2026-10-04",
         "preco": 41.95
+      },
+      {
+        "data": "2026-10-05",
+        "preco": 32.4
       }
     ]
   },
@@ -52882,12 +53002,16 @@
       {
         "data": "2026-10-04",
         "preco": 54.45
+      },
+      {
+        "data": "2026-10-05",
+        "preco": 54.45
       }
     ]
   },
   "corte_asas_ruina": {
-    "menor_preco_historico": 52.21,
-    "ultimo_preco_divulgado": 52.21,
+    "menor_preco_historico": 49.59,
+    "ultimo_preco_divulgado": 49.59,
     "valores_30_dias": [
       {
         "data": "2026-09-10",
@@ -54588,6 +54712,10 @@
       {
         "data": "2026-10-04",
         "preco": 59.25
+      },
+      {
+        "data": "2026-10-05",
+        "preco": 49.59
       }
     ]
   },
@@ -56294,12 +56422,16 @@
       {
         "data": "2026-10-04",
         "preco": 59.75
+      },
+      {
+        "data": "2026-10-05",
+        "preco": 59.75
       }
     ]
   },
   "corte_gelo_estrelas": {
-    "menor_preco_historico": 34.77,
-    "ultimo_preco_divulgado": 34.77,
+    "menor_preco_historico": 29.89,
+    "ultimo_preco_divulgado": 29.89,
     "valores_30_dias": [
       {
         "data": "2026-09-10",
@@ -58000,6 +58132,10 @@
       {
         "data": "2026-10-04",
         "preco": 39.8
+      },
+      {
+        "data": "2026-10-05",
+        "preco": 29.89
       }
     ]
   },
@@ -59705,6 +59841,10 @@
       },
       {
         "data": "2026-10-04",
+        "preco": 67.44
+      },
+      {
+        "data": "2026-10-05",
         "preco": 67.44
       }
     ]
@@ -61412,6 +61552,10 @@
       {
         "data": "2026-10-04",
         "preco": 72.65
+      },
+      {
+        "data": "2026-10-05",
+        "preco": 72.65
       }
     ]
   },
@@ -63117,6 +63261,10 @@
       },
       {
         "data": "2026-10-04",
+        "preco": 67.57
+      },
+      {
+        "data": "2026-10-05",
         "preco": 67.57
       }
     ]
@@ -64824,6 +64972,10 @@
       {
         "data": "2026-10-04",
         "preco": 39.41
+      },
+      {
+        "data": "2026-10-05",
+        "preco": 39.41
       }
     ]
   },
@@ -66529,6 +66681,10 @@
       },
       {
         "data": "2026-10-04",
+        "preco": 131.49
+      },
+      {
+        "data": "2026-10-05",
         "preco": 131.49
       }
     ]
@@ -68236,6 +68392,10 @@
       {
         "data": "2026-10-04",
         "preco": 54.99
+      },
+      {
+        "data": "2026-10-05",
+        "preco": 54.99
       }
     ]
   },
@@ -69942,12 +70102,16 @@
       {
         "data": "2026-10-04",
         "preco": 473.33
+      },
+      {
+        "data": "2026-10-05",
+        "preco": 473.33
       }
     ]
   },
   "imperio_vampiro": {
-    "menor_preco_historico": 84.5,
-    "ultimo_preco_divulgado": 84.5,
+    "menor_preco_historico": 83.05,
+    "ultimo_preco_divulgado": 83.05,
     "valores_30_dias": [
       {
         "data": "2026-09-10",
@@ -71648,12 +71812,16 @@
       {
         "data": "2026-10-04",
         "preco": 100.98
+      },
+      {
+        "data": "2026-10-05",
+        "preco": 83.05
       }
     ]
   },
   "poder_da_espada": {
-    "menor_preco_historico": 57.87,
-    "ultimo_preco_divulgado": 57.87,
+    "menor_preco_historico": 57.86,
+    "ultimo_preco_divulgado": 57.86,
     "valores_30_dias": [
       {
         "data": "2026-09-10",
@@ -73354,12 +73522,16 @@
       {
         "data": "2026-10-04",
         "preco": 59.75
+      },
+      {
+        "data": "2026-10-05",
+        "preco": 57.86
       }
     ]
   },
   "feiticeiro_terramar": {
-    "menor_preco_historico": 63.05,
-    "ultimo_preco_divulgado": 63.05,
+    "menor_preco_historico": 58.26,
+    "ultimo_preco_divulgado": 58.26,
     "valores_30_dias": [
       {
         "data": "2026-09-10",
@@ -75060,12 +75232,16 @@
       {
         "data": "2026-10-04",
         "preco": 65.17
+      },
+      {
+        "data": "2026-10-05",
+        "preco": 58.26
       }
     ]
   },
   "circe": {
-    "menor_preco_historico": 62.5,
-    "ultimo_preco_divulgado": 62.5,
+    "menor_preco_historico": 58.97,
+    "ultimo_preco_divulgado": 58.97,
     "valores_30_dias": [
       {
         "data": "2026-09-10",
@@ -76766,6 +76942,10 @@
       {
         "data": "2026-10-04",
         "preco": 62.5
+      },
+      {
+        "data": "2026-10-05",
+        "preco": 58.97
       }
     ]
   },
@@ -78472,12 +78652,16 @@
       {
         "data": "2026-10-04",
         "preco": 153.09
+      },
+      {
+        "data": "2026-10-05",
+        "preco": 153.09
       }
     ]
   },
   "duna": {
-    "menor_preco_historico": 198.0,
-    "ultimo_preco_divulgado": 198.0,
+    "menor_preco_historico": 197.99,
+    "ultimo_preco_divulgado": 197.99,
     "valores_30_dias": [
       {
         "data": "2026-09-10",
@@ -80178,6 +80362,10 @@
       {
         "data": "2026-10-04",
         "preco": 212.7
+      },
+      {
+        "data": "2026-10-05",
+        "preco": 197.99
       }
     ]
   },
@@ -81884,6 +82072,10 @@
       {
         "data": "2026-10-04",
         "preco": 320.94
+      },
+      {
+        "data": "2026-10-05",
+        "preco": 320.94
       }
     ]
   },
@@ -83589,6 +83781,10 @@
       },
       {
         "data": "2026-10-04",
+        "preco": 218.4
+      },
+      {
+        "data": "2026-10-05",
         "preco": 218.4
       }
     ]
