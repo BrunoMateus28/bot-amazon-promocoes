@@ -4,3 +4,4 @@ __pycache__/
 .pytest_cache/
 .github/workflows/secrets/
 *.bat
+execucao_log.txt
