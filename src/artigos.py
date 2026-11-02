@@ -22,6 +22,8 @@ from google.genai import types
 import markdown as md_lib
 from pydantic import BaseModel, Field
 
+from src.layout import card_guia, pagina
+
 MODELO_GEMINI = "gemini-3.5-flash"  # mesmo modelo já usado em bot.py
 TELEGRAM_URL = "https://t.me/bardodaspromos"
 MAX_TENTATIVAS = 2
@@ -275,12 +277,13 @@ def _bloco_compra(post: dict) -> str:
 
 
 def renderizar_html(post: dict) -> str:
-    """Markdown -> HTML completo (meta tags, canonical, Open Graph, Twitter Card, JSON-LD)."""
+    """Markdown -> HTML completo usando o layout compartilhado do site."""
     corpo_seguro = re.sub(r"</?[a-zA-Z][^>]*>", "", post["corpo"])  # sem HTML cru do modelo
     corpo_seguro = _normalizar_listas(corpo_seguro)
     corpo_html = md_lib.markdown(corpo_seguro, extensions=["sane_lists"])
     esc = lambda t: html.escape(t, quote=True)
-    titulo, desc = esc(post["title"]), esc(post["description"])
+    titulo = post["title"]
+    desc = post["description"]
     url = f"{BASE_URL}posts/{post['slug']}.html"
     imagem = post.get("image", "")
     ld = {
@@ -293,54 +296,32 @@ def renderizar_html(post: dict) -> str:
     }
     if imagem:
         ld["image"] = imagem
-    schema = json.dumps(ld, ensure_ascii=False).replace("</", "<\\/")
-    og_img = (f'<meta property="og:image" content="{esc(imagem)}">\n'
-              f'<meta name="twitter:image" content="{esc(imagem)}">') if imagem else ""
-    nome_livro = esc(post.get("book") or post["title"])
-    capa = (f'<img class="capa" src="{esc(imagem)}" alt="Capa do livro {nome_livro}" '
-            f'width="220">') if imagem else ""
-    # Google corta o <title> perto de 60 caracteres: só anexa o nome do site se couber
-    titulo_tag = titulo if len(post["title"]) + 23 > 60 else f"{titulo} | Bardo das Promoções"
+    capa = (f'<img class="capa" src="{esc(imagem)}" alt="Capa do livro {esc(post.get("book") or post["title"])}" width="220">') if imagem else ""
     compra = _bloco_compra(post)
-    return f"""<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>{titulo_tag}</title>
-<meta name="description" content="{desc}">
-<meta name="keywords" content="{esc(', '.join(post['keywords']))}">
-<meta name="robots" content="index, follow, max-image-preview:large">
-<link rel="canonical" href="{url}">
-<meta property="og:type" content="article">
-<meta property="og:site_name" content="Bardo das Promoções">
-<meta property="og:locale" content="pt_BR">
-<meta property="og:title" content="{titulo}">
-<meta property="og:description" content="{desc}">
-<meta property="og:url" content="{url}">
-<meta property="article:published_time" content="{post['date']}">
-<meta name="twitter:card" content="{'summary_large_image' if imagem else 'summary'}">
-<meta name="twitter:title" content="{titulo}">
-<meta name="twitter:description" content="{desc}">
-{og_img}
-<script type="application/ld+json">{schema}</script>
-<style>{_CSS_POST}</style>
-</head>
-<body>
-<div class="wrap">
-<nav><a href="../index.html">← Ofertas do Bardo das Promoções</a></nav>
-<article>
-<h1>{titulo}</h1>
-<p class="meta">Guia de leitura · {_data_br(post['date'])}</p>
-{capa}
-{compra}
-{corpo_html}
-</article>
-{compra}
-</div>
-</body>
-</html>
-"""
+    corpo = f"""
+    <div class="container page-title">
+      <div class="crumbs"><a href="../index.html">Ofertas</a> / <span>{esc(titulo)}</span></div>
+      <article class="prose">
+        <h1>{esc(titulo)}</h1>
+        <p class="post-meta">Guia de leitura · {_data_br(post['date'])}</p>
+        {capa}
+        {compra}
+        {corpo_html}
+        {compra}
+      </article>
+    </div>
+    """
+    return pagina(
+        titulo=titulo,
+        descricao=desc,
+        caminho=f"posts/{post['slug']}.html",
+        corpo=corpo,
+        ativo="guias",
+        prefixo="../",
+        imagem=imagem,
+        tipo="article",
+        jsonld=[ld],
+    )
 
 
 def gerar_artigo_do_dia(aprovados: list, ofertas: list) -> Optional[str]:
@@ -378,18 +359,14 @@ def html_secao_guias(limite: int = 8) -> str:
     posts = listar_posts()[:limite]
     if not posts:
         return ""
-    cards = "".join(
-        f'<a href="posts/{p["slug"]}.html" class="block bg-surface rounded-2xl border '
-        f'border-white/5 hover:border-bardo-gold/40 p-5 transition-all">'
-        f'<h3 class="text-base font-semibold text-gray-100 mb-2">{html.escape(p["title"])}</h3>'
-        f'<p class="text-sm text-gray-400 line-clamp-3">{html.escape(p["description"])}</p></a>'
-        for p in posts
-    )
+    cards = "".join(card_guia(p) for p in posts)
     return (
-        '<section class="max-w-7xl mx-auto mt-16">'
-        '<h2 class="text-2xl font-bold text-white mb-6">📖 Guias de Leitura</h2>'
-        f'<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">{cards}</div>'
-        "</section>"
+        '<section class="section">'
+        '<div class="container">'
+        '<div class="section-head"><div><h2>📖 Guias de Leitura</h2><p>Recomendações selecionadas para continuar sua próxima leitura.</p></div></div>'
+        f'<div class="guias-grid">{cards}</div>'
+        '</div>'
+        '</section>'
     )
 
 
