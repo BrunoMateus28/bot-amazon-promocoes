@@ -20,6 +20,7 @@ from google import genai
 from google.genai import types
 
 from src.telegram import enviar_mensagem_telegram, enviar_video_telegram
+from src.artigos import gerar_artigo_do_dia, html_secao_guias, xml_urls_posts
 
 import matplotlib
 matplotlib.use('Agg')
@@ -595,6 +596,7 @@ def gerar_sitemap():
     xml_content = f"""<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
    <url><loc>{url_base}</loc><lastmod>{data_hoje}</lastmod><changefreq>daily</changefreq><priority>1.0</priority></url>
+{xml_urls_posts()}
 </urlset>"""
     with open("sitemap.xml", "w", encoding="utf-8") as f:
         f.write(xml_content)
@@ -652,12 +654,27 @@ def gerar_site_estatico(ofertas, historico):
             media, menor = preco_atual, preco_atual
         cards_html_list.append(_gerar_card_produto(item, preco_atual, media, menor))
 
+    desc_home = ("Monitoramento 24h de promoções de livros de Fantasia e Ficção Científica "
+                 "na Amazon, com histórico de preços e guias de leitura.")
+    og_img = next((o["imagem_url"] for o in ofertas if o.get("imagem_url")), "")
+    og_img_tag = f'<meta property="og:image" content="{og_img}">' if og_img else ""
     html_template = f"""<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bardo das Promoções | Ofertas de Fantasia e Sci-Fi</title>
+    <meta name="description" content="{desc_home}">
+    <meta name="robots" content="index, follow, max-image-preview:large">
+    <link rel="canonical" href="https://brunomateus28.github.io/bot-amazon-promocoes/">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Bardo das Promoções">
+    <meta property="og:locale" content="pt_BR">
+    <meta property="og:title" content="Bardo das Promoções | Ofertas de Fantasia e Sci-Fi">
+    <meta property="og:description" content="{desc_home}">
+    <meta property="og:url" content="https://brunomateus28.github.io/bot-amazon-promocoes/">
+    <meta name="twitter:card" content="summary_large_image">
+    {og_img_tag}
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {{
@@ -689,6 +706,7 @@ def gerar_site_estatico(ofertas, historico):
     <main class="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         {''.join(cards_html_list)}
     </main>
+    {html_secao_guias()}
 </body>
 </html>"""
     with open("index.html", "w", encoding="utf-8") as f:
@@ -707,6 +725,7 @@ async def processar_ofertas():
     historico = carregar_json(HISTORICO_FILE, {})
     data_hoje = datetime.now().strftime("%Y-%m-%d")
     houve_mudanca_no_historico = False
+    aprovados = []  # promoções aprovadas hoje (candidatas a artigo SEO)
 
     for item in ofertas:
         item_id = item["id"]
@@ -752,6 +771,10 @@ async def processar_ofertas():
             print(f"   🆕 Primeira vez rastreando. Preço base salvo no histórico, não será postado hoje.")
         elif condicao_1 or condicao_2 or condicao_forcada:
             print(f"🔥 Aprovado para postagem: {item['titulo']}")
+            aprovados.append({
+                "titulo": item["titulo"],
+                "desconto": (media_preco - preco_atual) / media_preco if media_preco else 0,
+            })
             mensagem = f"🚨 PROMOÇÃO!\n\n📚 *{item['titulo']}*\n💰 R$ {formatar_real(preco_atual)}\n\n🔗 {item['url']}"
             
             caminho_grafico = os.path.join(ASSETS_DIR, f"grafico_{item_id}.png")
@@ -844,6 +867,12 @@ async def processar_ofertas():
 
         if preco_atual < menor_historico:
             historico[item_id]["menor_preco_historico"] = preco_atual
+
+    # Artigo SEO (máx. 1 por execução). Antes do site, para entrar no index e no sitemap.
+    try:
+        gerar_artigo_do_dia(aprovados, ofertas)
+    except Exception as e:
+        print(f"⚠️ Falha ao gerar artigo (bot segue normalmente): {e}")
 
     gerar_site_estatico(ofertas, historico)
     if houve_mudanca_no_historico:
