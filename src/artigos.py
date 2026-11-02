@@ -22,7 +22,7 @@ from google.genai import types
 import markdown as md_lib
 from pydantic import BaseModel, Field
 
-from src.layout import card_guia, pagina
+from src.layout import NOME_SITE, PLACEHOLDER, card_guia, esc, pagina
 
 MODELO_GEMINI = "gemini-3.5-flash"  # mesmo modelo já usado em bot.py
 TELEGRAM_URL = "https://t.me/bardodaspromos"
@@ -222,26 +222,6 @@ def listar_posts() -> list:
     return sorted(posts, key=lambda p: p.get("date", ""), reverse=True)
 
 
-_CSS_POST = """
-:root{--bg:#09090b;--surface:#121214;--gold:#FFB300;--text:#d1d5db}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);
-font:18px/1.75 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
-.wrap{max-width:760px;margin:0 auto;padding:24px 20px 64px}
-nav a{color:var(--gold);text-decoration:none;font-size:15px;font-weight:600}
-h1{color:#fff;font-size:2rem;line-height:1.25;margin:24px 0 8px}
-h2{color:#fff;font-size:1.5rem;margin:2.2em 0 .4em;border-left:4px solid var(--gold);padding-left:12px}
-h3{color:#f3f4f6;font-size:1.15rem;margin:1.6em 0 .2em}
-.meta{color:#6b7280;font-size:14px;margin-bottom:24px}
-a{color:var(--gold)}hr{border:0;border-top:1px solid #27272a;margin:2.5em 0}
-ul{padding-left:1.3em}li{margin:.3em 0}
-.capa{display:block;max-width:220px;margin:8px auto 20px;border-radius:8px}
-.compra{text-align:center;margin:24px 0}
-.btn{display:inline-block;background:var(--gold);color:#202024;font-weight:700;
-padding:12px 28px;border-radius:12px;text-decoration:none}
-.aviso{color:#6b7280;font-size:13px;line-height:1.5;margin:8px 0 0}
-"""
-
-
 _ITEM_LISTA = re.compile(r"^\s*(?:[-*+]|\d+[.)])\s+")
 
 
@@ -263,65 +243,64 @@ def _data_br(iso: str) -> str:
         return iso
 
 
-def _bloco_compra(post: dict) -> str:
+def _botao_compra(post: dict) -> str:
     if not post.get("url"):
         return ""
-    return (
-        '<div class="compra">'
-        f'<a class="btn" href="{html.escape(post["url"], quote=True)}" target="_blank" '
-        'rel="sponsored nofollow noopener">Ver oferta atual na Amazon</a>'
-        '<p class="aviso">Como Associado da Amazon, o Bardo das Promoções recebe comissão '
-        "por compras qualificadas, sem custo extra para você. Preço e disponibilidade "
-        "podem variar.</p></div>"
-    )
+    return (f'<a class="btn btn-gold" href="{esc(post["url"])}" target="_blank" '
+            'rel="sponsored nofollow noopener">Ver oferta atual na Amazon</a>'
+            f'<p class="aviso">Como Associado da Amazon, o {NOME_SITE} recebe comissão por compras '
+            "qualificadas, sem custo extra para você. Preço e disponibilidade podem variar.</p>")
 
 
 def renderizar_html(post: dict) -> str:
-    """Markdown -> HTML completo usando o layout compartilhado do site."""
+    """Markdown -> página completa no layout do site (meta tags, JSON-LD, migalhas, Leia também)."""
     corpo_seguro = re.sub(r"</?[a-zA-Z][^>]*>", "", post["corpo"])  # sem HTML cru do modelo
-    corpo_seguro = _normalizar_listas(corpo_seguro)
-    corpo_html = md_lib.markdown(corpo_seguro, extensions=["sane_lists"])
-    esc = lambda t: html.escape(t, quote=True)
-    titulo = post["title"]
-    desc = post["description"]
+    corpo_html = md_lib.markdown(_normalizar_listas(corpo_seguro), extensions=["sane_lists"])
     url = f"{BASE_URL}posts/{post['slug']}.html"
     imagem = post.get("image", "")
-    ld = {
-        "@context": "https://schema.org", "@type": "Article",
-        "headline": post["title"], "description": post["description"],
-        "datePublished": post["date"], "dateModified": post["date"], "inLanguage": "pt-BR",
-        "mainEntityOfPage": url,
-        "author": {"@type": "Organization", "name": "Bardo das Promoções"},
-        "publisher": {"@type": "Organization", "name": "Bardo das Promoções"},
+    nome = post.get("book") or post["title"]
+    # Google corta o <title> perto de 60 caracteres: só anexa o nome do site se couber
+    titulo_tag = post["title"] if len(post["title"]) + 23 > 60 else f"{post['title']} | {NOME_SITE}"
+
+    ld_artigo = {
+        "@context": "https://schema.org", "@type": "Article", "headline": post["title"],
+        "description": post["description"], "datePublished": post["date"], "dateModified": post["date"],
+        "inLanguage": "pt-BR", "mainEntityOfPage": url,
+        "author": {"@type": "Organization", "name": NOME_SITE},
+        "publisher": {"@type": "Organization", "name": NOME_SITE},
     }
     if imagem:
-        ld["image"] = imagem
-    capa = (f'<img class="capa" src="{esc(imagem)}" alt="Capa do livro {esc(post.get("book") or post["title"])}" width="220">') if imagem else ""
-    compra = _bloco_compra(post)
-    corpo = f"""
-    <div class="container page-title">
-      <div class="crumbs"><a href="../index.html">Ofertas</a> / <span>{esc(titulo)}</span></div>
-      <article class="prose">
-        <h1>{esc(titulo)}</h1>
-        <p class="post-meta">Guia de leitura · {_data_br(post['date'])}</p>
-        {capa}
-        {compra}
-        {corpo_html}
-        {compra}
-      </article>
-    </div>
-    """
-    return pagina(
-        titulo=titulo,
-        descricao=desc,
-        caminho=f"posts/{post['slug']}.html",
-        corpo=corpo,
-        ativo="guias",
-        prefixo="../",
-        imagem=imagem,
-        tipo="article",
-        jsonld=[ld],
-    )
+        ld_artigo["image"] = imagem
+    ld_trilha = {
+        "@context": "https://schema.org", "@type": "BreadcrumbList",
+        "itemListElement": [
+            {"@type": "ListItem", "position": 1, "name": "Início", "item": BASE_URL},
+            {"@type": "ListItem", "position": 2, "name": "Guias", "item": BASE_URL + "guias.html"},
+            {"@type": "ListItem", "position": 3, "name": post["title"], "item": url},
+        ],
+    }
+
+    botao = _botao_compra(post)
+    caixa = ""
+    if botao or imagem:
+        caixa = (f'<aside class="livro-box" aria-label="Sobre o livro">'
+                 f'<img src="{esc(imagem or PLACEHOLDER)}" alt="Capa do livro {esc(nome)}" width="112" height="149">'
+                 f'<div><strong>{esc(nome)}</strong>{botao}</div></aside>')
+    relacionados = [p for p in listar_posts() if p["slug"] != post["slug"]][:3]
+    rel_html = ""
+    if relacionados:
+        cards = "".join(card_guia(p, base="", i=i) for i, p in enumerate(relacionados))
+        rel_html = f'<section class="relacionados"><h2>Leia também</h2><div class="guias-grid">{cards}</div></section>'
+    compra_final = f'<div class="compra">{botao}</div>' if botao else ""
+
+    corpo = (f'<div class="container"><nav class="crumbs" aria-label="Você está em">'
+             f'<a href="../index.html">Início</a> › <a href="../guias.html">Guias</a> › <span>{esc(post["title"])}</span></nav>'
+             f'<article class="prose"><header><h1>{esc(post["title"])}</h1>'
+             f'<p class="post-meta">Guia de leitura · {_data_br(post["date"])}</p></header>'
+             f'{caixa}{corpo_html}{compra_final}</article>{rel_html}</div>')
+    return pagina(titulo=titulo_tag, descricao=post["description"], caminho=f"posts/{post['slug']}.html",
+                  corpo=corpo, ativo="guias", prefixo="../", imagem=imagem, tipo="article",
+                  jsonld=[ld_artigo, ld_trilha])
 
 
 def gerar_artigo_do_dia(aprovados: list, ofertas: list) -> Optional[str]:
@@ -352,28 +331,3 @@ def gerar_artigo_do_dia(aprovados: list, ofertas: list) -> Optional[str]:
         f.write(renderizar_html(post))
     print(f"✅ Artigo publicado em posts/{slug}.html")
     return slug
-
-
-def html_secao_guias(limite: int = 8) -> str:
-    """Bloco 'Guias de Leitura' para o index.html (vazio se não houver posts)."""
-    posts = listar_posts()[:limite]
-    if not posts:
-        return ""
-    cards = "".join(card_guia(p) for p in posts)
-    return (
-        '<section class="section">'
-        '<div class="container">'
-        '<div class="section-head"><div><h2>📖 Guias de Leitura</h2><p>Recomendações selecionadas para continuar sua próxima leitura.</p></div></div>'
-        f'<div class="guias-grid">{cards}</div>'
-        '</div>'
-        '</section>'
-    )
-
-
-def xml_urls_posts() -> str:
-    """<url> de cada post para o sitemap.xml."""
-    return "\n".join(
-        f'   <url><loc>{BASE_URL}posts/{p["slug"]}.html</loc><lastmod>{p["date"]}</lastmod>'
-        f"<changefreq>monthly</changefreq><priority>0.8</priority></url>"
-        for p in listar_posts()
-    )

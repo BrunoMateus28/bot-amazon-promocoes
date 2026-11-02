@@ -20,8 +20,8 @@ from google import genai
 from google.genai import types
 
 from src.telegram import enviar_mensagem_telegram, enviar_video_telegram
-from src.artigos import gerar_artigo_do_dia, html_secao_guias, xml_urls_posts
-from src.layout import pagina, salvar_assets_estaticos
+from src.artigos import gerar_artigo_do_dia
+from src.site import gerar_site
 
 import matplotlib
 matplotlib.use('Agg')
@@ -582,7 +582,7 @@ def buscar_ofertas_csv():
                 try:
                     ofertas.append({
                         "id": id_item, "titulo": titulo,
-                        "preco_atual": float(preco_str), "url": url, "imagem_url": imagem_url
+                        "preco_atual": float(preco_str), "url": url, "imagem_url": imagem_url, "categoria": linha_limpa.get("categoria", "")
                     })
                 except ValueError:
                     pass
@@ -591,109 +591,10 @@ def buscar_ofertas_csv():
         print(f"-> Erro ao sincronizar CSV: {e}")
         return []
 
-def gerar_sitemap():
-    url_base = "https://brunomateus28.github.io/bot-amazon-promocoes/"
-    data_hoje = datetime.now().strftime("%Y-%m-%d")
-    xml_content = f"""<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-   <url><loc>{url_base}</loc><lastmod>{data_hoje}</lastmod><changefreq>daily</changefreq><priority>1.0</priority></url>
-{xml_urls_posts()}
-</urlset>"""
-    with open("sitemap.xml", "w", encoding="utf-8") as f:
-        f.write(xml_content)
-
-def _gerar_card_produto(item, preco_atual, media, menor):
-    item_id = item["id"]
-    titulo = item["titulo"]
-    badge_html = ""
-    if preco_atual < menor:
-        badge_html = '<div class="badges"><span class="badge badge-off">Recorde Histórico</span></div>'
-    elif preco_atual < media:
-        badge_html = '<div class="badges"><span class="badge badge-low">Abaixo da Média</span></div>'
-
-    caminho_capa = f"assets/capa_{item_id}.jpg"
-    caminho_grafico = f"assets/grafico_{item_id}.png"
-    img_capa = caminho_capa if os.path.exists(caminho_capa) else (item.get("imagem_url") or "bau.png")
-    img_grafico = caminho_grafico if os.path.exists(caminho_grafico) else img_capa
-
-    return f"""
-    <article class="card">
-        {badge_html}
-        <div class="thumb">
-            <img src="{img_capa}" alt="Capa de {titulo}" loading="lazy" />
-        </div>
-        <div class="card-body">
-            <h3>{titulo}</h3>
-            <div class="price">
-                <strong>R$ {formatar_real(preco_atual)}</strong>
-                <small>Histórico: R$ {formatar_real(media)}</small>
-            </div>
-            <div class="card-actions">
-                <a href="{item['url']}" target="_blank" rel="nofollow noopener" class="btn btn-gold">Comprar na Amazon</a>
-            </div>
-        </div>
-    </article>"""
-
 def gerar_site_estatico(ofertas, historico):
-    salvar_assets_estaticos(".")
-    cards_html_list = []
-    for item in ofertas:
-        item_id = item["id"]
-        preco_atual = item["preco_atual"]
-        if item_id in historico and historico[item_id]["valores_30_dias"]:
-            precos = [v["preco"] for v in historico[item_id]["valores_30_dias"]]
-            media = sum(precos) / len(precos)
-            menor = historico[item_id]["menor_preco_historico"]
-        else:
-            media, menor = preco_atual, preco_atual
-        cards_html_list.append(_gerar_card_produto(item, preco_atual, media, menor))
+    """Gera index, guias, sobre, CSS/JS, artigos e sitemap (ver src/site.py)."""
+    gerar_site(ofertas, historico)
 
-    desc_home = (
-        "Monitoramento 24h de promoções de livros de Fantasia e Ficção Científica "
-        "na Amazon, com histórico de preços e guias de leitura."
-    )
-    og_img = next((o["imagem_url"] for o in ofertas if o.get("imagem_url")), "")
-    corpo = f"""
-    <section class="hero">
-      <div class="container">
-        <div class="eyebrow">Monitoramento 24h</div>
-        <h1>Promoções que valem a pena ler.</h1>
-        <p>Descubra ofertas de Fantasia, Ficção Científica e livros com histórico de preço para decidir sem perder tempo.</p>
-        <div class="hero-actions">
-          <a class="btn btn-gold" href="https://t.me/bardodaspromos" target="_blank" rel="noopener">Entrar no Telegram</a>
-          <a class="btn btn-ghost" href="#ofertas">Ver ofertas hoje</a>
-        </div>
-        <div class="stats">
-          <div><strong>{len(ofertas)}</strong> livros em observação</div>
-          <div><strong>24h</strong> de monitoramento</div>
-          <div><strong>0</strong> anúncios de compra</div>
-        </div>
-      </div>
-    </section>
-    <section class="section" id="ofertas">
-      <div class="container">
-        <div class="section-head">
-          <div>
-            <h2>Ofertas do dia</h2>
-            <p>Preços reais, comparados com a média recente e com o menor histórico.</p>
-          </div>
-        </div>
-        <div class="grid">{''.join(cards_html_list)}</div>
-      </div>
-    </section>
-    {html_secao_guias()}
-    """
-    pagina_html = pagina(
-        titulo="Bardo das Promoções | Ofertas de Fantasia e Sci-Fi",
-        descricao=desc_home,
-        caminho="index.html",
-        corpo=corpo,
-        ativo="ofertas",
-        imagem=og_img,
-    )
-    with open("index.html", "w", encoding="utf-8") as f:
-        f.write(pagina_html)
-    gerar_sitemap()
 
 # ==========================================================
 # LÓGICA PRINCIPAL DO BOT
