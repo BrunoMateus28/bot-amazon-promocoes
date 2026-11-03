@@ -20,7 +20,8 @@ from google import genai
 from google.genai import types
 
 from src.telegram import enviar_mensagem_telegram, enviar_video_telegram
-from src.artigos import gerar_artigo_do_dia, html_secao_guias, xml_urls_posts
+from src.artigos import gerar_artigo_do_dia
+from src.site import gerar_site
 
 import matplotlib
 matplotlib.use('Agg')
@@ -581,7 +582,7 @@ def buscar_ofertas_csv():
                 try:
                     ofertas.append({
                         "id": id_item, "titulo": titulo,
-                        "preco_atual": float(preco_str), "url": url, "imagem_url": imagem_url
+                        "preco_atual": float(preco_str), "url": url, "imagem_url": imagem_url, "categoria": linha_limpa.get("categoria", "")
                     })
                 except ValueError:
                     pass
@@ -590,128 +591,10 @@ def buscar_ofertas_csv():
         print(f"-> Erro ao sincronizar CSV: {e}")
         return []
 
-def gerar_sitemap():
-    url_base = "https://brunomateus28.github.io/bot-amazon-promocoes/"
-    data_hoje = datetime.now().strftime("%Y-%m-%d")
-    xml_content = f"""<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-   <url><loc>{url_base}</loc><lastmod>{data_hoje}</lastmod><changefreq>daily</changefreq><priority>1.0</priority></url>
-{xml_urls_posts()}
-</urlset>"""
-    with open("sitemap.xml", "w", encoding="utf-8") as f:
-        f.write(xml_content)
-
-def _gerar_card_produto(item, preco_atual, media, menor):
-    item_id = item["id"]
-    titulo = item["titulo"]
-    badge_html = ""
-    if preco_atual < menor:
-        badge_html = '<div class="absolute top-3 left-3 z-10"><span class="px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-rose-300 bg-rose-500/10 border border-rose-500/20 rounded-full backdrop-blur-md shadow-lg">Recorde Histórico</span></div>'
-    elif preco_atual < media:
-        badge_html = '<div class="absolute top-3 left-3 z-10"><span class="px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 rounded-full backdrop-blur-md shadow-lg">Abaixo da Média</span></div>'
-    
-    # Busca a imagem da Capa e do Gráfico salvos localmente
-    caminho_capa = f"assets/capa_{item_id}.jpg"
-    caminho_grafico = f"assets/grafico_{item_id}.png"
-    
-    # Define as imagens do hover (Usa URL do item caso a capa local não exista ainda)
-    img_capa = caminho_capa if os.path.exists(caminho_capa) else (item.get("imagem_url") or "bau.png")
-    # Se o gráfico não existir (ainda não foi gerado), exibe a capa nas duas fases do hover
-    img_grafico = caminho_grafico if os.path.exists(caminho_grafico) else img_capa
-    
-    return f"""
-    <article class="relative flex flex-col bg-surface rounded-2xl border border-white/5 overflow-hidden hover:border-bardo-gold/40 transition-all duration-300 group shadow-lg">
-        {badge_html}
-        <!-- Vitrine com Efeito Hover Swap -->
-        <div class="relative h-64 w-full bg-gradient-to-b from-white/[0.03] to-transparent border-b border-white/5 overflow-hidden">
-            <!-- Imagem 1: Capa (Soma ao Hover) -->
-            <img src="{img_capa}" alt="Capa de {titulo}" loading="lazy" class="absolute inset-0 w-full h-full p-6 object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] transition-opacity duration-500 opacity-100 group-hover:opacity-0" />
-            <!-- Imagem 2: Gráfico (Aparece no Hover) -->
-            <img src="{img_grafico}" alt="Gráfico de {titulo}" loading="lazy" class="absolute inset-0 w-full h-full p-4 object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)] transition-opacity duration-500 opacity-0 group-hover:opacity-100" />
-        </div>
-        <div class="p-5 flex flex-col flex-grow">
-            <h3 class="text-base font-semibold text-gray-100 leading-snug line-clamp-2 mb-4 group-hover:text-bardo-gold transition-colors">{titulo}</h3>
-            <div class="flex flex-col mt-auto mb-5">
-                <div class="flex items-baseline gap-2">
-                    <span class="text-2xl font-bold text-white tracking-tight">R$ {formatar_real(preco_atual)}</span>
-                    <span class="text-sm text-gray-500 line-through">R$ {formatar_real(media)}</span>
-                </div>
-            </div>
-            <a href="{item['url']}" target="_blank" rel="nofollow noopener" class="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-white/5 hover:bg-bardo-gold hover:text-bardo-dark text-sm font-bold text-gray-200 transition-all">Comprar na Amazon</a>
-        </div>
-    </article>"""
-
 def gerar_site_estatico(ofertas, historico):
-    cards_html_list = []
-    for item in ofertas:
-        item_id = item["id"]
-        preco_atual = item["preco_atual"]
-        if item_id in historico and historico[item_id]["valores_30_dias"]:
-            precos = [v["preco"] for v in historico[item_id]["valores_30_dias"]]
-            media = sum(precos)/len(precos)
-            menor = historico[item_id]["menor_preco_historico"]
-        else:
-            media, menor = preco_atual, preco_atual
-        cards_html_list.append(_gerar_card_produto(item, preco_atual, media, menor))
+    """Gera index, guias, sobre, CSS/JS, artigos e sitemap (ver src/site.py)."""
+    gerar_site(ofertas, historico)
 
-    desc_home = ("Monitoramento 24h de promoções de livros de Fantasia e Ficção Científica "
-                 "na Amazon, com histórico de preços e guias de leitura.")
-    og_img = next((o["imagem_url"] for o in ofertas if o.get("imagem_url")), "")
-    og_img_tag = f'<meta property="og:image" content="{og_img}">' if og_img else ""
-    html_template = f"""<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bardo das Promoções | Ofertas de Fantasia e Sci-Fi</title>
-    <meta name="description" content="{desc_home}">
-    <meta name="robots" content="index, follow, max-image-preview:large">
-    <link rel="canonical" href="https://brunomateus28.github.io/bot-amazon-promocoes/">
-    <meta property="og:type" content="website">
-    <meta property="og:site_name" content="Bardo das Promoções">
-    <meta property="og:locale" content="pt_BR">
-    <meta property="og:title" content="Bardo das Promoções | Ofertas de Fantasia e Sci-Fi">
-    <meta property="og:description" content="{desc_home}">
-    <meta property="og:url" content="https://brunomateus28.github.io/bot-amazon-promocoes/">
-    <meta name="twitter:card" content="summary_large_image">
-    {og_img_tag}
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {{
-            theme: {{
-                extend: {{
-                    colors: {{
-                        background: '#09090b',
-                        surface: '#121214',
-                        'bardo-gold': '#FFB300',
-                        'bardo-dark': '#202024'
-                    }}
-                }}
-            }}
-        }}
-    </script>
-</head>
-<body class="bg-background text-gray-300 min-h-screen p-4 md:p-8">
-    <header class="max-w-7xl mx-auto mb-12 text-center">
-        <h1 class="text-3xl md:text-5xl font-bold text-white mb-3">Bardo das Promoções</h1>
-        <p class="text-bardo-gold font-semibold tracking-wide uppercase text-sm md:text-base mb-6">Monitoramento 24h de Fantasia & Sci-Fi</p>
-        
-        <!-- BOTÃO DO TELEGRAM AQUI -->
-        <a href="https://t.me/bardodaspromos" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 px-8 py-3.5 text-sm md:text-base font-bold text-bardo-dark bg-bardo-gold rounded-full hover:bg-yellow-400 hover:-translate-y-1 transition-all duration-300 shadow-[0_0_20px_rgba(255,179,0,0.3)] hover:shadow-[0_0_30px_rgba(255,179,0,0.6)]">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.446 1.394c-.14.18-.357.295-.6.295-.002 0-.003 0-.005 0l.213-3.054 5.56-5.022c.24-.213-.054-.334-.373-.121l-6.869 4.326-2.96-.924c-.64-.203-.658-.64.135-.954l11.566-4.458c.538-.196 1.006.128.832.941z"/></svg>
-            Entrar no Canal do Telegram
-        </a>
-    </header>
-    
-    <main class="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-        {''.join(cards_html_list)}
-    </main>
-    {html_secao_guias()}
-</body>
-</html>"""
-    with open("index.html", "w", encoding="utf-8") as f:
-        f.write(html_template)
-    gerar_sitemap()
 
 # ==========================================================
 # LÓGICA PRINCIPAL DO BOT
